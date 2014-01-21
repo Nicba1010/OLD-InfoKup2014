@@ -8,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
 
 import javax.swing.JList;
@@ -112,15 +114,20 @@ public class ProcessesList {
 		return processesListJList.locationToIndex(point);
 	}
 
-
 	public void killProc(String proc) {
-		try {
-			DataOutputStream outToClient = new DataOutputStream(
-					TCPServer.connectionSocket.getOutputStream());
-			outToClient.writeBytes("killproc " + proc);
-			System.out.println("killproc " + proc);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// PROBLEM
+		// try {
+		// ServerSocket inSocket = new ServerSocket(25565);
+		// Socket connectionSocket = inSocket.accept();
+		// DataOutputStream outToClient = new DataOutputStream(
+		// connectionSocket.getOutputStream());
+		// outToClient.writeBytes("killproc " + proc);
+		// System.out.println("killproc " + proc);
+		// connectionSocket.close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		TCPServer.kill = true;
+		TCPServer.killprocess = proc;
 	}
 }

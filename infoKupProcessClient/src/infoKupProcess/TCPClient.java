@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Timer;
@@ -21,25 +22,23 @@ class TCPClient {
 				sendProcesses();
 			}
 		}, 0, 2000);
-		//PROBLEM{
-		Thread recieve = new Thread(new Recieve());
-		recieve.run();
-		//PROBLEM}
+//		 //PROBLEM{
+//		 Thread recieve = new Thread(new Recieve());
+//		 recieve.run();
+//		 //PROBLEM}
 	}
 
 	public static void sendMessage(String msg) {
-		// String messageRecieve=null;
+		String messageRecieve = null;
 		try {
 			clientSocket = new Socket("127.0.0.1", 25565);
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
-			// BufferedReader inFromServer = new BufferedReader(
-			// new InputStreamReader(clientSocket.getInputStream()));
-			// messageRecieve = inFromServer.readLine();
-			// System.out.println(messageRecieve);
-			// if (messageRecieve != null)
-			// processMessage(messageRecieve);
+			BufferedReader inFromServer = new BufferedReader(
+					new InputStreamReader(clientSocket.getInputStream()));
+			messageRecieve = inFromServer.readLine();
+			processMessage(messageRecieve);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -47,7 +46,6 @@ class TCPClient {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static void processMessage(String message) {
 		System.out.println(message);
 		if (message.contains("killproc ")) {

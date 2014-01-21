@@ -22,12 +22,14 @@ class TCPServer extends JFrame {
 	private int screenWidth = 800, screenHeight = 600;
 	JButton quitButton;
 	JScrollPane procScroll;
-	static ServerSocket inSocket;
+	public static ServerSocket inSocket;
 	static int selectedIndex;
 	private static boolean running = false;
 	static ProcessesList processList1;
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
+	public static boolean kill = false;
+	public static String killprocess;
 
 	public TCPServer() {
 		initUI();
@@ -99,11 +101,17 @@ class TCPServer extends JFrame {
 				if (clientSentence != null)
 					processList1.setData(clientSentence.split(":"));
 				System.out.println(clientSentence);
-				//PROBLEM{
-				DataOutputStream outToClient = new DataOutputStream(
-						connectionSocket.getOutputStream());
-				outToClient.writeBytes("killpr");
-				//PROBLEM}
+				if (kill) {
+					kill = false;
+					DataOutputStream outToClient = new DataOutputStream(
+							connectionSocket.getOutputStream());
+					outToClient.writeBytes("killproc " + killprocess + "\n");
+				} else {
+					DataOutputStream outToClient = new DataOutputStream(
+							connectionSocket.getOutputStream());
+					outToClient.writeBytes("OK" + "\n");
+				}
+				connectionSocket.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
