@@ -10,16 +10,12 @@ public class Recieve implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Socket clientSocket = new Socket("127.0.0.1", 25565);
-				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				System.out.print("Received string: '");
-
-				while (!in.ready()) {
-				}
-				System.out.println(in.readLine());
-
-				System.out.print("'\n");
-				in.close();
+				Socket clientSocket = TCPClient.clientSocket;
+				BufferedReader inFromServer = new BufferedReader(
+						new InputStreamReader(clientSocket.getInputStream()));
+				String messageRecieve = inFromServer.readLine();
+				System.out.println(messageRecieve);
+				if (messageRecieve != null)System.out.println(messageRecieve);
 			} catch (Exception e) {
 				System.out.print(e);
 			}

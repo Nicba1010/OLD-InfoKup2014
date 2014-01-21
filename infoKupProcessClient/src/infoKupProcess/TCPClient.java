@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
+	public static Socket clientSocket;
 	public static void main(String args[]) throws Exception {
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -19,13 +20,13 @@ class TCPClient {
 				sendProcesses();
 			}
 		}, 0, 2000);
-//		Thread recieve = new Thread(new Recieve());
-//		recieve.run();
+		Thread.sleep(1000);
+		Thread recieve = new Thread(new Recieve());
+		recieve.run();
 	}
 
 	public static void sendMessage(String msg) {
 		String messageRecieve=null;
-		Socket clientSocket;
 		try {
 			clientSocket = new Socket("127.0.0.1", 25565);
 			DataOutputStream outToServer = new DataOutputStream(
