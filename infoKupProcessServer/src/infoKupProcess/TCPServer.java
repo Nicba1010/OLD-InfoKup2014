@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+@SuppressWarnings("serial")
 class TCPServer extends JFrame {
 	private int screenWidth = 800, screenHeight = 600;
 	JButton quitButton;
@@ -38,7 +39,6 @@ class TCPServer extends JFrame {
 		JPanel panel = new JPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(panel);
-		// panel.setLayout(new BorderLayout());
 		panel.setLayout(null);
 		setSize(screenWidth, screenHeight);
 		setLocationRelativeTo(null);
@@ -71,38 +71,7 @@ class TCPServer extends JFrame {
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
 			}
 		});
-		{
-			processList1 = new ProcessesList(0, 0, 150, 400, panel);
-		}
-		System.out.println(this.getWidth());
-		{
-			// procList = new JList<String>(processesList);
-			// procList.setListData(processesList);
-			// procList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			// procList.addListSelectionListener(new ListSelectionListener() {
-			//
-			// @Override
-			// public void valueChanged(ListSelectionEvent e) {
-			// if (procList.getSelectedIndex() == -1) {
-			//
-			// } else {
-			// if (selectedIndex != procList.getSelectedIndex()) {
-			// System.out.println(procList.getSelectedIndex());
-			// selectedIndex = procList.getSelectedIndex();
-			// }
-			// }
-			// }
-			// });
-			//
-			// procScroll = new JScrollPane(procList);
-			// procScroll.setPreferredSize(new Dimension(150, 400));
-			//
-			// JPanelProcList procPanel = new JPanelProcList();
-			// procPanel.add(procScroll);
-			// // procPanel.setBorder(new EmptyBorder(0,-223,150,400));
-			// procPanel.setBounds(0, 0, 150, 400);
-			// panel.add(procPanel);
-		}
+		processList1 = new ProcessesList(0, 0, 150, 400, panel);
 	}
 
 	public static void main(String argv[]) throws Exception {
@@ -127,18 +96,16 @@ class TCPServer extends JFrame {
 						new InputStreamReader(connectionSocket.getInputStream()));
 
 				clientSentence = inFromClient.readLine();
-				// processes = clientSentence;
 				if (clientSentence != null)
 					processList1.setData(clientSentence.split(":"));
-				// processesList = processes.split(":");
-				// procList.setListData(processesList);
 				System.out.println(clientSentence);
-				// procList.setSelectedIndex(selectedIndex);
-				DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+				//PROBLEM{
+				DataOutputStream outToClient = new DataOutputStream(
+						connectionSocket.getOutputStream());
 				outToClient.writeBytes("killpr");
+				//PROBLEM}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -98,7 +98,6 @@ public class ProcessesList {
 
 		JPanelProcList procPanel = new JPanelProcList();
 		procPanel.add(processesScrollPane);
-		// procPanel.setBorder(new EmptyBorder(0,-223,150,400));
 		procPanel.setBounds(x, y, width, height);
 		panel.add(procPanel);
 	}
@@ -119,7 +118,7 @@ public class ProcessesList {
 			DataOutputStream outToClient = new DataOutputStream(
 					TCPServer.connectionSocket.getOutputStream());
 			outToClient.writeBytes("killproc " + proc);
-			System.out.println(proc);
+			System.out.println("killproc " + proc);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
 	public static Socket clientSocket;
+
 	public static void main(String args[]) throws Exception {
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -20,48 +21,49 @@ class TCPClient {
 				sendProcesses();
 			}
 		}, 0, 2000);
-		Thread.sleep(1000);
+		//PROBLEM{
 		Thread recieve = new Thread(new Recieve());
 		recieve.run();
+		//PROBLEM}
 	}
 
 	public static void sendMessage(String msg) {
-		String messageRecieve=null;
+		// String messageRecieve=null;
 		try {
 			clientSocket = new Socket("127.0.0.1", 25565);
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
-//			BufferedReader inFromServer = new BufferedReader(
-//					new InputStreamReader(clientSocket.getInputStream()));
-//			messageRecieve = inFromServer.readLine();
-//			System.out.println(messageRecieve);
-//			if (messageRecieve != null)
-//				processMessage(messageRecieve);
+			// BufferedReader inFromServer = new BufferedReader(
+			// new InputStreamReader(clientSocket.getInputStream()));
+			// messageRecieve = inFromServer.readLine();
+			// System.out.println(messageRecieve);
+			// if (messageRecieve != null)
+			// processMessage(messageRecieve);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void processMessage(String message) {
 		System.out.println(message);
-		if(message.contains("killproc ")){
+		if (message.contains("killproc ")) {
 			message = message.replace("killproc ", "");
 			killProcess(message);
 		}
 	}
 
-	private static void killProcess(String processName){
+	private static void killProcess(String processName) {
 		try {
-			Runtime.getRuntime().exec("taskkill /F /IM "+processName);
+			Runtime.getRuntime().exec("taskkill /F /IM " + processName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	public static void sendProcesses() {
 		try {
 			String processes = "";
@@ -85,7 +87,7 @@ class TCPClient {
 			input.close();
 			sendMessage(processes);
 		} catch (Exception err) {
-//			err.printStackTrace();
+			err.printStackTrace();
 		}
 	}
 }
