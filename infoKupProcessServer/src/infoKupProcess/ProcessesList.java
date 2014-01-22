@@ -6,12 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Arrays;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -31,7 +29,7 @@ public class ProcessesList {
 	String currentSelectedProcess;
 	String[] processArray = new String[] { "not connected" };
 
-	public ProcessesList(int x, int y, int width, int height, JPanel panel) {
+	public ProcessesList(int x, int y, int width, int height, JPanel panelMain, String clientName) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -48,7 +46,8 @@ public class ProcessesList {
 			}
 		});
 		popup.add(menuItem);
-
+		JLabel name = new JLabel(clientName, JLabel.LEFT);
+		
 		processesListJList = new JList<String>(processArray);
 		processesListJList.setListData(processArray);
 		processesListJList
@@ -94,14 +93,18 @@ public class ProcessesList {
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
-
+		
 		processesScrollPane = new JScrollPane(processesListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 
 		JPanelProcList procPanel = new JPanelProcList();
+		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.PAGE_AXIS));
+		procPanel.add(name);
 		procPanel.add(processesScrollPane);
-		procPanel.setBounds(x, y, width, height);
-		panel.add(procPanel);
+		procPanel.setPreferredSize(new Dimension(width, height));
+		procPanel.setBounds(x+2+TCPServer.clients.size()*150, y+5, width, height);
+		panelMain.add(procPanel);
+		panelMain.revalidate();
 	}
 
 	public void setData(String[] processArray) {
@@ -115,18 +118,6 @@ public class ProcessesList {
 	}
 
 	public void killProc(String proc) {
-		// PROBLEM
-		// try {
-		// ServerSocket inSocket = new ServerSocket(25565);
-		// Socket connectionSocket = inSocket.accept();
-		// DataOutputStream outToClient = new DataOutputStream(
-		// connectionSocket.getOutputStream());
-		// outToClient.writeBytes("killproc " + proc);
-		// System.out.println("killproc " + proc);
-		// connectionSocket.close();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 		TCPServer.kill = true;
 		TCPServer.killprocess = proc;
 	}

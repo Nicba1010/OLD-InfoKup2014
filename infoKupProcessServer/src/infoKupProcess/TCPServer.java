@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,9 +28,14 @@ class TCPServer extends JFrame {
 	private static boolean running = false;
 	static ProcessesList processList1;
 	public JFrame mainFrame = this;
+	public static int height;
+	public static int width;
 	public static Socket connectionSocket;
 	public static boolean kill = false;
 	public static String killprocess;
+	private static String[] nameAndProcesses = new String[2];
+	public static ArrayList<String> clients = new ArrayList<String>();
+	static JPanel panel;
 
 	public TCPServer() {
 		initUI();
@@ -38,7 +44,7 @@ class TCPServer extends JFrame {
 	public void initUI() {
 		setTitle("TCPServer");
 
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(panel);
 		panel.setLayout(null);
@@ -53,27 +59,25 @@ class TCPServer extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent event) {
 					running = false;
-					try {
-						inSocket.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
 					System.exit(0);
 				}
 			});
 			panel.add(quitButton);
 		}
-
+		height = mainFrame.getHeight();
+		width = mainFrame.getWidth();
 		this.addWindowStateListener(new WindowStateListener() {
 
 			@Override
 			public void windowStateChanged(WindowEvent e) {
 				System.out.println(e.getNewState());
+				height = mainFrame.getHeight();
+				width = mainFrame.getWidth();
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
 			}
 		});
-		processList1 = new ProcessesList(0, 0, 150, 400, panel);
+
 	}
 
 	public static void main(String argv[]) throws Exception {
@@ -98,9 +102,21 @@ class TCPServer extends JFrame {
 						new InputStreamReader(connectionSocket.getInputStream()));
 
 				clientSentence = inFromClient.readLine();
-				if (clientSentence != null)
-					processList1.setData(clientSentence.split(":"));
-				System.out.println(clientSentence);
+				if (clientSentence != null) {
+					nameAndProcesses = clientSentence.split(";");
+					System.out.println(nameAndProcesses[0]);
+
+					if (clients.contains(nameAndProcesses[0]))
+						System.out.println("Yes");
+					else {
+						processList1 = new ProcessesList(0, 0, 150, 400, panel,
+								nameAndProcesses[0]);
+						clients.add(nameAndProcesses[0]);
+					}
+
+					processList1.setData(nameAndProcesses[1].split(":"));
+					System.out.println(clientSentence);
+				}
 				if (kill) {
 					kill = false;
 					DataOutputStream outToClient = new DataOutputStream(

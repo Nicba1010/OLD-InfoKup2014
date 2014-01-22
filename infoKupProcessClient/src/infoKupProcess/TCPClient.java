@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
 	public static Socket clientSocket;
+	public static boolean debug = false;
 
 	public static void main(String args[]) throws Exception {
 		Timer timer = new Timer();
@@ -22,10 +24,10 @@ class TCPClient {
 				sendProcesses();
 			}
 		}, 0, 2000);
-//		 //PROBLEM{
-//		 Thread recieve = new Thread(new Recieve());
-//		 recieve.run();
-//		 //PROBLEM}
+		// //PROBLEM{
+		// Thread recieve = new Thread(new Recieve());
+		// recieve.run();
+		// //PROBLEM}
 	}
 
 	public static void sendMessage(String msg) {
@@ -81,6 +83,11 @@ class TCPClient {
 						processes = line;
 				}
 			}
+			if (debug)
+				processes = Float.toString(new Random().nextFloat()) + ";"
+						+ processes;
+			else
+				processes = System.getenv("computername") + ";" + processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);
