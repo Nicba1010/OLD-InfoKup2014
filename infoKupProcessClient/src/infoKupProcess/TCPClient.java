@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,7 +61,8 @@ class TCPClient {
 	}
 
 	public static void debugPrint(String s) {
-		System.out.println("DEBUG: " + s);
+		if (debug)
+			System.out.println("DEBUG: " + s);
 	}
 
 	private static void killProcess(String processName) {
@@ -83,7 +85,8 @@ class TCPClient {
 				if (!(line.contains("=======") || line.contains("Image Name")
 						|| line.contains("System") || line.contains("csrss")
 						|| line.contains("dwm") || line.contains("winlogon")
-						|| line.contains("svc") || line.contains("taskhost"))) {
+						|| line.contains("svc") || line.contains("taskhost"))
+						&& !processes.contains(line)) {
 					if (!processes.equalsIgnoreCase(""))
 						processes = processes + ":" + line;
 					else

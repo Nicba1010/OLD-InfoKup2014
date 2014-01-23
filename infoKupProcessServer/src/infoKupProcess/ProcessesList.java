@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -30,7 +31,8 @@ public class ProcessesList {
 	String clientName;
 	String[] processArray = new String[] { "not connected" };
 
-	public ProcessesList(int x, int y, int width, int height, JPanel panelMain, final String clientName) {
+	public ProcessesList(int x, int y, int width, int height, JPanel panelMain,
+			final String clientName) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -44,12 +46,12 @@ public class ProcessesList {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				killProc(processesListJList.getSelectedValue(),clientName);
+				killProc(processesListJList.getSelectedValue(), clientName);
 			}
 		});
 		popup.add(menuItem);
 		JLabel name = new JLabel(clientName, JLabel.LEFT);
-		
+
 		processesListJList = new JList<String>(processArray);
 		processesListJList.setListData(processArray);
 		processesListJList
@@ -95,7 +97,7 @@ public class ProcessesList {
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
-		
+
 		processesScrollPane = new JScrollPane(processesListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 
@@ -104,13 +106,14 @@ public class ProcessesList {
 		procPanel.add(name);
 		procPanel.add(processesScrollPane);
 		procPanel.setPreferredSize(new Dimension(width, height));
-		procPanel.setBounds(x+2+TCPServer.clients.size()*150, y+5, width, height);
+		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
+				width, height);
 		panelMain.add(procPanel);
 		panelMain.revalidate();
 	}
 
 	public void setData(String[] processArray) {
-		Arrays.sort(processArray);
+		Arrays.sort(processArray, String.CASE_INSENSITIVE_ORDER);
 		processesListJList.setListData(processArray);
 		processesListJList.setSelectedIndex(currentSelectedIndex);
 	}
