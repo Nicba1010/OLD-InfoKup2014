@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
@@ -15,25 +14,27 @@ import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
 	public static Socket clientSocket;
-	public static boolean debug = false;
+	public static boolean debug = false, rand = false;
+	static String ip;
+	static int sock;
 
 	public static void main(String args[]) throws Exception {
+		if (!debug) {
+			ip = args[0];
+			sock = Integer.parseInt(args[1]);
+		}
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				sendProcesses();
 			}
 		}, 0, 2000);
-		// //PROBLEM{
-		// Thread recieve = new Thread(new Recieve());
-		// recieve.run();
-		// //PROBLEM}
 	}
 
 	public static void sendMessage(String msg) {
 		String messageRecieve = null;
 		try {
-			clientSocket = new Socket("127.0.0.1", 25565);
+			clientSocket = new Socket(ip, sock);
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
@@ -49,11 +50,17 @@ class TCPClient {
 	}
 
 	private static void processMessage(String message) {
-		System.out.println(message);
-		if (message.contains("killproc ")) {
-			message = message.replace("killproc ", "");
+		debugPrint(message);
+		if (message.contains(" killproc ")
+				&& message.contains(System.getenv("computername"))) {
+			message = message.replace(System.getenv("computername")
+					+ " killproc ", "");
 			killProcess(message);
 		}
+	}
+
+	public static void debugPrint(String s) {
+		System.out.println("DEBUG: " + s);
 	}
 
 	private static void killProcess(String processName) {

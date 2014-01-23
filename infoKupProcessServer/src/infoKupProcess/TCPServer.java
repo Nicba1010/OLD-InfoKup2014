@@ -6,7 +6,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -31,11 +30,12 @@ class TCPServer extends JFrame {
 	public static int height;
 	public static int width;
 	public static Socket connectionSocket;
-	public static boolean kill = false;
-	public static String killprocess;
 	private static String[] nameAndProcesses = new String[2];
 	public static ArrayList<String> clients = new ArrayList<String>();
+	public static ArrayList<String> killBuffer = new ArrayList<String>();
+	public static ArrayList<String> clientKillBuffer = new ArrayList<String>();
 	static JPanel panel;
+	public static int sock;
 
 	public TCPServer() {
 		initUI();
@@ -81,6 +81,7 @@ class TCPServer extends JFrame {
 	}
 
 	public static void main(String argv[]) throws Exception {
+		sock = Integer.parseInt(argv[0]);
 		running = true;
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -95,7 +96,7 @@ class TCPServer extends JFrame {
 	public static void processProcesses() {
 		String clientSentence;
 		try {
-			inSocket = new ServerSocket(25565);
+			inSocket = new ServerSocket(sock);
 			while (running) {
 				connectionSocket = inSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
@@ -104,24 +105,36 @@ class TCPServer extends JFrame {
 				clientSentence = inFromClient.readLine();
 				if (clientSentence != null) {
 					nameAndProcesses = clientSentence.split(";");
-					System.out.println(nameAndProcesses[0]);
 
-					if (clients.contains(nameAndProcesses[0]))
-						System.out.println("Yes");
-					else {
+					if (clients.contains(nameAndProcesses[0])) {
+					} else {
 						processList1 = new ProcessesList(0, 0, 150, 400, panel,
 								nameAndProcesses[0]);
 						clients.add(nameAndProcesses[0]);
 					}
 
 					processList1.setData(nameAndProcesses[1].split(":"));
-					System.out.println(clientSentence);
 				}
-				if (kill) {
-					kill = false;
-					DataOutputStream outToClient = new DataOutputStream(
-							connectionSocket.getOutputStream());
-					outToClient.writeBytes("killproc " + killprocess + "\n");
+				if (killBuffer.size() > 0) {
+
+					for (int i = 0; i < killBuffer.size(); i++) {
+						if (clientKillBuffer.get(i).equalsIgnoreCase(
+								nameAndProcesses[0])) {
+							System.out.println("OK");
+							DataOutputStream outToClient = new DataOutputStream(
+									connectionSocket.getOutputStream());
+							outToClient.writeBytes(clientKillBuffer.get(i)
+									+ " killproc " + killBuffer.get(i) + "\n");
+							clientKillBuffer.remove(i);
+							killBuffer.remove(i);
+							break;
+						} else {
+						}
+					}
+
+					// DataOutputStream outToClient = new DataOutputStream(
+					// connectionSocket.getOutputStream());
+					// outToClient.writeBytes("killproc " + killprocess + "\n");
 				} else {
 					DataOutputStream outToClient = new DataOutputStream(
 							connectionSocket.getOutputStream());

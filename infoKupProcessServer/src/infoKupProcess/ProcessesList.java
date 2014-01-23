@@ -27,14 +27,16 @@ public class ProcessesList {
 	JScrollPane processesScrollPane;
 	int currentSelectedIndex = -1;
 	String currentSelectedProcess;
+	String clientName;
 	String[] processArray = new String[] { "not connected" };
 
-	public ProcessesList(int x, int y, int width, int height, JPanel panelMain, String clientName) {
+	public ProcessesList(int x, int y, int width, int height, JPanel panelMain, final String clientName) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.clientName = clientName;
 
 		final JPopupMenu popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Ugasi proces");
@@ -42,7 +44,7 @@ public class ProcessesList {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				killProc(processesListJList.getSelectedValue());
+				killProc(processesListJList.getSelectedValue(),clientName);
 			}
 		});
 		popup.add(menuItem);
@@ -117,8 +119,8 @@ public class ProcessesList {
 		return processesListJList.locationToIndex(point);
 	}
 
-	public void killProc(String proc) {
-		TCPServer.kill = true;
-		TCPServer.killprocess = proc;
+	public void killProc(String proc, String clientName) {
+		TCPServer.killBuffer.add(proc);
+		TCPServer.clientKillBuffer.add(clientName);
 	}
 }
