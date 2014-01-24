@@ -96,7 +96,7 @@ class TCPClient {
 	public static void sendProcesses() {
 		try {
 			String processes = "";
-			String line;
+			String line = "";
 			Process proc = Runtime.getRuntime().exec("tasklist");
 			BufferedReader input = new BufferedReader(new InputStreamReader(
 					proc.getInputStream()));
