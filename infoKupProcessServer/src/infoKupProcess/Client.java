@@ -1,5 +1,6 @@
 package infoKupProcess;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -7,31 +8,36 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
-import java.util.Collections;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class ProcessesList {
-	int x, y, width, height;
-	JPanel panel;
-	JList<String> processesListJList;
-	JScrollPane processesScrollPane;
-	int currentSelectedIndex = -1;
-	String currentSelectedProcess;
-	String clientName;
+public class Client {
+	int x, y, width, height, currentSelectedIndex = -1;
+	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
 
-	public ProcessesList(int x, int y, int width, int height, JPanel panelMain,
+	JButton sendCommand;
+	JLabel name;
+	JList<String> processesListJList;
+	JPanel panel, cmdPanel;
+	JPanelProcList procPanel;
+	JPopupMenu popup;
+	JScrollPane processesScrollPane;
+
+	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName) {
 		super();
 		this.x = x;
@@ -40,7 +46,19 @@ public class ProcessesList {
 		this.height = height;
 		this.clientName = clientName;
 
-		final JPopupMenu popup = new JPopupMenu();
+		{
+			initPopups();
+			initProcessList();
+			initButtons();
+			initProcPanel();
+		}
+
+		panelMain.add(procPanel);
+		panelMain.revalidate();
+	}
+
+	private void initPopups() {
+		popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Ugasi proces");
 		menuItem.addActionListener(new ActionListener() {
 
@@ -50,8 +68,10 @@ public class ProcessesList {
 			}
 		});
 		popup.add(menuItem);
-		JLabel name = new JLabel(clientName, JLabel.LEFT);
+		name = new JLabel(clientName, JLabel.LEFT);
+	}
 
+	private void initProcessList() {
 		processesListJList = new JList<String>(processArray);
 		processesListJList.setListData(processArray);
 		processesListJList
@@ -97,23 +117,42 @@ public class ProcessesList {
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		});
+	}
 
+	private void initButtons() {
+		sendCommand = new JButton("CMD");
+		sendCommand.setHorizontalTextPosition(SwingConstants.CENTER);
+
+		sendCommand.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				String command = JOptionPane.showInputDialog("Unesi komandu!");
+				command(command, clientName);
+			}
+		});
+
+		cmdPanel = new JPanel(new BorderLayout());
+		cmdPanel.add(sendCommand);
+	}
+
+	private void initProcPanel() {
 		processesScrollPane = new JScrollPane(processesListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 
-		JPanelProcList procPanel = new JPanelProcList();
+		procPanel = new JPanelProcList();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.PAGE_AXIS));
 		procPanel.add(name);
 		procPanel.add(processesScrollPane);
+
+		procPanel.add(cmdPanel);
+
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
 				width, height);
-		panelMain.add(procPanel);
-		panelMain.revalidate();
 	}
 
 	public void setData(String[] processArray) {
-		Arrays.sort(processArray, String.CASE_INSENSITIVE_ORDER);
+		Arrays.sort(processArray);
 		processesListJList.setListData(processArray);
 		processesListJList.setSelectedIndex(currentSelectedIndex);
 	}
@@ -125,5 +164,10 @@ public class ProcessesList {
 	public void killProc(String proc, String clientName) {
 		TCPServer.killBuffer.add(proc);
 		TCPServer.clientKillBuffer.add(clientName);
+	}
+
+	public void command(String command, String clientName) {
+		TCPServer.commandBuffer.add(command);
+		TCPServer.clientCommandBuffer.add(clientName);
 	}
 }

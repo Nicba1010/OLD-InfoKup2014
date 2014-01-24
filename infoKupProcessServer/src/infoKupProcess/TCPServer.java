@@ -25,17 +25,19 @@ class TCPServer extends JFrame {
 	public static ServerSocket inSocket;
 	static int selectedIndex;
 	private static boolean running = false;
-	static ProcessesList processList1;
+	static Client processList1;
 	public JFrame mainFrame = this;
-	public static int height;
-	public static int width;
+	public static int height, width;
 	public static Socket connectionSocket;
 	private static String[] nameAndProcesses = new String[2];
-	public static ArrayList<String> clients = new ArrayList<String>();
-	public static ArrayList<String> killBuffer = new ArrayList<String>();
-	public static ArrayList<String> clientKillBuffer = new ArrayList<String>();
+	public static ArrayList<String> clients = new ArrayList<String>(),
+			killBuffer = new ArrayList<String>(),
+			clientKillBuffer = new ArrayList<String>(),
+			commandBuffer = new ArrayList<String>(),
+			clientCommandBuffer = new ArrayList<String>();
 	static JPanel panel;
 	public static int sock;
+	public static boolean defaultSettings = false;
 
 	public TCPServer() {
 		initUI();
@@ -80,8 +82,12 @@ class TCPServer extends JFrame {
 
 	}
 
-	public static void main(String argv[]) throws Exception {
-		sock = Integer.parseInt(argv[0]);
+	public static void main(String args[]) throws Exception {
+		if (args.length == 1 && args[0].toString() == "-defaultip") {
+			defaultSettings = true;
+		} else {
+			sock = Integer.parseInt(args[0]);
+		}
 		running = true;
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -90,10 +96,10 @@ class TCPServer extends JFrame {
 				ex.setVisible(true);
 			}
 		});
-		processProcesses();
+		start();
 	}
 
-	public static void processProcesses() {
+	public static void start() {
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(sock);
@@ -108,43 +114,61 @@ class TCPServer extends JFrame {
 
 					if (clients.contains(nameAndProcesses[0])) {
 					} else {
-						processList1 = new ProcessesList(0, 0, 150, 400, panel,
+						processList1 = new Client(0, 0, 150, 400, panel,
 								nameAndProcesses[0]);
 						clients.add(nameAndProcesses[0]);
 					}
 
 					processList1.setData(nameAndProcesses[1].split(":"));
+					sendResponse();
+					connectionSocket.close();
 				}
-				if (killBuffer.size() > 0) {
-
-					for (int i = 0; i < killBuffer.size(); i++) {
-						if (clientKillBuffer.get(i).equalsIgnoreCase(
-								nameAndProcesses[0])) {
-							System.out.println("OK");
-							DataOutputStream outToClient = new DataOutputStream(
-									connectionSocket.getOutputStream());
-							outToClient.writeBytes(clientKillBuffer.get(i)
-									+ " killproc " + killBuffer.get(i) + "\n");
-							clientKillBuffer.remove(i);
-							killBuffer.remove(i);
-							break;
-						} else {
-						}
-					}
-
-					// DataOutputStream outToClient = new DataOutputStream(
-					// connectionSocket.getOutputStream());
-					// outToClient.writeBytes("killproc " + killprocess + "\n");
-				} else {
-					DataOutputStream outToClient = new DataOutputStream(
-							connectionSocket.getOutputStream());
-					outToClient.writeBytes("OK" + "\n");
-				}
-				connectionSocket.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	private static void sendResponse() {
+		try {
+			if (killBuffer.size() > 0) {
+
+				for (int i = 0; i < killBuffer.size(); i++) {
+					if (clientKillBuffer.get(i).equalsIgnoreCase(
+							nameAndProcesses[0])) {
+						System.out.println("OK");
+						DataOutputStream outToClient = new DataOutputStream(
+								connectionSocket.getOutputStream());
+						outToClient.writeBytes(clientKillBuffer.get(i)
+								+ " killproc " + killBuffer.get(i) + "\n");
+						clientKillBuffer.remove(i);
+						killBuffer.remove(i);
+						break;
+					} else {
+					}
+				}
+			} else if (commandBuffer.size() > 0) {
+				for (int i = 0; i < commandBuffer.size(); i++) {
+					if (clientCommandBuffer.get(i).equalsIgnoreCase(
+							nameAndProcesses[0])) {
+						System.out.println("OK");
+						DataOutputStream outToClient = new DataOutputStream(
+								connectionSocket.getOutputStream());
+						outToClient.writeBytes(clientCommandBuffer.get(i)
+								+ " command " + commandBuffer.get(i) + "\n");
+						clientCommandBuffer.remove(i);
+						commandBuffer.remove(i);
+						break;
+					} else {
+					}
+				}
+			} else {
+				DataOutputStream outToClient = new DataOutputStream(
+						connectionSocket.getOutputStream());
+				outToClient.writeBytes("OK" + "\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
