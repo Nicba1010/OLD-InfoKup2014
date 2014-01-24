@@ -30,11 +30,10 @@ class TCPServer extends JFrame {
 	public static int height, width;
 	public static Socket connectionSocket;
 	private static String[] nameAndProcesses = new String[2];
-	public static ArrayList<String> clients = new ArrayList<String>(),
-			killBuffer = new ArrayList<String>(),
-			clientKillBuffer = new ArrayList<String>(),
-			commandBuffer = new ArrayList<String>(),
-			clientCommandBuffer = new ArrayList<String>();
+
+	public static ArrayList<String> clients = new ArrayList<String>();
+	public static Buffer mainBuffer = new Buffer();
+
 	static JPanel panel;
 	public static int sock;
 	public static boolean defaultSettings = false;
@@ -131,35 +130,23 @@ class TCPServer extends JFrame {
 
 	private static void sendResponse() {
 		try {
-			if (killBuffer.size() > 0) {
-
-				for (int i = 0; i < killBuffer.size(); i++) {
-					if (clientKillBuffer.get(i).equalsIgnoreCase(
-							nameAndProcesses[0])) {
+			if (mainBuffer.len() > 0) {
+				for (int i = 0; i < mainBuffer.len(); i++) {
+					String arg0 = mainBuffer.get(i)[0];
+					String arg1 = mainBuffer.get(i)[1];
+					String clientName = mainBuffer.get(i)[2];
+					if (clientName.equalsIgnoreCase(nameAndProcesses[0])) {
+						System.out
+								.println(arg0 + ":" + arg1 + ":" + clientName);
 						System.out.println("OK");
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
-						outToClient.writeBytes(clientKillBuffer.get(i)
-								+ " killproc " + killBuffer.get(i) + "\n");
-						clientKillBuffer.remove(i);
-						killBuffer.remove(i);
+						outToClient.writeBytes(clientName + " " + arg0 + " "
+								+ arg1 + "\n");
+						System.out.println(clientName + " " + arg0 + " " + arg1
+								+ "\n");
+						mainBuffer.remove(i);
 						break;
-					} else {
-					}
-				}
-			} else if (commandBuffer.size() > 0) {
-				for (int i = 0; i < commandBuffer.size(); i++) {
-					if (clientCommandBuffer.get(i).equalsIgnoreCase(
-							nameAndProcesses[0])) {
-						System.out.println("OK");
-						DataOutputStream outToClient = new DataOutputStream(
-								connectionSocket.getOutputStream());
-						outToClient.writeBytes(clientCommandBuffer.get(i)
-								+ " command " + commandBuffer.get(i) + "\n");
-						clientCommandBuffer.remove(i);
-						commandBuffer.remove(i);
-						break;
-					} else {
 					}
 				}
 			} else {

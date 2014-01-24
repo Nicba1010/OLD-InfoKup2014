@@ -29,10 +29,10 @@ public class Client {
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
 
-	JButton sendCommand;
+	JButton sendCommandButton, popupButton;
 	JLabel name;
 	JList<String> processesListJList;
-	JPanel panel, cmdPanel;
+	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel;
 	JPanelProcList procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
@@ -64,7 +64,7 @@ public class Client {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				killProc(processesListJList.getSelectedValue(), clientName);
+				addToBuffer("killproc", processesListJList.getSelectedValue());
 			}
 		});
 		popup.add(menuItem);
@@ -120,19 +120,38 @@ public class Client {
 	}
 
 	private void initButtons() {
-		sendCommand = new JButton("CMD");
-		sendCommand.setHorizontalTextPosition(SwingConstants.CENTER);
+		sendCommandButton = new JButton("CMD");
+		sendCommandButton.setHorizontalTextPosition(SwingConstants.CENTER);
 
-		sendCommand.addActionListener(new ActionListener() {
+		sendCommandButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				String command = JOptionPane.showInputDialog("Unesi komandu!");
-				command(command, clientName);
+				addToBuffer("command", command);
 			}
 		});
 
-		cmdPanel = new JPanel(new BorderLayout());
-		cmdPanel.add(sendCommand);
+		cmdButtonPanel = new JPanel(new BorderLayout());
+		cmdButtonPanel.add(sendCommandButton, BorderLayout.NORTH);
+		popupButton = new JButton("Popup");
+		popupButton.setHorizontalTextPosition(SwingConstants.CENTER);
+
+		popupButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				String popupText = JOptionPane
+						.showInputDialog("Unesi tekst za popup!");
+				addToBuffer("popup", popupText);
+			}
+		});
+
+		popupButtonPanel = new JPanel(new BorderLayout());
+		popupButtonPanel.add(popupButton, BorderLayout.NORTH);
+		mainButtonPanel = new JPanel();
+		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
+				BoxLayout.X_AXIS));
+		mainButtonPanel.add(cmdButtonPanel);
+		mainButtonPanel.add(popupButtonPanel);
 	}
 
 	private void initProcPanel() {
@@ -140,11 +159,10 @@ public class Client {
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 
 		procPanel = new JPanelProcList();
-		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.PAGE_AXIS));
+		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
 		procPanel.add(name);
 		procPanel.add(processesScrollPane);
-
-		procPanel.add(cmdPanel);
+		procPanel.add(mainButtonPanel);
 
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
@@ -161,13 +179,7 @@ public class Client {
 		return processesListJList.locationToIndex(point);
 	}
 
-	public void killProc(String proc, String clientName) {
-		TCPServer.killBuffer.add(proc);
-		TCPServer.clientKillBuffer.add(clientName);
-	}
-
-	public void command(String command, String clientName) {
-		TCPServer.commandBuffer.add(command);
-		TCPServer.clientCommandBuffer.add(clientName);
+	public void addToBuffer(String arg0, String arg1) {
+		TCPServer.mainBuffer.addToBuffer(arg0, arg1, this.clientName);
 	}
 }
