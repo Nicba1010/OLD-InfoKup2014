@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 
 import javax.swing.BoxLayout;
@@ -21,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicSplitPaneUI.KeyboardDownRightHandler;
 
 public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
@@ -100,6 +104,52 @@ public class Client {
 						}
 					}
 				});
+		processesListJList.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getExtendedKeyCode() == 127)
+					addToBuffer("killproc",
+							processesListJList.getSelectedValue());
+			}
+		});
+		processesListJList.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+
+			}
+		});
 		processesListJList.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
@@ -134,7 +184,7 @@ public class Client {
 	}
 
 	private void initImage() {
-		
+
 	}
 
 	private void initProcPanel() {
