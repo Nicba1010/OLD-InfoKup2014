@@ -14,12 +14,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -32,7 +30,7 @@ public class Client {
 	JButton sendCommandButton, popupButton;
 	JLabel name;
 	JList<String> processesListJList;
-	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel;
+	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel, namePanel;
 	JPanelProcList procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
@@ -68,7 +66,10 @@ public class Client {
 			}
 		});
 		popup.add(menuItem);
-		name = new JLabel(clientName, JLabel.LEFT);
+		name = new JLabel(clientName, JLabel.CENTER);
+		namePanel = new JPanel();
+		namePanel.setLayout(new BorderLayout());
+		namePanel.add(name);
 	}
 
 	private void initProcessList() {
@@ -119,39 +120,16 @@ public class Client {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	private void initButtons() {
-		sendCommandButton = new JButton("CMD");
-		sendCommandButton.setHorizontalTextPosition(SwingConstants.CENTER);
-
-		sendCommandButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				String command = JOptionPane.showInputDialog("Unesi komandu!");
-				addToBuffer("command", command);
-			}
-		});
-
-		cmdButtonPanel = new JPanel(new BorderLayout());
-		cmdButtonPanel.add(sendCommandButton, BorderLayout.NORTH);
-		popupButton = new JButton("Popup");
-		popupButton.setHorizontalTextPosition(SwingConstants.CENTER);
-
-		popupButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				String popupText = JOptionPane
-						.showInputDialog("Unesi tekst za popup!");
-				addToBuffer("popup", popupText);
-			}
-		});
-
-		popupButtonPanel = new JPanel(new BorderLayout());
-		popupButtonPanel.add(popupButton, BorderLayout.NORTH);
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.X_AXIS));
-		mainButtonPanel.add(cmdButtonPanel);
-		mainButtonPanel.add(popupButtonPanel);
+
+		TextFieldPopupButton commandButton = new TextFieldPopupButton("CMND",
+				"command", clientName, mainButtonPanel, "Unesi komandu!");
+		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
+				"popup", clientName, mainButtonPanel, "Unesi tekst za popup!");
 	}
 
 	private void initProcPanel() {
@@ -160,13 +138,12 @@ public class Client {
 
 		procPanel = new JPanelProcList();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
-		procPanel.add(name);
+		procPanel.add(namePanel);
 		procPanel.add(processesScrollPane);
 		procPanel.add(mainButtonPanel);
 
 		procPanel.setPreferredSize(new Dimension(width, height));
-		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
-				width, height);
+		procPanel.setMaximumSize(procPanel.getPreferredSize());
 	}
 
 	public void setData(String[] processArray) {
@@ -175,11 +152,21 @@ public class Client {
 		processesListJList.setSelectedIndex(currentSelectedIndex);
 	}
 
+	public void setLocation(int x, int y) {
+		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
+				width, height);
+		procPanel.setPreferredSize(new Dimension(width, height));
+	}
+
 	private int getRow(Point point) {
 		return processesListJList.locationToIndex(point);
 	}
 
 	public void addToBuffer(String arg0, String arg1) {
 		TCPServer.mainBuffer.addToBuffer(arg0, arg1, this.clientName);
+	}
+
+	public String getName() {
+		return clientName;
 	}
 }

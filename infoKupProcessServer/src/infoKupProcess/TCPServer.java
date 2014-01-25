@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,7 +26,9 @@ class TCPServer extends JFrame {
 	public static ServerSocket inSocket;
 	static int selectedIndex;
 	private static boolean running = false;
-	static Client processList1;
+
+	public static ArrayList<Client> processLists = new ArrayList<Client>();
+
 	public JFrame mainFrame = this;
 	public static int height, width;
 	public static Socket connectionSocket;
@@ -34,10 +37,11 @@ class TCPServer extends JFrame {
 	public static ArrayList<String> clients = new ArrayList<String>();
 	public static Buffer mainBuffer = new Buffer();
 
-	static JPanel panel;
+	static JPanel panel, boxPCinfoPanel;
 	public static int sock;
 	public static boolean defaultSettings = false;
-
+	JScrollPane scrollablePCinfo;
+	
 	public TCPServer() {
 		initUI();
 	}
@@ -46,9 +50,12 @@ class TCPServer extends JFrame {
 		setTitle("TCPServer");
 
 		panel = new JPanel();
+		boxPCinfoPanel = new JPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(panel);
 		panel.setLayout(null);
+		boxPCinfoPanel
+				.setLayout(new BoxLayout(boxPCinfoPanel, BoxLayout.X_AXIS));
 		setSize(screenWidth, screenHeight);
 		setLocationRelativeTo(null);
 		{
@@ -76,8 +83,15 @@ class TCPServer extends JFrame {
 				width = mainFrame.getWidth();
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
+				scrollablePCinfo.setBounds(0, 0, width-15, 420);
 			}
 		});
+		scrollablePCinfo = new JScrollPane(boxPCinfoPanel);
+		scrollablePCinfo.setBounds(0, 0, width-15, 420);
+		scrollablePCinfo
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+		panel.add(scrollablePCinfo);
 
 	}
 
@@ -113,12 +127,17 @@ class TCPServer extends JFrame {
 
 					if (clients.contains(nameAndProcesses[0])) {
 					} else {
-						processList1 = new Client(0, 0, 150, 400, panel,
-								nameAndProcesses[0]);
+						processLists.add(new Client(0, 0, 150, 400,
+								boxPCinfoPanel, nameAndProcesses[0]));
 						clients.add(nameAndProcesses[0]);
 					}
 
-					processList1.setData(nameAndProcesses[1].split(":"));
+					for (Client client : processLists) {
+						if (client.getName().equalsIgnoreCase(
+								nameAndProcesses[0])) {
+							client.setData(nameAndProcesses[1].split(":"));
+						}
+					}
 					sendResponse();
 					connectionSocket.close();
 				}
