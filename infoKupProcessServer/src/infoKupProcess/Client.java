@@ -48,6 +48,7 @@ public class Client {
 			initPopups();
 			initProcessList();
 			initButtons();
+			initImage();
 			initProcPanel();
 		}
 
@@ -130,6 +131,10 @@ public class Client {
 				"command", clientName, mainButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
 				"popup", clientName, mainButtonPanel, "Unesi tekst za popup!");
+	}
+
+	private void initImage() {
+		
 	}
 
 	private void initProcPanel() {
