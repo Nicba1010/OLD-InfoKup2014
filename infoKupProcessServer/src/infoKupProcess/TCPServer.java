@@ -1,9 +1,13 @@
 package infoKupProcess;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -11,9 +15,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -41,7 +48,8 @@ class TCPServer extends JFrame {
 	public static int sock;
 	public static boolean defaultSettings = false;
 	JScrollPane scrollablePCinfo;
-	
+	static JFrame frame;
+
 	public TCPServer() {
 		initUI();
 	}
@@ -83,16 +91,49 @@ class TCPServer extends JFrame {
 				width = mainFrame.getWidth();
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
-				scrollablePCinfo.setBounds(0, 0, width-15, 420);
+				scrollablePCinfo.setBounds(0, 0, width - 15, 420);
 			}
 		});
 		scrollablePCinfo = new JScrollPane(boxPCinfoPanel);
-		scrollablePCinfo.setBounds(0, 0, width-15, 420);
+		scrollablePCinfo.setBounds(0, 0, width - 15, 420);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		panel.add(scrollablePCinfo);
+		setVisible(false);
 
+	}
+
+	private static void createAndShowGui() throws Exception {
+		Image image = ImageIO.read(TCPServer.class.getResource("images/splash.png"));
+		BufferedImage img = (BufferedImage) image;
+
+		JPanel bgPanel = new JPanel(new BorderLayout()) {
+			{
+				setOpaque(false);
+			}
+		};
+
+		bgPanel.add(new JLabel(new ImageIcon(image)) {
+			{
+				setOpaque(false);
+			}
+		});
+
+		frame = new JFrame("Splash");
+		frame.setUndecorated(true);
+		frame.add(bgPanel);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(img.getWidth(), img
+				.getHeight()));
+		frame.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
+				.getScreenSize().getWidth() / 2 - img.getWidth() / 2),
+				(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
+						.getHeight() / 2 - img.getHeight() / 2),
+				img.getWidth(), img.getHeight());
+		frame.setOpacity(0f);
+		frame.setMinimumSize(frame.getPreferredSize());
+		frame.setVisible(true);
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -102,11 +143,30 @@ class TCPServer extends JFrame {
 			sock = Integer.parseInt(args[0]);
 		}
 		running = true;
+		SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				try {
+					createAndShowGui();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		Thread.sleep(500);
+		for (float i = 0f; i < 1f; i = i + 0.01f) {
+			Thread.sleep(10);
+			frame.setOpacity(i);
+		}
+		Thread.sleep(3000);
+		for (float i = 1f; i > 0f; i = i - 0.01f) {
+			Thread.sleep(10);
+			frame.setOpacity(i);
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				TCPServer ex = new TCPServer();
-				ex.setVisible(true);
+				TCPServer server = new TCPServer();
+				server.setVisible(true);
 			}
 		});
 		start();
@@ -177,4 +237,5 @@ class TCPServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
 }
