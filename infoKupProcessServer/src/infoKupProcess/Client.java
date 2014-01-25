@@ -127,7 +127,7 @@ public class Client {
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.X_AXIS));
 
-		TextFieldPopupButton commandButton = new TextFieldPopupButton("CMND",
+		TextFieldPopupButton commandButton = new TextFieldPopupButton("Run",
 				"command", clientName, mainButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
 				"popup", clientName, mainButtonPanel, "Unesi tekst za popup!");
