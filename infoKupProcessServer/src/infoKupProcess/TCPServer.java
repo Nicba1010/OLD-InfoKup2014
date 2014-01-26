@@ -104,7 +104,7 @@ class TCPServer extends JFrame {
 
 	}
 
-	private static void createAndShowGui() throws Exception {
+	private static void createAndShowSplashScreen() throws Exception {
 		Image image = ImageIO.read(TCPServer.class.getResource("images/splash.png"));
 		BufferedImage img = (BufferedImage) image;
 
@@ -143,15 +143,16 @@ class TCPServer extends JFrame {
 			sock = Integer.parseInt(args[0]);
 		}
 		running = true;
-		SwingUtilities.invokeAndWait(new Runnable() {
+		Runnable splash=new Runnable() {
 			public void run() {
 				try {
-					createAndShowGui();
+					createAndShowSplashScreen();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		});
+		};
+		SwingUtilities.invokeAndWait(splash);
 		Thread.sleep(500);
 		for (float i = 0f; i < 1f; i = i + 0.01f) {
 			Thread.sleep(10);
@@ -166,6 +167,8 @@ class TCPServer extends JFrame {
 			@Override
 			public void run() {
 				TCPServer server = new TCPServer();
+				frame.setVisible(false);
+				frame.dispose();
 				server.setVisible(true);
 			}
 		});
