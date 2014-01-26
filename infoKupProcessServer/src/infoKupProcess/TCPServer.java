@@ -1,8 +1,11 @@
 package infoKupProcess;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -105,7 +108,8 @@ class TCPServer extends JFrame {
 	}
 
 	private static void createAndShowSplashScreen() throws Exception {
-		Image image = ImageIO.read(TCPServer.class.getResource("images/splash.png"));
+		Image image = ImageIO.read(TCPServer.class
+				.getResource("images/splash.png"));
 		BufferedImage img = (BufferedImage) image;
 
 		JPanel bgPanel = new JPanel(new BorderLayout()) {
@@ -118,14 +122,20 @@ class TCPServer extends JFrame {
 			{
 				setOpaque(false);
 			}
+
+			protected void paintComponent(Graphics g) {
+				Rectangle r = g.getClipBounds();
+				g.setColor(new Color(1f, 1f, 1f, 0.5f));
+				g.fillRect(0, 0, r.width, r.height);
+				super.paintComponent(g);
+			}
 		});
 
 		frame = new JFrame("Splash");
 		frame.setUndecorated(true);
 		frame.add(bgPanel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(img.getWidth(), img
-				.getHeight()));
+		frame.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
 		frame.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().getWidth() / 2 - img.getWidth() / 2),
 				(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
@@ -143,7 +153,7 @@ class TCPServer extends JFrame {
 			sock = Integer.parseInt(args[0]);
 		}
 		running = true;
-		Runnable splash=new Runnable() {
+		Runnable splash = new Runnable() {
 			public void run() {
 				try {
 					createAndShowSplashScreen();
