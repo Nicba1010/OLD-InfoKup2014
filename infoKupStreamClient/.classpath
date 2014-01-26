@@ -2,5 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/XugglerTutorialProject/lib/commons-cli.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/XugglerTutorialProject/lib/logback-classic.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/XugglerTutorialProject/lib/logback-core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/XugglerTutorialProject/lib/slf4j-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/XugglerTutorialProject/lib/xuggle-xuggler-test.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nikola/XugglerTutorialProject/com.javacodegeeks.xuggler/xuggle-xuggler-5.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
