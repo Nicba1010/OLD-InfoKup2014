@@ -72,7 +72,7 @@ public class SplashScreen {
 
 	@SuppressWarnings("serial")
 	private void createAndShowSplashScreen(String resource) throws Exception {
-		Image image = ImageIO.read(SchoolarServer.class.getResource(resource));
+		Image image = ImageIO.read(getClass().getResource(resource));
 		BufferedImage img = (BufferedImage) image;
 
 		splashFrame = new JFrame("Splash");
