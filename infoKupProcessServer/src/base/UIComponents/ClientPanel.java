@@ -1,9 +1,9 @@
-package infoKupProcess;
+package base.UIComponents;
 
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class JPanelProcList extends JPanel {
+public class ClientPanel extends JPanel {
         @SuppressWarnings("deprecation")
 		@Override
         public void setBounds(int x, int y, int width, int height) {

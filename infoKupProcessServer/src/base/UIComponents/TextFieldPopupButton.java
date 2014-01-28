@@ -1,4 +1,4 @@
-package infoKupProcess;
+package base.UIComponents;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import base.SchoolarServer;
 
 public class TextFieldPopupButton {
 	JButton button;

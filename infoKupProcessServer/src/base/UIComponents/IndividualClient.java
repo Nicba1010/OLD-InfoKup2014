@@ -1,4 +1,4 @@
-package infoKupProcess;
+package base.UIComponents;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

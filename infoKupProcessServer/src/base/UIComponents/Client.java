@@ -1,4 +1,4 @@
-package infoKupProcess;
+package base.UIComponents;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -26,6 +26,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingx.JXList;
 
+import base.SchoolarServer;
+
 public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
@@ -35,7 +37,7 @@ public class Client {
 	JLabel name;
 	JXList processesListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel, namePanel;
-	JPanelProcList procPanel;
+	ClientPanel procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
 
@@ -214,7 +216,7 @@ public class Client {
 		processesScrollPane = new JScrollPane(processesListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 
-		procPanel = new JPanelProcList();
+		procPanel = new ClientPanel();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
 		procPanel.add(namePanel);
 		procPanel.add(processesScrollPane);

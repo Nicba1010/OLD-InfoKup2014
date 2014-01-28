@@ -1,4 +1,4 @@
-package infoKupProcess;
+package base.util;
 
 import java.util.ArrayList;
 
