@@ -1,4 +1,4 @@
-package infoKupProcess;
+package base;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.StringUtils;
 
-class TCPClient {
+class SchoolarClient {
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip;
