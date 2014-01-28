@@ -1,15 +1,12 @@
 package infoKupProcess;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -49,7 +46,7 @@ class TCPServer extends JFrame {
 
 	static JPanel panel, boxPCinfoPanel;
 	public static int sock;
-	public static boolean defaultSettings = false;
+	public static boolean defaultSettings = false, nosplash = false;
 	JScrollPane scrollablePCinfo;
 	static JFrame frame;
 
@@ -112,28 +109,13 @@ class TCPServer extends JFrame {
 				.getResource("images/splash.png"));
 		BufferedImage img = (BufferedImage) image;
 
-		JPanel bgPanel = new JPanel(new BorderLayout()) {
-			{
-				setOpaque(false);
-			}
-		};
-
-		bgPanel.add(new JLabel(new ImageIcon(image)) {
-			{
-				setOpaque(false);
-			}
-
-			protected void paintComponent(Graphics g) {
-				Rectangle r = g.getClipBounds();
-				g.setColor(new Color(1f, 1f, 1f, 0.5f));
-				g.fillRect(0, 0, r.width, r.height);
-				super.paintComponent(g);
-			}
-		});
-
 		frame = new JFrame("Splash");
 		frame.setUndecorated(true);
-		frame.add(bgPanel);
+		frame.add(new JLabel(new ImageIcon(image)) {
+			{
+				setOpaque(false);
+			}
+		});
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
 		frame.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
@@ -141,6 +123,9 @@ class TCPServer extends JFrame {
 				(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
 						.getHeight() / 2 - img.getHeight() / 2),
 				img.getWidth(), img.getHeight());
+		RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, img.getWidth(),
+				img.getHeight(), 25, 25);
+		frame.setShape(r);
 		frame.setOpacity(0f);
 		frame.setMinimumSize(frame.getPreferredSize());
 		frame.setVisible(true);
@@ -149,39 +134,51 @@ class TCPServer extends JFrame {
 	public static void main(String args[]) throws Exception {
 		if (args.length == 1 && args[0].toString() == "-defaultip") {
 			defaultSettings = true;
+		} else if (args.length == 2) {
+			nosplash = true;
+			sock = Integer.parseInt(args[0]);
 		} else {
+			System.out.println(args.length);
+			for (int i = 0; i < args.length; i++) {
+				System.out.println(i + ":" + args[i]);
+			}
 			sock = Integer.parseInt(args[0]);
 		}
 		running = true;
-		Runnable splash = new Runnable() {
-			public void run() {
-				try {
-					createAndShowSplashScreen();
-				} catch (Exception e) {
-					e.printStackTrace();
+		if (!nosplash) {
+			Runnable splash = new Runnable() {
+				public void run() {
+					try {
+						createAndShowSplashScreen();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+			};
+			SwingUtilities.invokeAndWait(splash);
+			Thread.sleep(500);
+			for (float i = 0f; i < 1f; i = i + 0.01f) {
+				Thread.sleep(10);
+				frame.setOpacity(i);
 			}
-		};
-		SwingUtilities.invokeAndWait(splash);
-		Thread.sleep(500);
-		for (float i = 0f; i < 1f; i = i + 0.01f) {
-			Thread.sleep(10);
-			frame.setOpacity(i);
-		}
-		Thread.sleep(3000);
-		for (float i = 1f; i > 0f; i = i - 0.01f) {
-			Thread.sleep(10);
-			frame.setOpacity(i);
+			Thread.sleep(3000);
+			for (float i = 1f; i > 0f; i = i - 0.01f) {
+				Thread.sleep(10);
+				frame.setOpacity(i);
+			}
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				TCPServer server = new TCPServer();
-				frame.setVisible(false);
-				frame.dispose();
+				if (!nosplash) {
+					frame.setVisible(false);
+					frame.dispose();
+				}
 				server.setVisible(true);
 			}
 		});
+		Thread.sleep(500);
 		start();
 	}
 
@@ -200,7 +197,7 @@ class TCPServer extends JFrame {
 
 					if (clients.contains(nameAndProcesses[0])) {
 					} else {
-						processLists.add(new Client(0, 0, 150, 400,
+						processLists.add(new Client(0, 0, 250, 400,
 								boxPCinfoPanel, nameAndProcesses[0]));
 						clients.add(nameAndProcesses[0]);
 					}

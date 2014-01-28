@@ -15,7 +15,6 @@ import java.util.Arrays;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -25,14 +24,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.jdesktop.swingx.JXList;
+
 public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
 
-	JButton sendCommandButton, popupButton;
+	JButton sendCommandButton, popupButton, individual;
 	JLabel name;
-	JList<String> processesListJList;
+	JXList processesListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel, namePanel;
 	JPanelProcList procPanel;
 	JPopupMenu popup;
@@ -66,7 +67,7 @@ public class Client {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addToBuffer("killproc", processesListJList.getSelectedValue());
+				addToBuffer("killproc", processesListJList.getSelectedValue().toString());
 			}
 		});
 		popup.add(menuItem);
@@ -76,8 +77,11 @@ public class Client {
 		namePanel.add(name);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initProcessList() {
-		processesListJList = new JList<String>(processArray);
+		processesListJList = new JXList(processArray);
+		processesListJList.setAutoCreateRowSorter(true);
+		processesListJList.toggleSortOrder();
 		processesListJList.setListData(processArray);
 		processesListJList
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -98,7 +102,7 @@ public class Client {
 								currentSelectedIndex = processesListJList
 										.getSelectedIndex();
 								currentSelectedProcess = processesListJList
-										.getSelectedValue();
+										.getSelectedValue().toString();
 							}
 						}
 					}
@@ -119,7 +123,7 @@ public class Client {
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getExtendedKeyCode() == 127)
 					addToBuffer("killproc",
-							processesListJList.getSelectedValue());
+							processesListJList.getSelectedValue().toString());
 			}
 		});
 		processesListJList.addMouseListener(new MouseListener() {
@@ -180,8 +184,28 @@ public class Client {
 				"command", clientName, mainButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
 				"popup", clientName, mainButtonPanel, "Unesi tekst za popup!");
+		individual = new JButton("Individual");
+		individual.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						IndividualClient individualClient = 
+								new IndividualClient(clientName,getClient());
+						individualClient.setVisible(true);
+					}
+				});
+			}
+		});
+		mainButtonPanel.add(individual);
 	}
 
+	private Client getClient(){
+		return this;
+	}
+	
 	private void initImage() {
 
 	}
@@ -200,16 +224,23 @@ public class Client {
 		procPanel.setMaximumSize(procPanel.getPreferredSize());
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setData(String[] processArray) {
 		Arrays.sort(processArray);
+		this.processArray = processArray;
 		processesListJList.setListData(processArray);
 		processesListJList.setSelectedIndex(currentSelectedIndex);
+	}
+	public String[] getData() {
+		return processArray;
 	}
 
 	public void setLocation(int x, int y) {
 		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
 				width, height);
 		procPanel.setPreferredSize(new Dimension(width, height));
+		procPanel.setMaximumSize(procPanel.getPreferredSize());
+		procPanel.setMinimumSize(procPanel.getPreferredSize());
 	}
 
 	private int getRow(Point point) {
@@ -222,5 +253,14 @@ public class Client {
 
 	public String getName() {
 		return clientName;
+	}
+
+	public void removeButton(int i){
+		mainButtonPanel.remove(i);
+		mainButtonPanel.revalidate();
+	}
+	public void removeComponent(int i){
+		procPanel.remove(i);
+		procPanel.revalidate();
 	}
 }
