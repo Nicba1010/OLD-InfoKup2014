@@ -26,12 +26,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
-class TCPServer extends JFrame {
+class SchoolarServer extends JFrame {
 	private int screenWidth = 800, screenHeight = 600;
 	JButton quitButton;
-	JScrollPane procScroll;
+	JScrollPane infoScrollPane;
 	public static ServerSocket inSocket;
-	static int selectedIndex;
 	private static boolean running = false;
 
 	public static ArrayList<Client> processLists = new ArrayList<Client>();
@@ -39,31 +38,31 @@ class TCPServer extends JFrame {
 	public JFrame mainFrame = this;
 	public static int height, width;
 	public static Socket connectionSocket;
-	private static String[] nameAndProcesses = new String[2];
+	private static String[] TCPData = new String[2];
 
 	public static ArrayList<String> clients = new ArrayList<String>();
-	public static Buffer mainBuffer = new Buffer();
+	public static Buffer buffer = new Buffer();
 
-	static JPanel panel, boxPCinfoPanel;
-	public static int sock;
+	static JPanel mainPanel, infoScrollPanel;
+	public static int socketTCP;
 	public static boolean defaultSettings = false, nosplash = false;
 	JScrollPane scrollablePCinfo;
-	static JFrame frame;
+	static JFrame splashFrame;
 
-	public TCPServer() {
+	public SchoolarServer() {
 		initUI();
 	}
 
 	public void initUI() {
-		setTitle("TCPServer");
+		setTitle("Schoolar Server");
 
-		panel = new JPanel();
-		boxPCinfoPanel = new JPanel();
+		mainPanel = new JPanel();
+		infoScrollPanel = new JPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		getContentPane().add(panel);
-		panel.setLayout(null);
-		boxPCinfoPanel
-				.setLayout(new BoxLayout(boxPCinfoPanel, BoxLayout.X_AXIS));
+		getContentPane().add(mainPanel);
+		mainPanel.setLayout(null);
+		infoScrollPanel
+				.setLayout(new BoxLayout(infoScrollPanel, BoxLayout.X_AXIS));
 		setSize(screenWidth, screenHeight);
 		setLocationRelativeTo(null);
 		{
@@ -78,7 +77,7 @@ class TCPServer extends JFrame {
 					System.exit(0);
 				}
 			});
-			panel.add(quitButton);
+			mainPanel.add(quitButton);
 		}
 		height = mainFrame.getHeight();
 		width = mainFrame.getWidth();
@@ -94,41 +93,41 @@ class TCPServer extends JFrame {
 				scrollablePCinfo.setBounds(0, 0, width - 15, 420);
 			}
 		});
-		scrollablePCinfo = new JScrollPane(boxPCinfoPanel);
+		scrollablePCinfo = new JScrollPane(infoScrollPanel);
 		scrollablePCinfo.setBounds(0, 0, width - 15, 420);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		panel.add(scrollablePCinfo);
+		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 
 	}
 
 	private static void createAndShowSplashScreen() throws Exception {
-		Image image = ImageIO.read(TCPServer.class
+		Image image = ImageIO.read(SchoolarServer.class
 				.getResource("images/splash.png"));
 		BufferedImage img = (BufferedImage) image;
 
-		frame = new JFrame("Splash");
-		frame.setUndecorated(true);
-		frame.add(new JLabel(new ImageIcon(image)) {
+		splashFrame = new JFrame("Splash");
+		splashFrame.setUndecorated(true);
+		splashFrame.add(new JLabel(new ImageIcon(image)) {
 			{
 				setOpaque(false);
 			}
 		});
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
-		frame.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
+		splashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		splashFrame.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
+		splashFrame.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().getWidth() / 2 - img.getWidth() / 2),
 				(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
 						.getHeight() / 2 - img.getHeight() / 2),
 				img.getWidth(), img.getHeight());
 		RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, img.getWidth(),
 				img.getHeight(), 25, 25);
-		frame.setShape(r);
-		frame.setOpacity(0f);
-		frame.setMinimumSize(frame.getPreferredSize());
-		frame.setVisible(true);
+		splashFrame.setShape(r);
+		splashFrame.setOpacity(0f);
+		splashFrame.setMinimumSize(splashFrame.getPreferredSize());
+		splashFrame.setVisible(true);
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -136,13 +135,13 @@ class TCPServer extends JFrame {
 			defaultSettings = true;
 		} else if (args.length == 2) {
 			nosplash = true;
-			sock = Integer.parseInt(args[0]);
+			socketTCP = Integer.parseInt(args[0]);
 		} else {
 			System.out.println(args.length);
 			for (int i = 0; i < args.length; i++) {
 				System.out.println(i + ":" + args[i]);
 			}
-			sock = Integer.parseInt(args[0]);
+			socketTCP = Integer.parseInt(args[0]);
 		}
 		running = true;
 		if (!nosplash) {
@@ -159,21 +158,21 @@ class TCPServer extends JFrame {
 			Thread.sleep(500);
 			for (float i = 0f; i < 1f; i = i + 0.01f) {
 				Thread.sleep(10);
-				frame.setOpacity(i);
+				splashFrame.setOpacity(i);
 			}
 			Thread.sleep(3000);
 			for (float i = 1f; i > 0f; i = i - 0.01f) {
 				Thread.sleep(10);
-				frame.setOpacity(i);
+				splashFrame.setOpacity(i);
 			}
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				TCPServer server = new TCPServer();
+				SchoolarServer server = new SchoolarServer();
 				if (!nosplash) {
-					frame.setVisible(false);
-					frame.dispose();
+					splashFrame.setVisible(false);
+					splashFrame.dispose();
 				}
 				server.setVisible(true);
 			}
@@ -185,7 +184,7 @@ class TCPServer extends JFrame {
 	public static void start() {
 		String clientSentence;
 		try {
-			inSocket = new ServerSocket(sock);
+			inSocket = new ServerSocket(socketTCP);
 			while (running) {
 				connectionSocket = inSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
@@ -193,19 +192,19 @@ class TCPServer extends JFrame {
 
 				clientSentence = inFromClient.readLine();
 				if (clientSentence != null) {
-					nameAndProcesses = clientSentence.split(";");
+					TCPData = clientSentence.split(";");
 
-					if (clients.contains(nameAndProcesses[0])) {
+					if (clients.contains(TCPData[0])) {
 					} else {
 						processLists.add(new Client(0, 0, 250, 400,
-								boxPCinfoPanel, nameAndProcesses[0]));
-						clients.add(nameAndProcesses[0]);
+								infoScrollPanel, TCPData[0]));
+						clients.add(TCPData[0]);
 					}
 
 					for (Client client : processLists) {
 						if (client.getName().equalsIgnoreCase(
-								nameAndProcesses[0])) {
-							client.setData(nameAndProcesses[1].split(":"));
+								TCPData[0])) {
+							client.setData(TCPData[1].split(":"));
 						}
 					}
 					sendResponse();
@@ -219,12 +218,12 @@ class TCPServer extends JFrame {
 
 	private static void sendResponse() {
 		try {
-			if (mainBuffer.len() > 0) {
-				for (int i = 0; i < mainBuffer.len(); i++) {
-					String arg0 = mainBuffer.get(i)[0];
-					String arg1 = mainBuffer.get(i)[1];
-					String clientName = mainBuffer.get(i)[2];
-					if (clientName.equalsIgnoreCase(nameAndProcesses[0])) {
+			if (buffer.len() > 0) {
+				for (int i = 0; i < buffer.len(); i++) {
+					String arg0 = buffer.get(i)[0];
+					String arg1 = buffer.get(i)[1];
+					String clientName = buffer.get(i)[2];
+					if (clientName.equalsIgnoreCase(TCPData[0])) {
 						System.out
 								.println(arg0 + ":" + arg1 + ":" + clientName);
 						System.out.println("OK");
@@ -234,7 +233,7 @@ class TCPServer extends JFrame {
 								+ arg1 + "\n");
 						System.out.println(clientName + " " + arg0 + " " + arg1
 								+ "\n");
-						mainBuffer.remove(i);
+						buffer.remove(i);
 						break;
 					}
 				}

@@ -35,6 +35,6 @@ public class TextFieldPopupButton {
 	}
 
 	public void addToBuffer(String arg0, String arg1) {
-		TCPServer.mainBuffer.addToBuffer(arg0, arg1, this.clientName);
+		SchoolarServer.buffer.addToBuffer(arg0, arg1, this.clientName);
 	}
 }

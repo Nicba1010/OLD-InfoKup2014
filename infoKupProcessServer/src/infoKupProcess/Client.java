@@ -236,7 +236,7 @@ public class Client {
 	}
 
 	public void setLocation(int x, int y) {
-		procPanel.setBounds(x + 2 + TCPServer.clients.size() * 150, y + 5,
+		procPanel.setBounds(x + 2 + SchoolarServer.clients.size() * 150, y + 5,
 				width, height);
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setMaximumSize(procPanel.getPreferredSize());
@@ -248,7 +248,7 @@ public class Client {
 	}
 
 	public void addToBuffer(String arg0, String arg1) {
-		TCPServer.mainBuffer.addToBuffer(arg0, arg1, this.clientName);
+		SchoolarServer.buffer.addToBuffer(arg0, arg1, this.clientName);
 	}
 
 	public String getName() {
