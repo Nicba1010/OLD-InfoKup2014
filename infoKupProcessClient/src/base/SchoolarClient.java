@@ -18,7 +18,7 @@ class SchoolarClient {
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip;
-	static int sock;
+	static int socket;
 
 	public static void main(String args[]) throws Exception {
 		if (!debug) {
@@ -26,7 +26,7 @@ class SchoolarClient {
 				defaultSettings = true;
 			} else {
 				ip = args[0];
-				sock = Integer.parseInt(args[1]);
+				socket = Integer.parseInt(args[1]);
 			}
 		}
 		Timer timer = new Timer();
@@ -43,7 +43,7 @@ class SchoolarClient {
 			if (defaultSettings) {
 				clientSocket = new Socket("127.0.0.1", 25565);
 			} else {
-				clientSocket = new Socket(ip, sock);
+				clientSocket = new Socket(ip, socket);
 			}
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());

@@ -33,7 +33,6 @@ public class SchoolarServer extends JFrame {
 	public static ArrayList<Client> processLists = new ArrayList<Client>();
 
 	public JFrame mainFrame = this;
-	public static int height, width;
 	public static Socket connectionSocket;
 	private static String[] TCPData = new String[2];
 
@@ -58,8 +57,8 @@ public class SchoolarServer extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
-		infoScrollPanel
-				.setLayout(new BoxLayout(infoScrollPanel, BoxLayout.X_AXIS));
+		infoScrollPanel.setLayout(new BoxLayout(infoScrollPanel,
+				BoxLayout.X_AXIS));
 		setSize(screenWidth, screenHeight);
 		setLocationRelativeTo(null);
 		{
@@ -76,22 +75,18 @@ public class SchoolarServer extends JFrame {
 			});
 			mainPanel.add(quitButton);
 		}
-		height = mainFrame.getHeight();
-		width = mainFrame.getWidth();
 		this.addWindowStateListener(new WindowStateListener() {
 
 			@Override
 			public void windowStateChanged(WindowEvent e) {
 				System.out.println(e.getNewState());
-				height = mainFrame.getHeight();
-				width = mainFrame.getWidth();
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
-				scrollablePCinfo.setBounds(0, 0, width - 15, 420);
+				scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 420);
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
-		scrollablePCinfo.setBounds(0, 0, width - 15, 420);
+		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 420);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -99,33 +94,31 @@ public class SchoolarServer extends JFrame {
 		setVisible(false);
 
 	}
-	
-	private static void parseArgs(String args[]){if (args.length == 1 && args[0].toString() == "-defaultip") {
-		defaultSettings = true;
-	} else if (args.length == 2) {
-		nosplash = true;
-		socketTCP = Integer.parseInt(args[0]);
-	} else {
-		System.out.println(args.length);
-		for (int i = 0; i < args.length; i++) {
-			System.out.println(i + ":" + args[i]);
+
+	private static void parseArgs(String args[]) {
+		if (args.length == 1 && args[0].toString() == "-defaultip") {
+			defaultSettings = true;
+		} else if (args.length == 2 && args[1].toString().equalsIgnoreCase("nosplash")) {
+			nosplash = true;
+			socketTCP = Integer.parseInt(args[0]);
+		} else {
+			System.out.println(args.length);
+			for (int i = 0; i < args.length; i++) {
+				System.out.println(i + ":" + args[i]);
+			}
+			socketTCP = Integer.parseInt(args[0]);
 		}
-		socketTCP = Integer.parseInt(args[0]);
 	}
-	}
-	
+
 	public static void main(String args[]) throws Exception {
 		parseArgs(args);
 		running = true;
-		new SplashScreen(!nosplash,"images/splash.png", 1000, 1);
+		if (!nosplash)
+			new SplashScreen("images/splash.png", 1000, 1, 1000);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				SchoolarServer server = new SchoolarServer();
-				if (!nosplash) {
-					splashFrame.setVisible(false);
-					splashFrame.dispose();
-				}
 				server.setVisible(true);
 			}
 		});
@@ -153,8 +146,7 @@ public class SchoolarServer extends JFrame {
 					}
 
 					for (Client client : processLists) {
-						if (client.getName().equalsIgnoreCase(
-								TCPData[0])) {
+						if (client.getName().equalsIgnoreCase(TCPData[0])) {
 							client.setData(TCPData[1].split(":"));
 						}
 					}
