@@ -5,11 +5,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.Policy;
 
+import javax.swing.JPanel;
+
 public class Main {
 	JarUtils jarUtils = new JarUtils();
+	static JPanel panel = new JPanel();
 
 	public static void main(String[] arguments) throws Throwable {
-		new Main();
+		new PluginLoader(panel);
 	}
 
 	@SuppressWarnings("resource")
@@ -45,7 +48,8 @@ public class Main {
 						URL url = jarFile.toURI().toURL();
 						URL[] urls = { url };
 						ClassLoader loader = new URLClassLoader(urls);
-						plugin = (PluginBase) loader.loadClass(pluginClass).newInstance();
+						plugin = (PluginBase) loader.loadClass(pluginClass)
+								.newInstance();
 						plugin.run();
 					}
 				}
