@@ -130,7 +130,7 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = System.getenv("computername") + ";" + processes;
+				processes = System.getenv("computername")+"1" + ";" + processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);

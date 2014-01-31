@@ -31,7 +31,9 @@ public class IndividualClient extends JFrame {
 		this.client = client;
 		this.component = comp;
 		this.id=id;
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
+		dispose();
 		Timer timer = new Timer();
 		addWindowListener(new WindowListener() {
 

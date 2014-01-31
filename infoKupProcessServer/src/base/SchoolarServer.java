@@ -115,7 +115,7 @@ public class SchoolarServer extends JFrame {
 		parseArgs(args);
 		running = true;
 		if (!nosplash)
-			new SplashScreen("images/splash.png", 1000, 1, 1000);
+			new SplashScreen("images/splash.png", 500, 2, 750);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

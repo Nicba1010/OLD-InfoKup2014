@@ -52,7 +52,6 @@ public class SplashScreen {
 			}
 		};
 		SwingUtilities.invokeAndWait(splash);
-		Thread.sleep(500);
 		float numOfSteps = 1f / ((float) fadeStep * 0.01f);
 		int lenght = (int) (fadeLenght / numOfSteps);
 		for (float i = 0f; i < 1f; i = i + ((float) fadeStep * 0.01f)) {

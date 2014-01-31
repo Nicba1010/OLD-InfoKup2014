@@ -27,6 +27,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import base.SchoolarServer;
+import base.plugins.PluginLoader;
 
 public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
@@ -36,7 +37,8 @@ public class Client {
 	JButton sendCommandButton, popupButton, individual;
 	JLabel name;
 	JList<String> processesListJList;
-	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel, namePanel;
+	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
+			defaultButtonPanel, namePanel;
 	ClientPanel procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
@@ -178,12 +180,15 @@ public class Client {
 	private void initButtons() {
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
+				BoxLayout.Y_AXIS));
+		defaultButtonPanel = new JPanel();
+		defaultButtonPanel.setLayout(new BoxLayout(defaultButtonPanel,
 				BoxLayout.X_AXIS));
 
 		TextFieldPopupButton commandButton = new TextFieldPopupButton("Run",
-				"command", clientName, mainButtonPanel, "Unesi komandu!");
+				"command", clientName, defaultButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
-				"popup", clientName, mainButtonPanel, "Unesi tekst za popup!");
+				"popup", clientName, defaultButtonPanel, "Unesi tekst za popup!");
 		individual = new JButton("Individual");
 		individual.addActionListener(new ActionListener() {
 
@@ -195,7 +200,9 @@ public class Client {
 						int i = 0;
 						for (String client : SchoolarServer.clients) {
 							if (client.equalsIgnoreCase(getName())) {
-								Component comp = SchoolarServer.infoScrollPanel.getComponent(i);
+								Component comp = SchoolarServer.infoScrollPanel
+										.getComponent(i);
+								//BUG
 								SchoolarServer.infoScrollPanel.remove(i);
 								SchoolarServer.infoScrollPanel.repaint();
 								SchoolarServer.infoScrollPanel.revalidate();
@@ -209,7 +216,13 @@ public class Client {
 				});
 			}
 		});
-		mainButtonPanel.add(individual);
+		defaultButtonPanel.add(individual);
+		mainButtonPanel.add(defaultButtonPanel);
+		try {
+			new PluginLoader(mainButtonPanel);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Client getClient() {
@@ -266,7 +279,8 @@ public class Client {
 	}
 
 	public void removeButton(int i) {
-		mainButtonPanel.remove(i);
+		defaultButtonPanel.remove(i);
+		defaultButtonPanel.revalidate();
 		mainButtonPanel.revalidate();
 	}
 

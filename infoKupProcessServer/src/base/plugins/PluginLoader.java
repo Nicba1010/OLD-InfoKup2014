@@ -43,9 +43,10 @@ public class PluginLoader {
 						URL url = jarFile.toURI().toURL();
 						URL[] urls = { url };
 						ClassLoader loader = new URLClassLoader(urls);
+						System.out.println(listOfFiles[i].getName()+""+pluginClass);
 						plugin = (PluginBase) loader.loadClass(pluginClass).newInstance();
 						plugin.run();
-						plugin.addJButtons(panel);
+						plugin.addJComponents(panel);
 					}
 				}
 			}
