@@ -1,5 +1,6 @@
 package base;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -39,7 +40,7 @@ public class SchoolarServer extends JFrame {
 	public static ArrayList<String> clients = new ArrayList<String>();
 	public static Buffer buffer = new Buffer();
 
-	static JPanel mainPanel, infoScrollPanel;
+	public static JPanel mainPanel, infoScrollPanel;
 	public static int socketTCP;
 	public static boolean defaultSettings = false, nosplash = false;
 	JScrollPane scrollablePCinfo;
@@ -189,5 +190,9 @@ public class SchoolarServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
+	public static void addPC(Component comp, int index){
+		infoScrollPanel.add(comp, index);
+		infoScrollPanel.revalidate();
+		infoScrollPanel.repaint();
+	}
 }
