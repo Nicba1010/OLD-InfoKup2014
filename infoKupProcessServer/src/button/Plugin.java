@@ -8,9 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import base.plugins.PluginBase;
+import base.plugins.BasePlugin;
 
-public class Plugin implements PluginBase {
+public class Plugin implements BasePlugin {
 
 	public Plugin() {
 		// TODO Auto-generated constructor stub

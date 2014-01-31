@@ -38,13 +38,13 @@ public class PluginLoader {
 					jarLocation = dataFolder + "\\" + listOfFiles[i].getName();
 					pluginClass = jarUtils.getPluginClass(jarLocation);
 					if (pluginClass != null) {
-						PluginBase plugin = null;
+						BasePlugin plugin = null;
 						File jarFile = new File(jarLocation);
 						URL url = jarFile.toURI().toURL();
 						URL[] urls = { url };
 						ClassLoader loader = new URLClassLoader(urls);
 						System.out.println(listOfFiles[i].getName()+""+pluginClass);
-						plugin = (PluginBase) loader.loadClass(pluginClass).newInstance();
+						plugin = (BasePlugin) loader.loadClass(pluginClass).newInstance();
 						plugin.run();
 						plugin.addJComponents(panel);
 					}
