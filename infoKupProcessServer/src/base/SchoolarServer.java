@@ -1,5 +1,6 @@
 package base;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,16 +44,22 @@ public class SchoolarServer extends JFrame {
 	public static JPanel mainPanel, infoScrollPanel;
 	public static int socketTCP;
 	public static boolean defaultSettings = false, nosplash = false;
-	JScrollPane scrollablePCinfo;
+	static JScrollPane scrollablePCinfo;
 	static JFrame splashFrame;
 
 	public SchoolarServer() {
 		initUI();
 	}
 
+	public static void color() {
+		Color color = new Color(25, 25, 112);
+		infoScrollPanel.setBackground(color);
+		mainPanel.setBackground(color);
+		scrollablePCinfo.setBackground(color);
+	}
+
 	public void initUI() {
 		setTitle("Schoolar Server");
-
 		mainPanel = new JPanel();
 		infoScrollPanel = new JPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -94,12 +101,16 @@ public class SchoolarServer extends JFrame {
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 
+//		color();
+
+
 	}
 
 	private static void parseArgs(String args[]) {
 		if (args.length == 1 && args[0].toString() == "-defaultip") {
 			defaultSettings = true;
-		} else if (args.length == 2 && args[1].toString().equalsIgnoreCase("nosplash")) {
+		} else if (args.length == 2
+				&& args[1].toString().equalsIgnoreCase("nosplash")) {
 			nosplash = true;
 			socketTCP = Integer.parseInt(args[0]);
 		} else {
@@ -190,7 +201,8 @@ public class SchoolarServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	public static void addPC(Component comp, int index){
+
+	public static void addPC(Component comp, int index) {
 		infoScrollPanel.add(comp, index);
 		infoScrollPanel.revalidate();
 		infoScrollPanel.repaint();

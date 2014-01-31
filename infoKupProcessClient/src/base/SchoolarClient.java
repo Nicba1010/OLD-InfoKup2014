@@ -116,9 +116,9 @@ class SchoolarClient {
 				if (!(line.contains("=======") || line.contains("Image Name")
 						|| line.contains("System") || line.contains("csrss")
 						|| line.contains("dwm") || line.contains("winlogon")
-						|| line.contains("svc") || line.contains("taskhost") || line.contains("CCC") 
-						|| line.contains("nvtray") || line.contains("nvvsvc")
-						|| line.contains("nvxdsync"))
+						|| line.contains("svc") || line.contains("taskhost")
+						|| line.contains("CCC") || line.contains("nvtray")
+						|| line.contains("nvvsvc") || line.contains("nvxdsync"))
 						&& !processes.contains(line)) {
 					if (!processes.equalsIgnoreCase(""))
 						processes = processes + ":" + line;
@@ -130,7 +130,7 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = System.getenv("computername")+"1" + ";" + processes;
+				processes = System.getenv("computername") + ";" + processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);
