@@ -4,12 +4,15 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.Policy;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 @SuppressWarnings("resource")
 public class PluginLoader {
 	JarUtils jarUtils = new JarUtils();
+	ArrayList<PluginBase> plugins = new ArrayList<PluginBase>();
+
 	public PluginLoader(JPanel panel) throws Exception {
 		String dataFolder = System.getenv("APPDATA") + "\\.Schoolar";
 		Policy.setPolicy(new PluginPolicy());
@@ -36,17 +39,20 @@ public class PluginLoader {
 					jarLocation = dataFolder + "\\" + listOfFiles[i].getName();
 					pluginClass = jarUtils.getPluginClass(jarLocation);
 					if (pluginClass != null) {
-						PluginBase plugin = null;
 						File jarFile = new File(jarLocation);
 						URL url = jarFile.toURI().toURL();
 						URL[] urls = { url };
 						ClassLoader loader = new URLClassLoader(urls);
-						plugin = (PluginBase) loader.loadClass(pluginClass).newInstance();
-						plugin.run();
-						plugin.addJButtons(panel);
+						plugins.add((PluginBase) loader.loadClass(pluginClass)
+								.newInstance());
 					}
 				}
 			}
+		}
+
+		for (PluginBase plugin : plugins) {
+			plugin.run();
+			plugin.addJButtons(panel);
 		}
 
 	}
