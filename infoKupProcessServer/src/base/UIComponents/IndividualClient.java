@@ -17,7 +17,7 @@ import base.SchoolarServer;
 @SuppressWarnings("serial")
 public class IndividualClient extends JFrame {
 	JPanel panel;
-	int screenWidth = 250, screenHeight = 500;
+	int screenWidth = 265, screenHeight = 644;
 	String clientName;
 	Client client;
 	Client indiClient;
