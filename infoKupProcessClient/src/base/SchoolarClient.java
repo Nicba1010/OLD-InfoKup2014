@@ -135,7 +135,7 @@ class SchoolarClient {
 			input.close();
 			sendMessage(processes);
 		} catch (Exception err) {
-			err.printStackTrace();
+//			err.printStackTrace();
 		}
 	}
 }
