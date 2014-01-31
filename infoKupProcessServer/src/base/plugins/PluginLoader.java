@@ -12,7 +12,7 @@ import base.util.JarUtils;
 @SuppressWarnings("resource")
 public class PluginLoader {
 	JarUtils jarUtils = new JarUtils();
-	public PluginLoader(JPanel panel) throws Exception {
+	public PluginLoader(JPanel panel, int width) throws Exception {
 		String dataFolder = System.getenv("APPDATA") + "\\.Schoolar";
 		Policy.setPolicy(new PluginPolicy());
 		System.setSecurityManager(new SecurityManager());
@@ -46,7 +46,7 @@ public class PluginLoader {
 						System.out.println(listOfFiles[i].getName()+""+pluginClass);
 						plugin = (BasePlugin) loader.loadClass(pluginClass).newInstance();
 						plugin.run();
-						plugin.addJComponents(panel);
+						plugin.addJComponents(panel,width);
 					}
 				}
 			}

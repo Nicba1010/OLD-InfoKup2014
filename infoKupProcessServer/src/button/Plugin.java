@@ -23,7 +23,7 @@ public class Plugin implements BasePlugin {
 	}
 
 	@Override
-	public void addJComponents(JPanel panel) {
+	public void addJComponents(JPanel panel, int width) {
 		JPanel modPanel = new JPanel();
 
 		JButton exit = new JButton("Exit");

@@ -39,7 +39,7 @@ public class Client {
 	JList<String> processesListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
 			defaultButtonPanel, namePanel;
-	ClientPanel procPanel;
+	public ClientPanel procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
 
@@ -219,7 +219,7 @@ public class Client {
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
 		try {
-			new PluginLoader(mainButtonPanel);
+			new PluginLoader(mainButtonPanel,width);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -245,6 +245,7 @@ public class Client {
 
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setMaximumSize(procPanel.getPreferredSize());
+		procPanel.setMinimumSize(procPanel.getPreferredSize());
 	}
 
 	public void setData(String[] processArray) {

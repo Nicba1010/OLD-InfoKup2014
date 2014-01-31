@@ -14,7 +14,7 @@ public class JarUtils {
 	private String process(Object obj) {
 		JarEntry entry = (JarEntry) obj;
 		String name = entry.getName();
-		if (name.contains("Plugin.class"))
+		if (name.contains("Plugin.class") && !name.contains("Base"))
 			return name;
 		return null;
 	}

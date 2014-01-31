@@ -2,6 +2,7 @@ package base;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -26,7 +27,7 @@ import base.util.Buffer;
 
 @SuppressWarnings("serial")
 public class SchoolarServer extends JFrame {
-	private int screenWidth = 800, screenHeight = 600;
+	private int screenWidth = 1280, screenHeight = 720;
 	JButton quitButton;
 	JScrollPane infoScrollPane;
 	public static ServerSocket inSocket;
@@ -90,19 +91,18 @@ public class SchoolarServer extends JFrame {
 				System.out.println(e.getNewState());
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
-				scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 420);
+				scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 620);
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
-		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 420);
+		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 620);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 
-//		color();
-
+		// color();
 
 	}
 
@@ -151,8 +151,10 @@ public class SchoolarServer extends JFrame {
 					TCPData = clientSentence.split(";");
 
 					if (clients.contains(TCPData[0])) {
+
 					} else {
-						processLists.add(new Client(0, 0, 250, 400,
+						System.out.println(TCPData[0]);
+						processLists.add(new Client(0, 0, 250, 600,
 								infoScrollPanel, TCPData[0]));
 						clients.add(TCPData[0]);
 					}
