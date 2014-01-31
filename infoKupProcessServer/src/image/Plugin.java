@@ -2,10 +2,6 @@ package image;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -17,11 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import base.plugins.BasePlugin;
+import base.util.ImageUtils;
 
 public class Plugin implements BasePlugin {
-
+	ImageUtils imgUtils = new ImageUtils();
 	public Plugin() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
@@ -51,7 +48,7 @@ public class Plugin implements BasePlugin {
 		}
 		int height = ((int) (((float) splash.getHeight() / (float) splash
 				.getWidth()) * (float) width));
-		splash1=getScaledImage(splash, width, height);
+		splash1=imgUtils.getScaledImage(splash, width, height);
 		JLabel label1 = new JLabel(new ImageIcon(splash1));
 		System.out.println(splash1.getWidth());
 		System.out.println(splash1.getWidth() + ":" + splash1.getHeight());
@@ -60,27 +57,5 @@ public class Plugin implements BasePlugin {
 		label1.setMinimumSize(label1.getPreferredSize());
 		pan.add(label1);
 		panel.add(pan);
-	}
-
-	private BufferedImage getScaledImage(BufferedImage src, int w, int h) {
-		int finalw = w;
-		int finalh = h;
-		double factor = 1.0d;
-		if (src.getWidth() > src.getHeight()) {
-			factor = ((double) src.getHeight() / (double) src.getWidth());
-			finalh = (int) (finalw * factor);
-		} else {
-			factor = ((double) src.getWidth() / (double) src.getHeight());
-			finalw = (int) (finalh * factor);
-		}
-
-		BufferedImage resizedImg = new BufferedImage(finalw, finalh,
-				BufferedImage.TRANSLUCENT);
-		Graphics2D g2 = resizedImg.createGraphics();
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g2.drawImage(src, 0, 0, finalw, finalh, null);
-		g2.dispose();
-		return resizedImg;
 	}
 }
