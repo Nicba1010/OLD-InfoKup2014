@@ -104,8 +104,7 @@ class SchoolarClient {
 
 	private static void textPopup(String text) {
 
-		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION);
+		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
 
 		JDialog dialog = pane.createDialog("Poruka");
 		dialog.setAlwaysOnTop(true);
