@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +77,7 @@ class SchoolarClient {
 			message = message.replace(
 					System.getenv("computername") + " popup ", "");
 			textPopup(message);
+
 		}
 	}
 
@@ -101,7 +103,13 @@ class SchoolarClient {
 	}
 
 	private static void textPopup(String text) {
-		JOptionPane.showMessageDialog(null, text);
+
+		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION);
+
+		JDialog dialog = pane.createDialog("Poruka");
+		dialog.setAlwaysOnTop(true);
+		dialog.setVisible(true);
 	}
 
 	public static void sendProcesses() {
@@ -135,7 +143,7 @@ class SchoolarClient {
 			input.close();
 			sendMessage(processes);
 		} catch (Exception err) {
-//			err.printStackTrace();
+			// err.printStackTrace();
 		}
 	}
 }
