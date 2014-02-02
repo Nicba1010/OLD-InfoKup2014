@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import base.SchoolarServer;
+import base.plugins.PluginLoader;
 
 @SuppressWarnings("serial")
 public class IndividualClient extends JFrame {
@@ -23,14 +24,16 @@ public class IndividualClient extends JFrame {
 	Client indiClient;
 	Component component;
 	int id;
+	PluginLoader pluginLoader;
 
 	public IndividualClient(String clientName, final Client client,
-			Component comp, final int id) throws HeadlessException {
+			Component comp, final int id, PluginLoader pluginLoader) throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
 		this.component = comp;
 		this.id=id;
+		this.pluginLoader = pluginLoader;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
 		dispose();
@@ -90,7 +93,7 @@ public class IndividualClient extends JFrame {
 		setSize(new Dimension(screenWidth, screenHeight));
 		getContentPane().add(panel);
 		indiClient = new Client(0, 0, screenWidth - 15, screenHeight - 44,
-				panel, clientName);
+				panel, clientName, pluginLoader);
 		indiClient.removeButton(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());

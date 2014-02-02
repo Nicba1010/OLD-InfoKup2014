@@ -42,15 +42,17 @@ public class Client {
 	public ClientPanel procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
+	PluginLoader pluginLoader;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
-			final String clientName) {
+			final String clientName, PluginLoader pluginLoader) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.clientName = clientName;
+		this.pluginLoader = pluginLoader;
 
 		{
 			initPopups();
@@ -188,7 +190,8 @@ public class Client {
 		TextFieldPopupButton commandButton = new TextFieldPopupButton("Run",
 				"command", clientName, defaultButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
-				"popup", clientName, defaultButtonPanel, "Unesi tekst za popup!");
+				"popup", clientName, defaultButtonPanel,
+				"Unesi tekst za popup!");
 		individual = new JButton("Individual");
 		individual.addActionListener(new ActionListener() {
 
@@ -202,12 +205,13 @@ public class Client {
 							if (client.equalsIgnoreCase(getName())) {
 								Component comp = SchoolarServer.infoScrollPanel
 										.getComponent(i);
-								//BUG
+								// BUG
 								SchoolarServer.infoScrollPanel.remove(i);
 								SchoolarServer.infoScrollPanel.repaint();
 								SchoolarServer.infoScrollPanel.revalidate();
 								IndividualClient individualClient = new IndividualClient(
-										clientName, getClient(), comp, i);
+										clientName, getClient(), comp, i,
+										pluginLoader);
 								individualClient.setVisible(true);
 							}
 							i++;
@@ -219,7 +223,7 @@ public class Client {
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
 		try {
-			new PluginLoader(mainButtonPanel,width);
+			pluginLoader.loadPlugins(mainButtonPanel, width, clientName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -22,23 +22,27 @@ public class Plugin implements BasePlugin {
 	}
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
+	public void runServer() {
+		
 	}
 
 	@Override
-	public void addJComponents(JPanel panel, int width) {
-	
+	public void addJComponentsToServer(JPanel panel, int width, String clientName) {
+//		try {
+//			Thread.sleep(6000);
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
 		
-		BufferedImage splash = null;
-		BufferedImage splash1 = null;
+		BufferedImage imgtemp = null;
+		BufferedImage imgFinal = null;
 		try {
-			splash = ImageIO
+			imgtemp = ImageIO
 					.read(new URL(
-							"http://baranja.hr/demo/wp-content/uploads/2012/12/Caffe-bar-papagaj.jpg"));
+							"http://nicba1010.byethost16.com/"+clientName+".png"));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,16 +50,29 @@ public class Plugin implements BasePlugin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int height = ((int) (((float) splash.getHeight() / (float) splash
+		int height = ((int) (((float) imgtemp.getHeight() / (float) imgtemp
 				.getWidth()) * (float) width));
-		splash1=imgUtils.getScaledImage(splash, width, height);
-		JLabel label1 = new JLabel(new ImageIcon(splash1));
-		System.out.println(splash1.getWidth());
-		System.out.println(splash1.getWidth() + ":" + splash1.getHeight());
+		imgFinal=imgUtils.getScaledImage(imgtemp, width, height);
+		JLabel label1 = new JLabel();
+		label1.setIcon(new ImageIcon(imgFinal));
+		System.out.println(imgFinal.getWidth());
+		System.out.println(imgFinal.getWidth() + ":" + imgFinal.getHeight());
 		label1.setPreferredSize(new Dimension(width, height));
 		label1.setMaximumSize(label1.getPreferredSize());
 		label1.setMinimumSize(label1.getPreferredSize());
 		pan.add(label1);
 		panel.add(pan);
+		new Thread(new Server(pan,clientName,label1, width)).start();
+	}
+
+	@Override
+	public void runClient() {
+		new Thread(new Client()).start();
+	}
+
+	@Override
+	public void checkInputFromClient(String input) {
+		// TODO Auto-generated method stub
+		
 	}
 }

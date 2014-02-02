@@ -2,7 +2,6 @@ package base;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -22,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import base.UIComponents.Client;
+import base.plugins.PluginLoader;
 import base.splash.SplashScreen;
 import base.util.Buffer;
 
@@ -47,8 +47,15 @@ public class SchoolarServer extends JFrame {
 	public static boolean defaultSettings = false, nosplash = false;
 	static JScrollPane scrollablePCinfo;
 	static JFrame splashFrame;
-
+	static PluginLoader pluginLoader;
+	
 	public SchoolarServer() {
+		try {
+			pluginLoader = new PluginLoader(true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		initUI();
 	}
 
@@ -63,6 +70,7 @@ public class SchoolarServer extends JFrame {
 		setTitle("Schoolar Server");
 		mainPanel = new JPanel();
 		infoScrollPanel = new JPanel();
+
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
@@ -155,7 +163,7 @@ public class SchoolarServer extends JFrame {
 					} else {
 						System.out.println(TCPData[0]);
 						processLists.add(new Client(0, 0, 250, 600,
-								infoScrollPanel, TCPData[0]));
+								infoScrollPanel, TCPData[0], pluginLoader));
 						clients.add(TCPData[0]);
 					}
 

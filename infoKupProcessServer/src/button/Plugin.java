@@ -17,13 +17,13 @@ public class Plugin implements BasePlugin {
 	}
 
 	@Override
-	public void run() {
+	public void runServer() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void addJComponents(JPanel panel, int width) {
+	public void addJComponentsToServer(JPanel panel, int width, String clientName) {
 		JPanel modPanel = new JPanel();
 
 		JButton exit = new JButton("Exit");
@@ -45,6 +45,18 @@ public class Plugin implements BasePlugin {
 		panel.revalidate();
 		panel.repaint();
 
+	}
+
+	@Override
+	public void runClient() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkInputFromClient(String input) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

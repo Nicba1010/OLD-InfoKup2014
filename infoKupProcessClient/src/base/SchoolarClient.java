@@ -15,11 +15,14 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.StringUtils;
 
+import base.plugins.PluginLoader;
+
 class SchoolarClient {
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip;
 	static int socket;
+	static PluginLoader pl;
 
 	public static void main(String args[]) throws Exception {
 		if (!debug) {
@@ -30,6 +33,8 @@ class SchoolarClient {
 				socket = Integer.parseInt(args[1]);
 			}
 		}
+		pl = new PluginLoader(false);
+		pl.runClient("Test");
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
