@@ -31,6 +31,12 @@ public class Plugin implements BasePlugin {
 
 	@Override
 	public void addJComponentsToServer(JPanel panel, int width, String clientName) {
+//		try {
+//			Thread.sleep(6000);
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		String host = "127.0.0.1";
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -69,9 +75,24 @@ public class Plugin implements BasePlugin {
 		try {
 			imgtemp = ImageIO.read(new File(System.getProperty("java.io.tmpdir")+"screenshot"+clientName+".png"));
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		BufferedImage imgFinal = null;
+		
+//		BufferedImage imgtemp = null;
+//		BufferedImage imgFinal = null;
+//		try {
+//			imgtemp = ImageIO
+//					.read(new URL(
+//							"http://"+host+"/"+clientName+".png"));
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		int height = ((int) (((float) imgtemp.getHeight() / (float) imgtemp
 				.getWidth()) * (float) width));
 		imgFinal=imgUtils.getScaledImage(imgtemp, width, height);
