@@ -88,7 +88,7 @@ public class Plugin implements BasePlugin {
 	}
 
 	@Override
-	public void runClient() {
+	public void runClient(String[] args) {
 		new Thread(new Client("127.0.0.1", "infokup", "12346789")).start();
 	}
 

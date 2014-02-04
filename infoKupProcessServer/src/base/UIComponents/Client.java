@@ -206,6 +206,7 @@ public class Client {
 								Component comp = SchoolarServer.infoScrollPanel
 										.getComponent(i);
 								// BUG
+								System.out.println(i);
 								SchoolarServer.infoScrollPanel.remove(i);
 								SchoolarServer.infoScrollPanel.repaint();
 								SchoolarServer.infoScrollPanel.revalidate();
@@ -214,7 +215,8 @@ public class Client {
 										pluginLoader);
 								individualClient.setVisible(true);
 							}
-							i++;
+							if (!SchoolarServer.removedClients.contains(client))
+								i++;
 						}
 					}
 				});
@@ -292,5 +294,9 @@ public class Client {
 	public void removeComponent(int i) {
 		procPanel.remove(i);
 		procPanel.revalidate();
+	}
+
+	public void setLocation(int x, int y, int width, int height) {
+		procPanel.setBounds(x, y, width, height);
 	}
 }

@@ -34,7 +34,7 @@ class SchoolarClient {
 			}
 		}
 		pl = new PluginLoader(false);
-		pl.runClient("Test");
+		pl.runClient("Test", new String[]{"nis"});
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -54,6 +54,7 @@ class SchoolarClient {
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
+			System.out.println(msg);
 			BufferedReader inFromServer = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
 			messageRecieve = inFromServer.readLine();
@@ -82,7 +83,6 @@ class SchoolarClient {
 			message = message.replace(
 					System.getenv("computername") + " popup ", "");
 			textPopup(message);
-
 		}
 	}
 
@@ -142,7 +142,7 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = System.getenv("computername") + ";" + processes;
+				processes = System.getenv("computername")+ "" + ";" + processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);

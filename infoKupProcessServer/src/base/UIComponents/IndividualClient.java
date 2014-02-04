@@ -25,14 +25,67 @@ public class IndividualClient extends JFrame {
 	Component component;
 	int id;
 	PluginLoader pluginLoader;
+	JFrame mainFrame = this;
 
-	public IndividualClient(String clientName, final Client client,
-			Component comp, final int id, PluginLoader pluginLoader) throws HeadlessException {
+	public IndividualClient(final String clientName, final Client client,
+			Component comp, final int id, PluginLoader pluginLoader)
+			throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
 		this.component = comp;
-		this.id=id;
+		this.id = id;
+		this.pluginLoader = pluginLoader;
+		SchoolarServer.removedClients.add(clientName);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		initGUI();
+		dispose();
+		Timer timer = new Timer();
+		addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+			}
+
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				SchoolarServer.addPC(component, id);
+				SchoolarServer.removedClients.remove(clientName);
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+			}
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+			}
+		});
+		timer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				indiClient.setData(client.getData());
+			}
+		}, 0, 2000);
+	}
+
+	public IndividualClient(String clientName, final Client client,
+			Component comp, PluginLoader pluginLoader) throws HeadlessException {
+		super(clientName);
+		this.clientName = clientName;
+		this.client = client;
+		this.component = comp;
 		this.pluginLoader = pluginLoader;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
@@ -42,42 +95,31 @@ public class IndividualClient extends JFrame {
 
 			@Override
 			public void windowOpened(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void windowIconified(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void windowDeiconified(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void windowDeactivated(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				SchoolarServer.addPC(component, id);
+				SchoolarServer.addPC(component);
 			}
 
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-
 			}
 
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 		timer.scheduleAtFixedRate(new TimerTask() {

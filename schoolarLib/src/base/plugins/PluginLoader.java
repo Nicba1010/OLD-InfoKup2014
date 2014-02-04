@@ -73,9 +73,9 @@ public class PluginLoader {
 		}
 	}
 
-	public void runClient(String input) {
+	public void runClient(String input, String[] args) {
 		for (BasePlugin plugin : plugins) {
-			plugin.runClient();
+			plugin.runClient(args);
 		}
 	}
 

@@ -40,6 +40,7 @@ public class SchoolarServer extends JFrame {
 	private static String[] TCPData = new String[2];
 
 	public static ArrayList<String> clients = new ArrayList<String>();
+	public static ArrayList<String> removedClients = new ArrayList<String>();
 	public static Buffer buffer = new Buffer();
 
 	public static JPanel mainPanel, infoScrollPanel;
@@ -53,7 +54,6 @@ public class SchoolarServer extends JFrame {
 		try {
 			pluginLoader = new PluginLoader(true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		initUI();
@@ -214,6 +214,11 @@ public class SchoolarServer extends JFrame {
 
 	public static void addPC(Component comp, int index) {
 		infoScrollPanel.add(comp, index);
+		infoScrollPanel.revalidate();
+		infoScrollPanel.repaint();
+	}
+	public static void addPC(Component comp) {
+		infoScrollPanel.add(comp);
 		infoScrollPanel.revalidate();
 		infoScrollPanel.repaint();
 	}
