@@ -2,6 +2,7 @@ package base;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -15,21 +16,29 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import base.UIComponents.Client;
+
 import base.plugins.PluginLoader;
 import base.splash.SplashScreen;
 import base.util.Buffer;
 
 @SuppressWarnings("serial")
 public class SchoolarServer extends JFrame {
-	private int screenWidth = 1280, screenHeight = 720;
+	static boolean resChange = false;
+	int screenWidth = 1280, screenHeight = 720;
 	JButton quitButton;
+	JButton settingButton;
 	JScrollPane infoScrollPane;
+	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
 
@@ -49,7 +58,7 @@ public class SchoolarServer extends JFrame {
 	static JScrollPane scrollablePCinfo;
 	static JFrame splashFrame;
 	static PluginLoader pluginLoader;
-	
+
 	public SchoolarServer() {
 		try {
 			pluginLoader = new PluginLoader(true);
@@ -60,10 +69,30 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void color() {
-		Color color = new Color(25, 25, 112);
+		Color color = new Color(105, 105, 105);
 		infoScrollPanel.setBackground(color);
 		mainPanel.setBackground(color);
 		scrollablePCinfo.setBackground(color);
+
+	}
+
+	public void settings() {
+        
+		JTextField width = new JTextField("" + screenWidth);
+		JTextField height = new JTextField("" + screenHeight);
+		JPanel panel = new JPanel(new GridLayout(0, 1));
+		panel.add(new JLabel("Širina: "));
+		panel.add(width);
+		panel.add(new JLabel("Visina: "));
+		panel.add(height);
+		JOptionPane.showConfirmDialog(null, panel, "Postavke",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		screenWidth = Integer.parseInt(width.getText());
+		screenHeight = Integer.parseInt(height.getText());
+		System.out.println("" + screenWidth);
+		System.out.println("" + screenHeight);
+		//Treba sloziti da ponovo pokrene server sa novom rezolucijom a ako je stara da nista ne napravi
+
 	}
 
 	public void initUI() {
@@ -76,6 +105,7 @@ public class SchoolarServer extends JFrame {
 		mainPanel.setLayout(null);
 		infoScrollPanel.setLayout(new BoxLayout(infoScrollPanel,
 				BoxLayout.X_AXIS));
+
 		setSize(screenWidth, screenHeight);
 		setLocationRelativeTo(null);
 		{
@@ -90,7 +120,22 @@ public class SchoolarServer extends JFrame {
 					System.exit(0);
 				}
 			});
+			{
+				settingButton = new JButton("Postavke");
+				settingButton.setBounds(mainFrame.getWidth() - 180 - 16,
+						mainFrame.getHeight() - 30 * 2 - 8, 100, 30);
+				settingButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent event1) {
+						settings();
+
+					}
+				});
+
+			}
 			mainPanel.add(quitButton);
+			mainPanel.add(settingButton);
 		}
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -110,7 +155,7 @@ public class SchoolarServer extends JFrame {
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 
-		// color();
+		//color();
 
 	}
 
@@ -131,18 +176,21 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void main(String args[]) throws Exception {
+
 		parseArgs(args);
 		running = true;
-		if (!nosplash)
-			new SplashScreen("images/splash.png", 500, 2, 750);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				SchoolarServer server = new SchoolarServer();
-				server.setVisible(true);
-			}
-		});
-		start();
+		do {
+			if (!nosplash)
+				new SplashScreen("images/splash.png", 500, 2, 750);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					SchoolarServer server = new SchoolarServer();
+					server.setVisible(true);
+				}
+			});
+			start();
+		} while (resChange = true);
 	}
 
 	public static void start() {
@@ -217,6 +265,7 @@ public class SchoolarServer extends JFrame {
 		infoScrollPanel.revalidate();
 		infoScrollPanel.repaint();
 	}
+
 	public static void addPC(Component comp) {
 		infoScrollPanel.add(comp);
 		infoScrollPanel.revalidate();
