@@ -33,7 +33,6 @@ import base.util.Buffer;
 
 @SuppressWarnings("serial")
 public class SchoolarServer extends JFrame {
-	static boolean resChange = false;
 	int screenWidth = 1280, screenHeight = 720;
 	JButton quitButton;
 	JButton settingButton;
@@ -77,7 +76,7 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void settings() {
-        
+
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -91,7 +90,8 @@ public class SchoolarServer extends JFrame {
 		screenHeight = Integer.parseInt(height.getText());
 		System.out.println("" + screenWidth);
 		System.out.println("" + screenHeight);
-		//Treba sloziti da ponovo pokrene server sa novom rezolucijom a ako je stara da nista ne napravi
+		// Treba sloziti da ponovo pokrene server sa novom rezolucijom a ako je
+		// stara da nista ne napravi
 
 	}
 
@@ -155,7 +155,7 @@ public class SchoolarServer extends JFrame {
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 
-		//color();
+		// color();
 
 	}
 
@@ -179,18 +179,16 @@ public class SchoolarServer extends JFrame {
 
 		parseArgs(args);
 		running = true;
-		do {
-			if (!nosplash)
-				new SplashScreen("images/splash.png", 500, 2, 750);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					SchoolarServer server = new SchoolarServer();
-					server.setVisible(true);
-				}
-			});
-			start();
-		} while (resChange = true);
+		if (!nosplash)
+			new SplashScreen("images/splash.png", 500, 2, 750);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				SchoolarServer server = new SchoolarServer();
+				server.setVisible(true);
+			}
+		});
+		start();
 	}
 
 	public static void start() {
