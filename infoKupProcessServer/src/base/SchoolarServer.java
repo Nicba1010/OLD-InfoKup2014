@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import base.UIComponents.Client;
-
 import base.plugins.PluginLoader;
 import base.splash.SplashScreen;
 import base.util.Buffer;
@@ -52,7 +50,8 @@ public class SchoolarServer extends JFrame {
 	public static Buffer buffer = new Buffer();
 
 	public static JPanel mainPanel, infoScrollPanel;
-	public static int socketTCP;
+	public static int socketTCP = 25565;
+	public static int cond = 0;
 	public static boolean defaultSettings = false, nosplash = false;
 	static JScrollPane scrollablePCinfo;
 	static JFrame splashFrame;
@@ -64,7 +63,7 @@ public class SchoolarServer extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		settings();
+		settingsUI();
 		initUI();
 	}
 
@@ -76,16 +75,33 @@ public class SchoolarServer extends JFrame {
 
 	}
 
-	public void settings() {
+	public static void settingsSocket() {
+		JTextField TCPsocket = new JTextField("" + socketTCP);
+		JPanel settingSocketPanel = new JPanel(new GridLayout(0, 1));
+		settingSocketPanel.add(new JLabel("Port: "));
+		settingSocketPanel.add(TCPsocket);
+		int input = JOptionPane.showConfirmDialog(null, settingSocketPanel,
+				"Postavke konekcije", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE);
+		if (input == JOptionPane.OK_OPTION) {
+			socketTCP = Integer.parseInt(TCPsocket.getText());
+		} else {
+			System.out.println("Using default port!");
+		}
+		System.out.println("Socket: " + socketTCP);
+	}
+
+	public void settingsUI() {
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(new JLabel("Širina: "));
-		panel.add(width);
-		panel.add(new JLabel("Visina: "));
-		panel.add(height);
-		int input = JOptionPane.showConfirmDialog(null, panel, "Postavke",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		JPanel settingUIPanel = new JPanel(new GridLayout(0, 1));
+		settingUIPanel.add(new JLabel("Å irina: "));
+		settingUIPanel.add(width);
+		settingUIPanel.add(new JLabel("Visina: "));
+		settingUIPanel.add(height);
+		int input = JOptionPane.showConfirmDialog(null, settingUIPanel,
+				"Postavke", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE);
 		if (input == JOptionPane.OK_OPTION) {
 			screenWidth = Integer.parseInt(width.getText());
 			screenHeight = Integer.parseInt(height.getText());
@@ -93,10 +109,8 @@ public class SchoolarServer extends JFrame {
 		} else {
 			System.out.println("Cancelled!");
 		}
-
 		System.out.println("Sirina: " + screenWidth);
 		System.out.println("Visina: " + screenHeight);
-        
 	}
 
 	public void initUI() {
@@ -132,15 +146,14 @@ public class SchoolarServer extends JFrame {
 
 					@Override
 					public void actionPerformed(ActionEvent event1) {
-						settings();
+						settingsUI();
 
 					}
 				});
 
 			}
 			mainPanel.add(quitButton);
-			//beskorisno dok se ne slozi da se postavke spremaju u odredjen file pa da ih program ucita pri svakom pokretanju!
-			//mainPanel.add(settingButton);
+			// mainPanel.add(settingButton);
 		}
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -163,28 +176,26 @@ public class SchoolarServer extends JFrame {
 
 	}
 
+	// maknuo stare argumente, stavio samo nosplash valjda je dobro uhh ak nije
+	// ubi me
 	private static void parseArgs(String args[]) {
-		if (args.length == 1 && args[0].toString() == "-defaultip") {
-			defaultSettings = true;
-		} else if (args.length == 2
-				&& args[1].toString().equalsIgnoreCase("nosplash")) {
+		if (args.length == 1 && args[0].toString().equalsIgnoreCase("nosplash")) {
 			nosplash = true;
-			socketTCP = Integer.parseInt(args[0]);
 		} else {
 			System.out.println(args.length);
 			for (int i = 0; i < args.length; i++) {
 				System.out.println(i + ":" + args[i]);
 			}
-			socketTCP = Integer.parseInt(args[0]);
+
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
-
 		parseArgs(args);
 		running = true;
 		if (!nosplash)
 			new SplashScreen("images/splash.png", 500, 2, 750);
+		settingsSocket();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -192,10 +203,19 @@ public class SchoolarServer extends JFrame {
 				server.setVisible(true);
 			}
 		});
+		// minor_BUG - treba cekati da settingsUI prodje i tek onda poceti!
 		start();
+
 	}
 
 	public static void start() {
+		// privremeno rjesenje
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// privremeno rjsenje
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(socketTCP);
