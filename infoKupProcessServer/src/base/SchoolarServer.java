@@ -64,6 +64,7 @@ public class SchoolarServer extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		settings();
 		initUI();
 	}
 
@@ -76,7 +77,6 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void settings() {
-
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -84,15 +84,19 @@ public class SchoolarServer extends JFrame {
 		panel.add(width);
 		panel.add(new JLabel("Visina: "));
 		panel.add(height);
-		JOptionPane.showConfirmDialog(null, panel, "Postavke",
+		int input = JOptionPane.showConfirmDialog(null, panel, "Postavke",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		screenWidth = Integer.parseInt(width.getText());
-		screenHeight = Integer.parseInt(height.getText());
-		System.out.println("" + screenWidth);
-		System.out.println("" + screenHeight);
-		// Treba sloziti da ponovo pokrene server sa novom rezolucijom a ako je
-		// stara da nista ne napravi
+		if (input == JOptionPane.OK_OPTION) {
+			screenWidth = Integer.parseInt(width.getText());
+			screenHeight = Integer.parseInt(height.getText());
 
+		} else {
+			System.out.println("Cancelled!");
+		}
+
+		System.out.println("Sirina: " + screenWidth);
+		System.out.println("Visina: " + screenHeight);
+        
 	}
 
 	public void initUI() {
@@ -135,7 +139,8 @@ public class SchoolarServer extends JFrame {
 
 			}
 			mainPanel.add(quitButton);
-			mainPanel.add(settingButton);
+			//beskorisno dok se ne slozi da se postavke spremaju u odredjen file pa da ih program ucita pri svakom pokretanju!
+			//mainPanel.add(settingButton);
 		}
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -154,7 +159,6 @@ public class SchoolarServer extends JFrame {
 
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
-
 		// color();
 
 	}
