@@ -57,6 +57,8 @@ public class SchoolarServer extends JFrame {
 	static JScrollPane scrollablePCinfo;
 	static JFrame splashFrame;
 	static PluginLoader pluginLoader;
+	static String ftpServerIP = "127.0.0.1", ftpServerUsername = "infokup",
+			ftpServerPassword = "12346789", ftpServerIPRemote = "127.0.0.1";
 
 	public SchoolarServer() {
 		try {
@@ -173,7 +175,8 @@ public class SchoolarServer extends JFrame {
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
-		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, mainFrame.getHeight()-110);
+		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15,
+				mainFrame.getHeight() - 110);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -224,14 +227,19 @@ public class SchoolarServer extends JFrame {
 				clientSentence = inFromClient.readLine();
 				if (clientSentence != null) {
 					TCPData = clientSentence.split(";");
-
+					boolean newClient = false;
 					if (clients.contains(TCPData[0])) {
 
 					} else {
 						System.out.println(TCPData[0]);
 						processLists.add(new Client(0, 0, 250, 600,
-								infoScrollPanel, TCPData[0], pluginLoader));
+								infoScrollPanel, TCPData[0], pluginLoader,
+								ftpServerIP, ftpServerUsername,
+								ftpServerPassword));
+						System.out.println(ftpServerIP + ":"
+								+ ftpServerUsername + ":" + ftpServerPassword);
 						clients.add(TCPData[0]);
+						newClient = true;
 					}
 
 					for (Client client : processLists) {
@@ -239,7 +247,7 @@ public class SchoolarServer extends JFrame {
 							client.setData(TCPData[1].split(":"));
 						}
 					}
-					sendResponse();
+					sendResponse(newClient);
 					connectionSocket.close();
 				}
 			}
@@ -248,7 +256,7 @@ public class SchoolarServer extends JFrame {
 		}
 	}
 
-	private static void sendResponse() {
+	private static void sendResponse(boolean newClient) {
 		try {
 			if (buffer.len() > 0) {
 				for (int i = 0; i < buffer.len(); i++) {
@@ -261,10 +269,10 @@ public class SchoolarServer extends JFrame {
 						System.out.println("OK");
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
-						outToClient.writeBytes(clientName + " " + arg0 + " "
-								+ arg1 + "\n");
-						System.out.println(clientName + " " + arg0 + " " + arg1
-								+ "\n");
+						String msg;
+						msg = clientName + " " + arg0 + " " + arg1 + "\n";
+						outToClient.writeBytes(msg);
+						System.out.println(msg);
 						buffer.remove(i);
 						break;
 					}
@@ -272,21 +280,19 @@ public class SchoolarServer extends JFrame {
 			} else {
 				DataOutputStream outToClient = new DataOutputStream(
 						connectionSocket.getOutputStream());
+				if (newClient) {
+					outToClient.writeBytes("FTP:" + ftpServerIPRemote + ":"
+							+ ftpServerUsername + ":" + ftpServerPassword
+							+ "\n");
+				}
 				outToClient.writeBytes("OK" + "\n");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
 	public static void addPC(Component comp, int index) {
 		infoScrollPanel.add(comp, index);
-		infoScrollPanel.revalidate();
-		infoScrollPanel.repaint();
-	}
-
-	public static void addPC(Component comp) {
-		infoScrollPanel.add(comp);
 		infoScrollPanel.revalidate();
 		infoScrollPanel.repaint();
 	}

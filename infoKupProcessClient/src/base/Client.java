@@ -1,4 +1,4 @@
-package image;
+package base;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -21,10 +21,6 @@ public class Client implements Runnable {
 
 	String host, user, pass;
 
-	public Client(int a){
-		
-	}
-	
 	public void run() {
 		final String dataFolder = System.getenv("APPDATA") + "\\.Schoolar";
 		File folder = new File(dataFolder);

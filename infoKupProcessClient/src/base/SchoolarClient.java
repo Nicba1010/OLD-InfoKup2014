@@ -23,6 +23,7 @@ class SchoolarClient {
 	static String ip;
 	static int socket;
 	static PluginLoader pl;
+	static String ftpServerIP, ftpServerUsername, ftpServerPassword;
 
 	public static void main(String args[]) throws Exception {
 		if (!debug) {
@@ -34,7 +35,7 @@ class SchoolarClient {
 			}
 		}
 		pl = new PluginLoader(false);
-		pl.runClient("Test", new String[]{"nis"});
+		pl.runClient("Test", new String[] { "nis" });
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -83,6 +84,16 @@ class SchoolarClient {
 			message = message.replace(
 					System.getenv("computername") + " popup ", "");
 			textPopup(message);
+		} else if (message.contains("FTP:")) {
+			message = message.replaceAll("FTP:", "");
+			String[] ftpInfo = message.split(":");
+			ftpServerIP = ftpInfo[0];
+			ftpServerUsername = ftpInfo[1];
+			ftpServerPassword = ftpInfo[2];
+			System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
+					+ ftpServerPassword);
+			Image image = new Image();
+			image.runClient(ftpServerIP, ftpServerUsername, ftpServerPassword);
 		}
 	}
 
@@ -142,7 +153,8 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = System.getenv("computername")+ "" + ";" + processes;
+				processes = System.getenv("computername") + "" + ";"
+						+ processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);

@@ -43,9 +43,14 @@ public class Client {
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
 	PluginLoader pluginLoader;
+	private String ftpServerIP;
+	private String ftpServerUsername;
+	private String ftpServerPassword;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
-			final String clientName, PluginLoader pluginLoader) {
+			final String clientName, PluginLoader pluginLoader,
+			String ftpServerIP, String ftpServerUsername,
+			String ftpServerPassword) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -53,7 +58,11 @@ public class Client {
 		this.height = height;
 		this.clientName = clientName;
 		this.pluginLoader = pluginLoader;
-
+		this.ftpServerIP = ftpServerIP;
+		this.ftpServerUsername = ftpServerUsername;
+		this.ftpServerPassword = ftpServerPassword;
+		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
+				+ ftpServerPassword);
 		{
 			initPopups();
 			initProcessList();
@@ -212,7 +221,8 @@ public class Client {
 								SchoolarServer.infoScrollPanel.revalidate();
 								IndividualClient individualClient = new IndividualClient(
 										clientName, getClient(), comp, i,
-										pluginLoader);
+										pluginLoader, ftpServerIP,
+										ftpServerUsername, ftpServerPassword);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -224,6 +234,9 @@ public class Client {
 		});
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
+		Image image = new Image();
+		image.addJComponentsToServer(mainButtonPanel, width, clientName,
+				ftpServerIP, ftpServerUsername, ftpServerPassword);
 		try {
 			pluginLoader.loadPlugins(mainButtonPanel, width, clientName);
 		} catch (Exception e) {

@@ -26,9 +26,13 @@ public class IndividualClient extends JFrame {
 	int id;
 	PluginLoader pluginLoader;
 	JFrame mainFrame = this;
+	private String ftpServerIP;
+	private String ftpServerUsername;
+	private String ftpServerPassword;
 
 	public IndividualClient(final String clientName, final Client client,
-			Component comp, final int id, PluginLoader pluginLoader)
+			Component comp, final int id, PluginLoader pluginLoader, String ftpServerIP, String ftpServerUsername,
+			String ftpServerPassword)
 			throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
@@ -36,6 +40,9 @@ public class IndividualClient extends JFrame {
 		this.component = comp;
 		this.id = id;
 		this.pluginLoader = pluginLoader;
+		this.ftpServerIP = ftpServerIP;
+		this.ftpServerUsername = ftpServerUsername;
+		this.ftpServerPassword = ftpServerPassword;
 		SchoolarServer.removedClients.add(clientName);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
@@ -80,54 +87,6 @@ public class IndividualClient extends JFrame {
 		}, 0, 2000);
 	}
 
-	public IndividualClient(String clientName, final Client client,
-			Component comp, PluginLoader pluginLoader) throws HeadlessException {
-		super(clientName);
-		this.clientName = clientName;
-		this.client = client;
-		this.component = comp;
-		this.pluginLoader = pluginLoader;
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		initGUI();
-		dispose();
-		Timer timer = new Timer();
-		addWindowListener(new WindowListener() {
-
-			@Override
-			public void windowOpened(WindowEvent arg0) {
-			}
-
-			@Override
-			public void windowIconified(WindowEvent arg0) {
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent arg0) {
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent arg0) {
-			}
-
-			@Override
-			public void windowClosing(WindowEvent arg0) {
-				SchoolarServer.addPC(component);
-			}
-
-			@Override
-			public void windowClosed(WindowEvent arg0) {
-			}
-
-			@Override
-			public void windowActivated(WindowEvent arg0) {
-			}
-		});
-		timer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				indiClient.setData(client.getData());
-			}
-		}, 0, 2000);
-	}
 
 	private void initGUI() {
 		panel = new JPanel();
@@ -135,7 +94,7 @@ public class IndividualClient extends JFrame {
 		setSize(new Dimension(screenWidth, screenHeight));
 		getContentPane().add(panel);
 		indiClient = new Client(0, 0, screenWidth - 15, screenHeight - 44,
-				panel, clientName, pluginLoader);
+				panel, clientName, pluginLoader, ftpServerIP, ftpServerUsername, ftpServerPassword);
 		indiClient.removeButton(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());
