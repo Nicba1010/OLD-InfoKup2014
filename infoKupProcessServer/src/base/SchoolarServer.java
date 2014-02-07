@@ -99,69 +99,78 @@ public class SchoolarServer extends JFrame {
 		settingsSocketPanel.add(width);
 		settingsSocketPanel.add(new JLabel("Visina: "));
 		settingsSocketPanel.add(height);
-		settingsSocketPanel.add(new JLabel("Port: "));
-		settingsSocketPanel.add(TCPsocket);
-		settingsSocketPanel.add(checkbox);
-		settingsSocketPanel.add(new JLabel("FTP Server IP"));
-		settingsSocketPanel.add(serverIP);
-		serverIP.setEnabled(false);
-		settingsSocketPanel.add(new JLabel("FTP Remote Server IP"));
-		settingsSocketPanel.add(serverIpRemote);
-		serverIpRemote.setEnabled(false);
-		settingsSocketPanel.add(new JLabel("FTP Server Username"));
-		settingsSocketPanel.add(serverUser);
-		serverUser.setEnabled(false);
-		settingsSocketPanel.add(new JLabel("FTP Server Password"));
-		settingsSocketPanel.add(serverPass);
-		serverPass.setEnabled(false);
-		checkbox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				JCheckBox checkbox = (JCheckBox) event.getSource();
-				if (checkbox.isSelected()) {
-					serverIP.setEnabled(true);
-					serverIpRemote.setEnabled(true);
-					serverUser.setEnabled(true);
-					serverPass.setEnabled(true);
-					settingsSocketPanel.revalidate();
-					settingsSocketPanel.repaint();
-				} else {
-					serverIP.setEnabled(false);
-					serverIpRemote.setEnabled(false);
-					serverUser.setEnabled(false);
-					serverPass.setEnabled(false);
-					settingsSocketPanel.revalidate();
-					settingsSocketPanel.repaint();
+		if (firstTime) {
+			settingsSocketPanel.add(new JLabel("Port: "));
+			settingsSocketPanel.add(TCPsocket);
+			settingsSocketPanel.add(checkbox);
+			settingsSocketPanel.add(new JLabel("FTP Server IP"));
+			settingsSocketPanel.add(serverIP);
+			serverIP.setEnabled(false);
+			settingsSocketPanel.add(new JLabel("FTP Remote Server IP"));
+			settingsSocketPanel.add(serverIpRemote);
+			serverIpRemote.setEnabled(false);
+			settingsSocketPanel.add(new JLabel("FTP Server Username"));
+			settingsSocketPanel.add(serverUser);
+			serverUser.setEnabled(false);
+			settingsSocketPanel.add(new JLabel("FTP Server Password"));
+			settingsSocketPanel.add(serverPass);
+			serverPass.setEnabled(false);
+			checkbox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					JCheckBox checkbox = (JCheckBox) event.getSource();
+					if (checkbox.isSelected()) {
+						serverIP.setEnabled(true);
+						serverIpRemote.setEnabled(true);
+						serverUser.setEnabled(true);
+						serverPass.setEnabled(true);
+						settingsSocketPanel.revalidate();
+						settingsSocketPanel.repaint();
+					} else {
+						serverIP.setEnabled(false);
+						serverIpRemote.setEnabled(false);
+						serverUser.setEnabled(false);
+						serverPass.setEnabled(false);
+						settingsSocketPanel.revalidate();
+						settingsSocketPanel.repaint();
+					}
 				}
-			}
-		});
+			});
+		}
 		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
-				"Postavke konekcije", JOptionPane.OK_CANCEL_OPTION,
+				"Postavke", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
-		if (checkbox.isSelected()) {
-			ftpOn = true;
-		} else {
-			ftpOn = false;
+		if (firstTime) {
+			if (checkbox.isSelected()) {
+				ftpOn = true;
+			} else {
+				ftpOn = false;
+			}
+			if (input == JOptionPane.OK_OPTION) {
+				socketTCP = Integer.parseInt(TCPsocket.getText());
+				ftpServerIP = serverIP.getText();
+				ftpServerIPRemote = serverIpRemote.getText();
+				ftpServerUsername = serverUser.getText();
+				ftpServerPassword = serverPass.getText();
+
+			} else {
+				System.out.println("Using default port!");
+			}
 		}
 		if (input == JOptionPane.OK_OPTION) {
-			socketTCP = Integer.parseInt(TCPsocket.getText());
-			ftpServerIP = serverIP.getText();
-			ftpServerIPRemote = serverIpRemote.getText();
-			ftpServerUsername = serverUser.getText();
-			ftpServerPassword = serverPass.getText();
-
-		} else {
-			System.out.println("Using default port!");
+			screenWidth = Integer.parseInt(width.getText());
+			screenHeight = Integer.parseInt(height.getText());
 		}
-		screenWidth = Integer.parseInt(width.getText());
-		screenHeight = Integer.parseInt(height.getText());
 		if (!firstTime)
 			updateBounds();
-		System.out.println("Socket: " + socketTCP);
-		System.out.println("Server IP: " + ftpServerIP);
-		System.out.println("RemoteServer IP: " + ftpServerIPRemote);
-		System.out.println("Username: " + ftpServerUsername);
-		System.out.println("Password: " + ftpServerPassword);
+
+		if (firstTime) {
+			System.out.println("Socket: " + socketTCP);
+			System.out.println("Server IP: " + ftpServerIP);
+			System.out.println("RemoteServer IP: " + ftpServerIPRemote);
+			System.out.println("Username: " + ftpServerUsername);
+			System.out.println("Password: " + ftpServerPassword);
+		}
 
 	}
 

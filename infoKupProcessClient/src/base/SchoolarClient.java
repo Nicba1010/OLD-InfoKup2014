@@ -38,7 +38,7 @@ class SchoolarClient {
 		settingsSocketPanel.add(new JLabel("Port Servera: "));
 		settingsSocketPanel.add(clientSocket);
 		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
-				"Postavke konekcije", JOptionPane.OK_CANCEL_OPTION,
+				"Postavke", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
 
 		if (input == JOptionPane.OK_OPTION) {
