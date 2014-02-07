@@ -1,6 +1,7 @@
 package base.UIComponents;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -191,6 +192,8 @@ public class Client {
 
 	@SuppressWarnings("unused")
 	private void initButtons() {
+		Color color = new Color(104, 33, 122);
+		Color colortxt = new Color(211, 255, 236);
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.Y_AXIS));
@@ -198,6 +201,7 @@ public class Client {
 		defaultButtonPanel.setLayout(new BoxLayout(defaultButtonPanel,
 				BoxLayout.X_AXIS));
 
+   
 		TextFieldPopupButton commandButton = new TextFieldPopupButton("Run",
 				"command", clientName, defaultButtonPanel, "Unesi komandu!");
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
@@ -235,6 +239,8 @@ public class Client {
 				});
 			}
 		});
+		individual.setBackground(color);
+		individual.setForeground(colortxt);
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
 		if (ftpOn) {
@@ -258,11 +264,12 @@ public class Client {
 	}
 
 	private void initProcPanel() {
+		
 		processesScrollPane = new JScrollPane(processesListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
-
 		procPanel = new ClientPanel();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
+		namePanel.setBackground(Color.GRAY);
 		procPanel.add(namePanel);
 		procPanel.add(processesScrollPane);
 		procPanel.add(mainButtonPanel);
@@ -270,7 +277,11 @@ public class Client {
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setMaximumSize(procPanel.getPreferredSize());
 		procPanel.setMinimumSize(procPanel.getPreferredSize());
+		procPanel.setBackground(Color.GRAY);
+		procPanel.repaint();
+		procPanel.revalidate();
 	}
+	
 
 	public void setData(String[] processArray) {
 		Arrays.sort(processArray);

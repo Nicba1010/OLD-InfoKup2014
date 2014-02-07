@@ -78,7 +78,7 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void color() {
-		Color color = new Color(105, 105, 105);
+		Color color = new Color(40, 40, 43);
 		infoScrollPanel.setBackground(color);
 		mainPanel.setBackground(color);
 		scrollablePCinfo.setBackground(color);
@@ -191,6 +191,8 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void initUI() {
+		Color color = new Color(104, 33, 122);
+		Color colortxt = new Color(211, 255, 236);
 		int offsetWidth = 5;
 		int offsetHeight = -3;
 		setTitle("Schoolar Server");
@@ -207,6 +209,9 @@ public class SchoolarServer extends JFrame {
 		setLocationRelativeTo(null);
 		{
 			quitButton = new JButton("Ugasi");
+			quitButton.setBackground(color);
+			quitButton.setForeground(colortxt);
+			
 			quitButton.setBounds(mainFrame.getWidth() - 80 - offsetWidth,
 					mainFrame.getHeight() - 30 * 2 - offsetHeight, 80, 30);
 
@@ -219,9 +224,12 @@ public class SchoolarServer extends JFrame {
 			});
 			{
 				settingsButton = new JButton("Postavke");
+				settingsButton.setBackground(color);
+				settingsButton.setForeground(colortxt);
 				settingsButton.setBounds(mainFrame.getWidth() - 180
 						- offsetWidth, mainFrame.getHeight() - 30 * 2
-						- offsetHeight, 100, 30);
+						- offsetHeight, 80, 30);
+				
 				settingsButton.addActionListener(new ActionListener() {
 
 					@Override
@@ -245,12 +253,12 @@ public class SchoolarServer extends JFrame {
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
 		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - offsetWidth,
 				mainFrame.getHeight() - 110 - offsetHeight);
-		scrollablePCinfo
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
+		//scrollablePCinfo
+			//	.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+	//	UIManager.getLookAndFeelDefaults().put( "ScrollBar.thumb", Color.GRAY );
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
-		// color();
+		 color();
 	}
 
 	private static void parseArgs(String args[]) {
