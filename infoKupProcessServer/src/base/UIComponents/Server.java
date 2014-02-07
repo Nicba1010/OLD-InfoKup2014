@@ -1,5 +1,7 @@
 package base.UIComponents;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,8 +28,8 @@ public class Server implements Runnable {
 	String ftpServerIP;
 	String ftpServerUsername;
 	String ftpServerPassword;
-
-	public Server(JPanel panel, String clientName, JLabel label, int width,
+	BufferedImage fullImage;
+	public Server(JPanel panel, final String clientName, JLabel label, int width,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword) {
 		this.panel = panel;
@@ -37,6 +39,36 @@ public class Server implements Runnable {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
+		label.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				new ImageBig(clientName,fullImage);
+			}
+		});
 	}
 
 	@Override
@@ -93,6 +125,7 @@ public class Server implements Runnable {
 			int height = ((int) (((float) imgtemp.getHeight() / (float) imgtemp
 					.getWidth()) * (float) width));
 			imgFinal = imgUtils.getScaledImage(imgtemp, width, height);
+			fullImage = imgtemp;
 			label.setIcon(new ImageIcon(imgFinal));
 			label.repaint();
 			label.revalidate();

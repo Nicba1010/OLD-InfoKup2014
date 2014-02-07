@@ -2,6 +2,8 @@ package base.UIComponents;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,8 +77,8 @@ public class Image {
 			e.printStackTrace();
 		}
 		BufferedImage imgFinal = null;
+		JLabel label1 = new JLabel();
 		if (imgtemp == null) {
-			JLabel label1 = new JLabel();
 			pan.add(label1);
 			panel.add(pan);
 			new Thread(new Server(pan, clientName, label1, width, ftpServerIP,
@@ -85,7 +87,6 @@ public class Image {
 			int height = ((int) (((float) imgtemp.getHeight() / (float) imgtemp
 					.getWidth()) * (float) width));
 			imgFinal = imgUtils.getScaledImage(imgtemp, width, height);
-			JLabel label1 = new JLabel();
 			label1.setIcon(new ImageIcon(imgFinal));
 			System.out.println(imgFinal.getWidth());
 			System.out

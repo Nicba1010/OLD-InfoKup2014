@@ -89,7 +89,7 @@ public class SchoolarServer extends JFrame {
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		final JTextField serverIP = new JTextField("" + ftpServerIP);
-		final JTextField serverIpRemote = new JTextField("");
+		final JTextField serverIpRemote = new JTextField("" + ftpServerIPRemote);
 		final JTextField serverUser = new JTextField("" + ftpServerUsername);
 		final JTextField serverPass = new JTextField("" + ftpServerPassword);
 		JCheckBox checkbox = new JCheckBox("Prikaz klijentske slike");
@@ -167,7 +167,7 @@ public class SchoolarServer extends JFrame {
 		if (firstTime) {
 			System.out.println("Socket: " + socketTCP);
 			System.out.println("Server IP: " + ftpServerIP);
-			System.out.println("RemoteServer IP: " + ftpServerIPRemote);
+			System.out.println("Remote Server IP: " + ftpServerIPRemote);
 			System.out.println("Username: " + ftpServerUsername);
 			System.out.println("Password: " + ftpServerPassword);
 		}
