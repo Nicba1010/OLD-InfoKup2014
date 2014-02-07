@@ -31,9 +31,10 @@ import base.util.Buffer;
 
 @SuppressWarnings("serial")
 public class SchoolarServer extends JFrame {
-	int screenWidth = 1280, screenHeight = 720;
+	static int screenWidth = 1280;
+	static int screenHeight = 720;
 	JButton quitButton;
-	JButton settingButton;
+	JButton settingsButton;
 	JScrollPane infoScrollPane;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
@@ -63,7 +64,6 @@ public class SchoolarServer extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		settingsUI();
 		initUI();
 	}
 
@@ -73,6 +73,11 @@ public class SchoolarServer extends JFrame {
 		mainPanel.setBackground(color);
 		scrollablePCinfo.setBackground(color);
 
+	}
+
+	public static void settingsPopup() {
+		settingsSocket();
+		settingsUI();
 	}
 
 	public static void settingsSocket() {
@@ -91,11 +96,11 @@ public class SchoolarServer extends JFrame {
 		System.out.println("Socket: " + socketTCP);
 	}
 
-	public void settingsUI() {
+	public static void settingsUI() {
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		JPanel settingUIPanel = new JPanel(new GridLayout(0, 1));
-		settingUIPanel.add(new JLabel("Širina: "));
+		settingUIPanel.add(new JLabel("Sirina: "));
 		settingUIPanel.add(width);
 		settingUIPanel.add(new JLabel("Visina: "));
 		settingUIPanel.add(height);
@@ -139,21 +144,21 @@ public class SchoolarServer extends JFrame {
 				}
 			});
 			{
-				settingButton = new JButton("Postavke");
-				settingButton.setBounds(mainFrame.getWidth() - 180 - 16,
+				settingsButton = new JButton("Postavke");
+				settingsButton.setBounds(mainFrame.getWidth() - 180 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 100, 30);
-				settingButton.addActionListener(new ActionListener() {
+				settingsButton.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent event1) {
-						settingsUI();
-
+						settingsPopup();
+						mainFrame.setSize(screenWidth, screenHeight);
 					}
 				});
 
 			}
 			mainPanel.add(quitButton);
-			// mainPanel.add(settingButton);
+			mainPanel.add(settingsButton);
 		}
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -162,11 +167,13 @@ public class SchoolarServer extends JFrame {
 				System.out.println(e.getNewState());
 				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
 						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
+				settingsButton.setBounds(mainFrame.getWidth() - 180 - 16,
+						mainFrame.getHeight() - 30 * 2 - 8, 100, 30);
 				scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 620);
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
-		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 620);
+		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, mainFrame.getHeight()-110);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -176,8 +183,6 @@ public class SchoolarServer extends JFrame {
 
 	}
 
-	// maknuo stare argumente, stavio samo nosplash valjda je dobro uhh ak nije
-	// ubi me
 	private static void parseArgs(String args[]) {
 		if (args.length == 1 && args[0].toString().equalsIgnoreCase("nosplash")) {
 			nosplash = true;
@@ -195,7 +200,7 @@ public class SchoolarServer extends JFrame {
 		running = true;
 		if (!nosplash)
 			new SplashScreen("images/splash.png", 500, 2, 750);
-		settingsSocket();
+		settingsPopup();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -203,19 +208,11 @@ public class SchoolarServer extends JFrame {
 				server.setVisible(true);
 			}
 		});
-		// minor_BUG - treba cekati da settingsUI prodje i tek onda poceti!
 		start();
 
 	}
 
 	public static void start() {
-		// privremeno rjesenje
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// privremeno rjsenje
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(socketTCP);
