@@ -84,16 +84,19 @@ class SchoolarClient {
 			message = message.replace(
 					System.getenv("computername") + " popup ", "");
 			textPopup(message);
-		} else if (message.contains("FTP:")) {
-			message = message.replaceAll("FTP:", "");
-			String[] ftpInfo = message.split(":");
-			ftpServerIP = ftpInfo[0];
-			ftpServerUsername = ftpInfo[1];
-			ftpServerPassword = ftpInfo[2];
-			System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
-					+ ftpServerPassword);
-			Image image = new Image();
-			image.runClient(ftpServerIP, ftpServerUsername, ftpServerPassword);
+		} else if (message.contains("FTP")) {
+			if (!message.contains("FTPNOTON")) {
+				message = message.replaceAll("FTP:", "");
+				String[] ftpInfo = message.split(":");
+				ftpServerIP = ftpInfo[0];
+				ftpServerUsername = ftpInfo[1];
+				ftpServerPassword = ftpInfo[2];
+				System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
+						+ ftpServerPassword);
+				Image image = new Image();
+				image.runClient(ftpServerIP, ftpServerUsername,
+						ftpServerPassword);
+			}
 		}
 	}
 

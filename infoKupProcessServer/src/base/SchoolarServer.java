@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -59,8 +60,10 @@ public class SchoolarServer extends JFrame {
 	static PluginLoader pluginLoader;
 	static String ftpServerIP = "127.0.0.1", ftpServerUsername = "infokup",
 			ftpServerPassword = "12346789", ftpServerIPRemote = "127.0.0.1";
+	static boolean ftpOn;
 
 	public SchoolarServer() {
+		setResizable(false);
 		try {
 			pluginLoader = new PluginLoader(true);
 		} catch (Exception e) {
@@ -78,49 +81,85 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void settingsPopup() {
-		settingsSocket();
-		settingsUI();
-	}
-
-	public static void settingsSocket() {
+		JTextField width = new JTextField("" + screenWidth);
+		JTextField height = new JTextField("" + screenHeight);
+		final JTextField serverIP = new JTextField("" + ftpServerIP);
+		final JTextField serverIpRemote = new JTextField("");
+		final JTextField serverUser = new JTextField("" + ftpServerUsername);
+		final JTextField serverPass = new JTextField("" + ftpServerPassword);
+		JCheckBox checkbox = new JCheckBox("Prikaz klijentske slike");
 		JTextField TCPsocket = new JTextField("" + socketTCP);
-		JPanel settingSocketPanel = new JPanel(new GridLayout(0, 1));
-		settingSocketPanel.add(new JLabel("Port: "));
-		settingSocketPanel.add(TCPsocket);
-		int input = JOptionPane.showConfirmDialog(null, settingSocketPanel,
+		final JPanel settingsSocketPanel = new JPanel(new GridLayout(0, 1));
+		settingsSocketPanel.add(new JLabel("Sirina: "));
+		settingsSocketPanel.add(width);
+		settingsSocketPanel.add(new JLabel("Visina: "));
+		settingsSocketPanel.add(height);
+		settingsSocketPanel.add(new JLabel("Port: "));
+		settingsSocketPanel.add(TCPsocket);
+		settingsSocketPanel.add(checkbox);
+		settingsSocketPanel.add(new JLabel("FTP Server IP"));
+		settingsSocketPanel.add(serverIP);
+		serverIP.setEnabled(false);
+		settingsSocketPanel.add(new JLabel("FTP Remote Server IP"));
+		settingsSocketPanel.add(serverIpRemote);
+		serverIpRemote.setEnabled(false);
+		settingsSocketPanel.add(new JLabel("FTP Server Username"));
+		settingsSocketPanel.add(serverUser);
+		serverUser.setEnabled(false);
+		settingsSocketPanel.add(new JLabel("FTP Server Password"));
+		settingsSocketPanel.add(serverPass);
+		serverPass.setEnabled(false);
+		checkbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				JCheckBox checkbox = (JCheckBox) event.getSource();
+				if (checkbox.isSelected()) {
+					serverIP.setEnabled(true);
+					serverIpRemote.setEnabled(true);
+					serverUser.setEnabled(true);
+					serverPass.setEnabled(true);
+					settingsSocketPanel.revalidate();
+					settingsSocketPanel.repaint();
+				} else {
+					serverIP.setEnabled(false);
+					serverIpRemote.setEnabled(false);
+					serverUser.setEnabled(false);
+					serverPass.setEnabled(false);
+					settingsSocketPanel.revalidate();
+					settingsSocketPanel.repaint();
+				}
+			}
+		});
+		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
 				"Postavke konekcije", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
+		if (checkbox.isSelected()) {
+			ftpOn = true;
+		} else {
+			ftpOn = false;
+		}
+
 		if (input == JOptionPane.OK_OPTION) {
 			socketTCP = Integer.parseInt(TCPsocket.getText());
+			ftpServerIP = serverIP.getText();
+			ftpServerIPRemote = serverIpRemote.getText();
+			ftpServerUsername = serverUser.getText();
+			ftpServerPassword = serverPass.getText();
+
 		} else {
 			System.out.println("Using default port!");
 		}
 		System.out.println("Socket: " + socketTCP);
-	}
+		System.out.println("Server IP: " + ftpServerIP);
+		System.out.println("RemoteServer IP: " + ftpServerIPRemote);
+		System.out.println("Username: " + ftpServerUsername);
+		System.out.println("Password: " + ftpServerPassword);
 
-	public static void settingsUI() {
-		JTextField width = new JTextField("" + screenWidth);
-		JTextField height = new JTextField("" + screenHeight);
-		JPanel settingUIPanel = new JPanel(new GridLayout(0, 1));
-		settingUIPanel.add(new JLabel("Sirina: "));
-		settingUIPanel.add(width);
-		settingUIPanel.add(new JLabel("Visina: "));
-		settingUIPanel.add(height);
-		int input = JOptionPane.showConfirmDialog(null, settingUIPanel,
-				"Postavke", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE);
-		if (input == JOptionPane.OK_OPTION) {
-			screenWidth = Integer.parseInt(width.getText());
-			screenHeight = Integer.parseInt(height.getText());
-
-		} else {
-			System.out.println("Cancelled!");
-		}
-		System.out.println("Sirina: " + screenWidth);
-		System.out.println("Visina: " + screenHeight);
 	}
 
 	public void initUI() {
+		int offsetWidth = 5;
+		int offsetHeight = -3;
 		setTitle("Schoolar Server");
 		mainPanel = new JPanel();
 		infoScrollPanel = new JPanel();
@@ -135,8 +174,8 @@ public class SchoolarServer extends JFrame {
 		setLocationRelativeTo(null);
 		{
 			quitButton = new JButton("Ugasi");
-			quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
-					mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
+			quitButton.setBounds(mainFrame.getWidth() - 80 - offsetWidth,
+					mainFrame.getHeight() - 30 * 2 - offsetHeight, 80, 30);
 
 			quitButton.addActionListener(new ActionListener() {
 				@Override
@@ -147,8 +186,9 @@ public class SchoolarServer extends JFrame {
 			});
 			{
 				settingsButton = new JButton("Postavke");
-				settingsButton.setBounds(mainFrame.getWidth() - 180 - 16,
-						mainFrame.getHeight() - 30 * 2 - 8, 100, 30);
+				settingsButton.setBounds(mainFrame.getWidth() - 180
+						- offsetWidth, mainFrame.getHeight() - 30 * 2
+						- offsetHeight, 100, 30);
 				settingsButton.addActionListener(new ActionListener() {
 
 					@Override
@@ -175,8 +215,8 @@ public class SchoolarServer extends JFrame {
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
-		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15,
-				mainFrame.getHeight() - 110);
+		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - offsetWidth,
+				mainFrame.getHeight() - 110 - offsetHeight);
 		scrollablePCinfo
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -232,10 +272,10 @@ public class SchoolarServer extends JFrame {
 
 					} else {
 						System.out.println(TCPData[0]);
-						processLists.add(new Client(0, 0, 250, 600,
-								infoScrollPanel, TCPData[0], pluginLoader,
-								ftpServerIP, ftpServerUsername,
-								ftpServerPassword));
+						processLists.add(new Client(0, 0, 250,
+								screenHeight - 128 + 3, infoScrollPanel,
+								TCPData[0], pluginLoader, ftpServerIP,
+								ftpServerUsername, ftpServerPassword, ftpOn));
 						System.out.println(ftpServerIP + ":"
 								+ ftpServerUsername + ":" + ftpServerPassword);
 						clients.add(TCPData[0]);
@@ -280,12 +320,14 @@ public class SchoolarServer extends JFrame {
 			} else {
 				DataOutputStream outToClient = new DataOutputStream(
 						connectionSocket.getOutputStream());
-				if (newClient) {
+				if (newClient && ftpOn) {
 					outToClient.writeBytes("FTP:" + ftpServerIPRemote + ":"
 							+ ftpServerUsername + ":" + ftpServerPassword
 							+ "\n");
-				}
-				outToClient.writeBytes("OK" + "\n");
+				} else if (!ftpOn) {
+					outToClient.writeBytes("FTPNOTON\n");
+				} else
+					outToClient.writeBytes("OK" + "\n");
 			}
 		} catch (Exception e) {
 		}

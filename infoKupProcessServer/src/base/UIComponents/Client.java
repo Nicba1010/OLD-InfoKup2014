@@ -46,11 +46,12 @@ public class Client {
 	private String ftpServerIP;
 	private String ftpServerUsername;
 	private String ftpServerPassword;
+	private boolean ftpOn;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
-			String ftpServerPassword) {
+			String ftpServerPassword, boolean ftpOn) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -61,6 +62,7 @@ public class Client {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
+		this.ftpOn=ftpOn;
 		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
 				+ ftpServerPassword);
 		{
@@ -222,7 +224,7 @@ public class Client {
 								IndividualClient individualClient = new IndividualClient(
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
-										ftpServerUsername, ftpServerPassword);
+										ftpServerUsername, ftpServerPassword,ftpOn);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -234,9 +236,11 @@ public class Client {
 		});
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
+		if(ftpOn){
 		Image image = new Image();
 		image.addJComponentsToServer(mainButtonPanel, width, clientName,
 				ftpServerIP, ftpServerUsername, ftpServerPassword);
+		}
 		try {
 			pluginLoader.loadPlugins(mainButtonPanel, width, clientName);
 		} catch (Exception e) {

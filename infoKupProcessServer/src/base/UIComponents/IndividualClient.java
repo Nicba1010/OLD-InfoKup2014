@@ -29,11 +29,12 @@ public class IndividualClient extends JFrame {
 	private String ftpServerIP;
 	private String ftpServerUsername;
 	private String ftpServerPassword;
+	private boolean ftpOn;
 
 	public IndividualClient(final String clientName, final Client client,
-			Component comp, final int id, PluginLoader pluginLoader, String ftpServerIP, String ftpServerUsername,
-			String ftpServerPassword)
-			throws HeadlessException {
+			Component comp, final int id, PluginLoader pluginLoader,
+			String ftpServerIP, String ftpServerUsername,
+			String ftpServerPassword, boolean ftpOn) throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
@@ -43,6 +44,7 @@ public class IndividualClient extends JFrame {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
+		this.ftpOn = ftpOn;
 		SchoolarServer.removedClients.add(clientName);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
@@ -87,14 +89,14 @@ public class IndividualClient extends JFrame {
 		}, 0, 2000);
 	}
 
-
 	private void initGUI() {
 		panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		setSize(new Dimension(screenWidth, screenHeight));
 		getContentPane().add(panel);
 		indiClient = new Client(0, 0, screenWidth - 15, screenHeight - 44,
-				panel, clientName, pluginLoader, ftpServerIP, ftpServerUsername, ftpServerPassword);
+				panel, clientName, pluginLoader, ftpServerIP,
+				ftpServerUsername, ftpServerPassword, ftpOn);
 		indiClient.removeButton(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());
