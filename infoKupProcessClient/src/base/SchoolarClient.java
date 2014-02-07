@@ -1,5 +1,6 @@
 package base;
 
+import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,7 +12,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,18 +24,40 @@ import base.plugins.PluginLoader;
 class SchoolarClient {
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
-	static String ip;
-	static int socket;
+	static String ip = "127.0.0.1";
+	static int socket = 25565;
 	static PluginLoader pl;
 	static String ftpServerIP, ftpServerUsername, ftpServerPassword;
 
+	public static void settings() {
+		JTextField clientIp = new JTextField("" + ip);
+		JTextField clientSocket = new JTextField("" + socket);
+		final JPanel settingsSocketPanel = new JPanel(new GridLayout(0, 1));
+		settingsSocketPanel.add(new JLabel("IP Servera: "));
+		settingsSocketPanel.add(clientIp);
+		settingsSocketPanel.add(new JLabel("Port Servera: "));
+		settingsSocketPanel.add(clientSocket);
+		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
+				"Postavke konekcije", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE);
+
+		if (input == JOptionPane.OK_OPTION) {
+			ip = clientIp.getText();
+			socket = Integer.parseInt(clientSocket.getText());
+
+		} else {
+			System.out.println("Using default port!");
+		}
+		System.out.println("IP: " + ip);
+		System.out.println("Socket: " + socket);
+
+	}
+
 	public static void main(String args[]) throws Exception {
+		settings();
 		if (!debug) {
 			if (args.length == 1 && args[0].toString() == "-defaultip") {
 				defaultSettings = true;
-			} else {
-				ip = args[0];
-				socket = Integer.parseInt(args[1]);
 			}
 		}
 		pl = new PluginLoader(false);
