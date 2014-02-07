@@ -62,7 +62,7 @@ public class Client {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
-		this.ftpOn=ftpOn;
+		this.ftpOn = ftpOn;
 		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
 				+ ftpServerPassword);
 		{
@@ -224,7 +224,8 @@ public class Client {
 								IndividualClient individualClient = new IndividualClient(
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
-										ftpServerUsername, ftpServerPassword,ftpOn);
+										ftpServerUsername, ftpServerPassword,
+										ftpOn);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -236,10 +237,10 @@ public class Client {
 		});
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
-		if(ftpOn){
-		Image image = new Image();
-		image.addJComponentsToServer(mainButtonPanel, width, clientName,
-				ftpServerIP, ftpServerUsername, ftpServerPassword);
+		if (ftpOn) {
+			Image image = new Image();
+			image.addJComponentsToServer(mainButtonPanel, width, clientName,
+					ftpServerIP, ftpServerUsername, ftpServerPassword);
 		}
 		try {
 			pluginLoader.loadPlugins(mainButtonPanel, width, clientName);
@@ -315,5 +316,14 @@ public class Client {
 
 	public void setLocation(int x, int y, int width, int height) {
 		procPanel.setBounds(x, y, width, height);
+	}
+
+	public void setSize(Dimension d) {
+		procPanel.setSize(d);
+		procPanel.setMaximumSize(d);
+		procPanel.setMinimumSize(d);
+		procPanel.setPreferredSize(d);
+		procPanel.repaint();
+		procPanel.revalidate();
 	}
 }

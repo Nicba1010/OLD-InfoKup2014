@@ -2,6 +2,7 @@ package base;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,8 +62,10 @@ public class SchoolarServer extends JFrame {
 	static String ftpServerIP = "127.0.0.1", ftpServerUsername = "infokup",
 			ftpServerPassword = "12346789", ftpServerIPRemote = "127.0.0.1";
 	static boolean ftpOn;
+	private boolean firstTime = true;
 
 	public SchoolarServer() {
+		settingsPopup();
 		setResizable(false);
 		try {
 			pluginLoader = new PluginLoader(true);
@@ -70,6 +73,8 @@ public class SchoolarServer extends JFrame {
 			e.printStackTrace();
 		}
 		initUI();
+		updateBounds();
+		firstTime = false;
 	}
 
 	public static void color() {
@@ -80,7 +85,7 @@ public class SchoolarServer extends JFrame {
 
 	}
 
-	public static void settingsPopup() {
+	public void settingsPopup() {
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		final JTextField serverIP = new JTextField("" + ftpServerIP);
@@ -138,7 +143,6 @@ public class SchoolarServer extends JFrame {
 		} else {
 			ftpOn = false;
 		}
-
 		if (input == JOptionPane.OK_OPTION) {
 			socketTCP = Integer.parseInt(TCPsocket.getText());
 			ftpServerIP = serverIP.getText();
@@ -149,12 +153,32 @@ public class SchoolarServer extends JFrame {
 		} else {
 			System.out.println("Using default port!");
 		}
+		screenWidth = Integer.parseInt(width.getText());
+		screenHeight = Integer.parseInt(height.getText());
+		if (!firstTime)
+			updateBounds();
 		System.out.println("Socket: " + socketTCP);
 		System.out.println("Server IP: " + ftpServerIP);
 		System.out.println("RemoteServer IP: " + ftpServerIPRemote);
 		System.out.println("Username: " + ftpServerUsername);
 		System.out.println("Password: " + ftpServerPassword);
 
+	}
+
+	public void updateBounds() {
+		this.setSize(screenWidth, screenHeight);
+		quitButton.setBounds(screenWidth - 80 - 4, screenHeight - 30 * 2 + 4,
+				80, 30);
+		settingsButton.setBounds(screenWidth - 180 - 4,
+				screenHeight - 30 * 2 + 4, 100, 30);
+		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
+		for (Client client : processLists) {
+			client.setSize(new Dimension(250, screenHeight - 125));
+		}
+		infoScrollPanel.repaint();
+		infoScrollPanel.revalidate();
+		this.repaint();
+		this.revalidate();
 	}
 
 	public void initUI() {
@@ -206,12 +230,7 @@ public class SchoolarServer extends JFrame {
 
 			@Override
 			public void windowStateChanged(WindowEvent e) {
-				System.out.println(e.getNewState());
-				quitButton.setBounds(mainFrame.getWidth() - 80 - 16,
-						mainFrame.getHeight() - 30 * 2 - 8, 80, 30);
-				settingsButton.setBounds(mainFrame.getWidth() - 180 - 16,
-						mainFrame.getHeight() - 30 * 2 - 8, 100, 30);
-				scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - 15, 620);
+				updateBounds();
 			}
 		});
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
@@ -223,7 +242,6 @@ public class SchoolarServer extends JFrame {
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
 		// color();
-
 	}
 
 	private static void parseArgs(String args[]) {
@@ -243,7 +261,6 @@ public class SchoolarServer extends JFrame {
 		running = true;
 		if (!nosplash)
 			new SplashScreen("images/splash.png", 500, 2, 750);
-		settingsPopup();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -273,7 +290,7 @@ public class SchoolarServer extends JFrame {
 					} else {
 						System.out.println(TCPData[0]);
 						processLists.add(new Client(0, 0, 250,
-								screenHeight - 128 + 3, infoScrollPanel,
+								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn));
 						System.out.println(ftpServerIP + ":"
