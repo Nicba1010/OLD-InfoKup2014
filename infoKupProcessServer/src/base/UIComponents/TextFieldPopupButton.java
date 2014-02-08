@@ -1,7 +1,6 @@
 package base.UIComponents;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,10 +30,6 @@ public class TextFieldPopupButton {
 					addToBuffer(type, arg2);
 			}
 		});
-		Color color = new Color(104, 33, 122);
-		Color colortxt = new Color(211, 255, 236);
-        button.setBackground(color);
-        button.setForeground(colortxt);
 		buttonPanel = new JPanel(new BorderLayout());
 		buttonPanel.add(button, BorderLayout.NORTH);
 		mainButtonPanel.add(buttonPanel);

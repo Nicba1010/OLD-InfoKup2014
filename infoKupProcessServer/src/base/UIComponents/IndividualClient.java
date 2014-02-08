@@ -101,5 +101,7 @@ public class IndividualClient extends JFrame {
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());
 		setVisible(true);
+		
 	}
-}
+	}
+

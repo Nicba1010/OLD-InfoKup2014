@@ -67,7 +67,7 @@ public class Client {
 		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
 				+ ftpServerPassword);
 		{
-			initPopups();
+			initPopups();			
 			initProcessList();
 			initButtons();
 			initImage();
@@ -192,8 +192,7 @@ public class Client {
 
 	@SuppressWarnings("unused")
 	private void initButtons() {
-		Color color = new Color(104, 33, 122);
-		Color colortxt = new Color(211, 255, 236);
+		
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.Y_AXIS));
@@ -239,8 +238,6 @@ public class Client {
 				});
 			}
 		});
-		individual.setBackground(color);
-		individual.setForeground(colortxt);
 		defaultButtonPanel.add(individual);
 		mainButtonPanel.add(defaultButtonPanel);
 		if (ftpOn) {
@@ -269,7 +266,6 @@ public class Client {
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 		procPanel = new ClientPanel();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
-		namePanel.setBackground(Color.GRAY);
 		procPanel.add(namePanel);
 		procPanel.add(processesScrollPane);
 		procPanel.add(mainButtonPanel);
@@ -277,7 +273,6 @@ public class Client {
 		procPanel.setPreferredSize(new Dimension(width, height));
 		procPanel.setMaximumSize(procPanel.getPreferredSize());
 		procPanel.setMinimumSize(procPanel.getPreferredSize());
-		procPanel.setBackground(Color.GRAY);
 		procPanel.repaint();
 		procPanel.revalidate();
 	}

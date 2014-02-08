@@ -35,8 +35,9 @@ import base.util.Buffer;
 public class SchoolarServer extends JFrame {
 	static int screenWidth = 1280;
 	static int screenHeight = 720;
-	JButton quitButton;
 	JButton settingsButton;
+	JButton quitButton;
+	JButton closeConButton;
 	JScrollPane infoScrollPane;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
@@ -86,6 +87,10 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void settingsPopup() {
+		// nemoj ovo pobrisat
+		// Color colorbg = new Color(40, 40, 43);
+		// Color color = new Color(104, 33, 122);
+		// Color colortxt = new Color(211, 255, 236);
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		final JTextField serverIP = new JTextField("" + ftpServerIP);
@@ -176,10 +181,12 @@ public class SchoolarServer extends JFrame {
 
 	public void updateBounds() {
 		this.setSize(screenWidth, screenHeight);
-		quitButton.setBounds(screenWidth - 80 - 4, screenHeight - 30 * 2 + 4,
-				80, 30);
-		settingsButton.setBounds(screenWidth - 180 - 4,
+		quitButton.setBounds(screenWidth - 100 - 4, screenHeight - 30 * 2 + 4,
+				100, 30);
+		settingsButton.setBounds(screenWidth - 200 - 4,
 				screenHeight - 30 * 2 + 4, 100, 30);
+		closeConButton.setBounds(screenWidth - 200 - 4, screenHeight - 85, 200,
+				30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : processLists) {
 			client.setSize(new Dimension(250, screenHeight - 125));
@@ -191,8 +198,6 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void initUI() {
-		Color color = new Color(104, 33, 122);
-		Color colortxt = new Color(211, 255, 236);
 		int offsetWidth = 5;
 		int offsetHeight = -3;
 		setTitle("Schoolar Server");
@@ -209,12 +214,11 @@ public class SchoolarServer extends JFrame {
 		setLocationRelativeTo(null);
 		{
 			quitButton = new JButton("Ugasi");
-			quitButton.setBackground(color);
-			quitButton.setForeground(colortxt);
-			
-			quitButton.setBounds(mainFrame.getWidth() - 80 - offsetWidth,
-					mainFrame.getHeight() - 30 * 2 - offsetHeight, 80, 30);
 
+			/*
+			 * quitButton.setBounds(mainFrame.getWidth() - 80 - offsetWidth,
+			 * mainFrame.getHeight() - 30 * 2 - offsetHeight, 80, 30);
+			 */
 			quitButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -224,12 +228,12 @@ public class SchoolarServer extends JFrame {
 			});
 			{
 				settingsButton = new JButton("Postavke");
-				settingsButton.setBackground(color);
-				settingsButton.setForeground(colortxt);
-				settingsButton.setBounds(mainFrame.getWidth() - 180
-						- offsetWidth, mainFrame.getHeight() - 30 * 2
-						- offsetHeight, 80, 30);
-				
+
+				/*
+				 * settingsButton.setBounds(mainFrame.getWidth() - 180 -
+				 * offsetWidth, mainFrame.getHeight() - 30 * 2 - offsetHeight,
+				 * 80, 30);
+				 */
 				settingsButton.addActionListener(new ActionListener() {
 
 					@Override
@@ -238,8 +242,24 @@ public class SchoolarServer extends JFrame {
 						mainFrame.setSize(screenWidth, screenHeight);
 					}
 				});
+				{
+					closeConButton = new JButton("Ugasi sve konekcije"
+							+ "i ugasi server");
+					/*
+					 * closeConButton.setBounds(mainFrame.getWidth() - -
+					 * offsetWidth, mainFrame.getHeight() - 30 * 2 -
+					 * offsetHeight, 200, 30);
+					 */
+					closeConButton.addActionListener(new ActionListener() {
 
+						@Override
+						public void actionPerformed(ActionEvent event1) {
+							shutdown();
+						}
+					});
+				}
 			}
+			mainPanel.add(closeConButton);
 			mainPanel.add(quitButton);
 			mainPanel.add(settingsButton);
 		}
@@ -253,12 +273,11 @@ public class SchoolarServer extends JFrame {
 		scrollablePCinfo = new JScrollPane(infoScrollPanel);
 		scrollablePCinfo.setBounds(0, 0, mainFrame.getWidth() - offsetWidth,
 				mainFrame.getHeight() - 110 - offsetHeight);
-		//scrollablePCinfo
-			//	.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-	//	UIManager.getLookAndFeelDefaults().put( "ScrollBar.thumb", Color.GRAY );
+		scrollablePCinfo
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
-		 color();
+		// color();
 	}
 
 	private static void parseArgs(String args[]) {
@@ -330,6 +349,10 @@ public class SchoolarServer extends JFrame {
 		}
 	}
 
+	private static void shutdown() {
+
+	}
+
 	private static void sendResponse(boolean newClient) {
 		try {
 			if (buffer.len() > 0) {
@@ -350,6 +373,7 @@ public class SchoolarServer extends JFrame {
 						buffer.remove(i);
 						break;
 					}
+
 				}
 			} else {
 				DataOutputStream outToClient = new DataOutputStream(
