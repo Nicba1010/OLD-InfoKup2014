@@ -214,11 +214,6 @@ public class SchoolarServer extends JFrame {
 		setLocationRelativeTo(null);
 		{
 			quitButton = new JButton("Ugasi");
-
-			/*
-			 * quitButton.setBounds(mainFrame.getWidth() - 80 - offsetWidth,
-			 * mainFrame.getHeight() - 30 * 2 - offsetHeight, 80, 30);
-			 */
 			quitButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -226,43 +221,34 @@ public class SchoolarServer extends JFrame {
 					System.exit(0);
 				}
 			});
-			{
-				settingsButton = new JButton("Postavke");
-
-				/*
-				 * settingsButton.setBounds(mainFrame.getWidth() - 180 -
-				 * offsetWidth, mainFrame.getHeight() - 30 * 2 - offsetHeight,
-				 * 80, 30);
-				 */
-				settingsButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent event1) {
-						settingsPopup();
-						mainFrame.setSize(screenWidth, screenHeight);
-					}
-				});
-				{
-					closeConButton = new JButton("Ugasi sve konekcije"
-							+ "i ugasi server");
-					/*
-					 * closeConButton.setBounds(mainFrame.getWidth() - -
-					 * offsetWidth, mainFrame.getHeight() - 30 * 2 -
-					 * offsetHeight, 200, 30);
-					 */
-					closeConButton.addActionListener(new ActionListener() {
-
-						@Override
-						public void actionPerformed(ActionEvent event1) {
-							shutdown();
-						}
-					});
-				}
-			}
-			mainPanel.add(closeConButton);
-			mainPanel.add(quitButton);
-			mainPanel.add(settingsButton);
 		}
+		{
+			settingsButton = new JButton("Postavke");
+			settingsButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+					settingsPopup();
+					mainFrame.setSize(screenWidth, screenHeight);
+				}
+			});
+		}
+		{
+			closeConButton = new JButton("Ugasi sve konekcije"
+					+ "i ugasi server");
+			closeConButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+					shutdown();
+				}
+			});
+		}
+
+		mainPanel.add(closeConButton);
+		mainPanel.add(quitButton);
+		mainPanel.add(settingsButton);
+
 		this.addWindowStateListener(new WindowStateListener() {
 
 			@Override
