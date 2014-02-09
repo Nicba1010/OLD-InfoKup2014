@@ -1,7 +1,6 @@
 package base.UIComponents;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -37,7 +36,7 @@ public class Client {
 
 	JButton sendCommandButton, popupButton, individual;
 	JLabel name;
-	JList<String> processesListJList;
+	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
 			defaultButtonPanel, namePanel;
 	public ClientPanel procPanel;
@@ -85,7 +84,7 @@ public class Client {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addToBuffer("killproc", processesListJList.getSelectedValue()
+				addToBuffer("killproc", processListJList.getSelectedValue()
 						.toString());
 			}
 		});
@@ -97,33 +96,33 @@ public class Client {
 	}
 
 	private void initProcessList() {
-		processesListJList = new JList<String>(processArray);
-		processesListJList.setListData(processArray);
-		processesListJList
+		processListJList = new JList<String>(processArray);
+		processListJList.setListData(processArray);
+		processListJList
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		processesListJList
+		processListJList
 				.addListSelectionListener(new ListSelectionListener() {
 
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						if (processesListJList.getSelectedIndex() == -1) {
+						if (processListJList.getSelectedIndex() == -1) {
 
 						} else {
-							if (currentSelectedIndex != processesListJList
+							if (currentSelectedIndex != processListJList
 									.getSelectedIndex()) {
-								System.out.println(processesListJList
+								System.out.println(processListJList
 										.getSelectedIndex());
-								System.out.println(processesListJList
+								System.out.println(processListJList
 										.getSelectedValue());
-								currentSelectedIndex = processesListJList
+								currentSelectedIndex = processListJList
 										.getSelectedIndex();
-								currentSelectedProcess = processesListJList
+								currentSelectedProcess = processListJList
 										.getSelectedValue().toString();
 							}
 						}
 					}
 				});
-		processesListJList.addKeyListener(new KeyListener() {
+		processListJList.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
@@ -138,11 +137,11 @@ public class Client {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getExtendedKeyCode() == 127)
-					addToBuffer("killproc", processesListJList
+					addToBuffer("killproc", processListJList
 							.getSelectedValue().toString());
 			}
 		});
-		processesListJList.addMouseListener(new MouseListener() {
+		processListJList.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
@@ -169,11 +168,11 @@ public class Client {
 
 			}
 		});
-		processesListJList.addMouseListener(new MouseAdapter() {
+		processListJList.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
 					System.out.println("Row: " + getRow(e.getPoint()));
-					processesListJList.setSelectedIndex(getRow(e.getPoint()));
+					processListJList.setSelectedIndex(getRow(e.getPoint()));
 					showMenu(e);
 				}
 			}
@@ -262,7 +261,7 @@ public class Client {
 
 	private void initProcPanel() {
 		
-		processesScrollPane = new JScrollPane(processesListJList);
+		processesScrollPane = new JScrollPane(processListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 		procPanel = new ClientPanel();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
@@ -281,8 +280,8 @@ public class Client {
 	public void setData(String[] processArray) {
 		Arrays.sort(processArray);
 		this.processArray = processArray;
-		processesListJList.setListData(processArray);
-		processesListJList.setSelectedIndex(currentSelectedIndex);
+		processListJList.setListData(processArray);
+		processListJList.setSelectedIndex(currentSelectedIndex);
 	}
 
 	public String[] getData() {
@@ -298,7 +297,7 @@ public class Client {
 	}
 
 	private int getRow(Point point) {
-		return processesListJList.locationToIndex(point);
+		return processListJList.locationToIndex(point);
 	}
 
 	public void addToBuffer(String arg0, String arg1) {

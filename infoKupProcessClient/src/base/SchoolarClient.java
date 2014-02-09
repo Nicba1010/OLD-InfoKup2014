@@ -123,6 +123,8 @@ class SchoolarClient {
 				image.runClient(ftpServerIP, ftpServerUsername,
 						ftpServerPassword);
 			}
+		} else if (message.contains("ShutdownClient")) {
+			System.exit(0);
 		}
 	}
 

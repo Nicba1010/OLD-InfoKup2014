@@ -30,6 +30,7 @@ import base.UIComponents.Client;
 import base.plugins.PluginLoader;
 import base.splash.SplashScreen;
 import base.util.Buffer;
+import base.util.Settings;
 
 @SuppressWarnings("serial")
 public class SchoolarServer extends JFrame {
@@ -43,7 +44,7 @@ public class SchoolarServer extends JFrame {
 	public static ServerSocket inSocket;
 	private static boolean running = false;
 
-	public static ArrayList<Client> processLists = new ArrayList<Client>();
+	public static ArrayList<Client> clientList = new ArrayList<Client>();
 
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
@@ -64,8 +65,11 @@ public class SchoolarServer extends JFrame {
 			ftpServerPassword = "12346789", ftpServerIPRemote = "127.0.0.1";
 	static boolean ftpOn;
 	private boolean firstTime = true;
+	static Object[] objectSettings = new Object[8];
+	static Settings settings;
 
 	public SchoolarServer() {
+		settings = new Settings();
 		settingsPopup();
 		setResizable(false);
 		try {
@@ -78,6 +82,30 @@ public class SchoolarServer extends JFrame {
 		firstTime = false;
 	}
 
+	public static void getSettings() {
+		objectSettings = settings.getSettings();
+		screenWidth = (int) objectSettings[0];
+		screenHeight = (int) objectSettings[1];
+		socketTCP = (int) objectSettings[2];
+		ftpOn = (boolean) objectSettings[3];
+		ftpServerIP = (String) objectSettings[4];
+		ftpServerIPRemote = (String) objectSettings[5];
+		ftpServerUsername = (String) objectSettings[6];
+		ftpServerPassword = (String) objectSettings[7];
+	}
+
+	public static void setSettings() {
+		objectSettings[0] = screenWidth;
+		objectSettings[1] = screenHeight;
+		objectSettings[2] = socketTCP;
+		objectSettings[3] = ftpOn;
+		objectSettings[4] = ftpServerIP;
+		objectSettings[5] = ftpServerIPRemote;
+		objectSettings[6] = ftpServerUsername;
+		objectSettings[7] = ftpServerPassword;
+		settings.setSettings(objectSettings);
+	}
+
 	public static void color() {
 		Color color = new Color(40, 40, 43);
 		infoScrollPanel.setBackground(color);
@@ -87,9 +115,11 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public void settingsPopup() {
-		// nemoj ovo pobrisat
-		// Color colorbg = new Color(40, 40, 43);
-		// Color color = new Color(104, 33, 122);
+		/*
+		 * nemoj ovo pobrisat Color colorbg = new Color(40, 40, 43); Color color
+		 * = new Color(104, 33, 122);
+		 */
+		getSettings();
 		// Color colortxt = new Color(211, 255, 236);
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
@@ -104,22 +134,34 @@ public class SchoolarServer extends JFrame {
 		settingsSocketPanel.add(width);
 		settingsSocketPanel.add(new JLabel("Visina: "));
 		settingsSocketPanel.add(height);
+		checkbox.setSelected(ftpOn);
 		if (firstTime) {
 			settingsSocketPanel.add(new JLabel("Port: "));
 			settingsSocketPanel.add(TCPsocket);
 			settingsSocketPanel.add(checkbox);
 			settingsSocketPanel.add(new JLabel("FTP Server IP"));
 			settingsSocketPanel.add(serverIP);
-			serverIP.setEnabled(false);
 			settingsSocketPanel.add(new JLabel("FTP Remote Server IP"));
 			settingsSocketPanel.add(serverIpRemote);
-			serverIpRemote.setEnabled(false);
 			settingsSocketPanel.add(new JLabel("FTP Server Username"));
 			settingsSocketPanel.add(serverUser);
-			serverUser.setEnabled(false);
 			settingsSocketPanel.add(new JLabel("FTP Server Password"));
 			settingsSocketPanel.add(serverPass);
-			serverPass.setEnabled(false);
+			if (checkbox.isSelected()) {
+				serverIP.setEnabled(true);
+				serverIpRemote.setEnabled(true);
+				serverUser.setEnabled(true);
+				serverPass.setEnabled(true);
+				settingsSocketPanel.revalidate();
+				settingsSocketPanel.repaint();
+			} else {
+				serverIP.setEnabled(false);
+				serverIpRemote.setEnabled(false);
+				serverUser.setEnabled(false);
+				serverPass.setEnabled(false);
+				settingsSocketPanel.revalidate();
+				settingsSocketPanel.repaint();
+			}
 			checkbox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -145,6 +187,9 @@ public class SchoolarServer extends JFrame {
 		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
 				"Postavke", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
+		if (input == JOptionPane.CANCEL_OPTION) {
+			System.exit(0);
+		}
 		if (firstTime) {
 			if (checkbox.isSelected()) {
 				ftpOn = true;
@@ -168,15 +213,7 @@ public class SchoolarServer extends JFrame {
 		}
 		if (!firstTime)
 			updateBounds();
-
-		if (firstTime) {
-			System.out.println("Socket: " + socketTCP);
-			System.out.println("Server IP: " + ftpServerIP);
-			System.out.println("Remote Server IP: " + ftpServerIPRemote);
-			System.out.println("Username: " + ftpServerUsername);
-			System.out.println("Password: " + ftpServerPassword);
-		}
-
+		setSettings();
 	}
 
 	public void updateBounds() {
@@ -188,7 +225,7 @@ public class SchoolarServer extends JFrame {
 		closeConButton.setBounds(screenWidth - 200 - 4, screenHeight - 85, 200,
 				30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
-		for (Client client : processLists) {
+		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
 		}
 		infoScrollPanel.repaint();
@@ -234,13 +271,12 @@ public class SchoolarServer extends JFrame {
 			});
 		}
 		{
-			closeConButton = new JButton("Ugasi sve konekcije"
-					+ "i ugasi server");
+			closeConButton = new JButton("Ugasi sve konekcije");
 			closeConButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event1) {
-					shutdown();
+					shutdownConnections();
 				}
 			});
 		}
@@ -311,7 +347,7 @@ public class SchoolarServer extends JFrame {
 
 					} else {
 						System.out.println(TCPData[0]);
-						processLists.add(new Client(0, 0, 250,
+						clientList.add(new Client(0, 0, 250,
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn));
@@ -321,7 +357,7 @@ public class SchoolarServer extends JFrame {
 						newClient = true;
 					}
 
-					for (Client client : processLists) {
+					for (Client client : clientList) {
 						if (client.getName().equalsIgnoreCase(TCPData[0])) {
 							client.setData(TCPData[1].split(":"));
 						}
@@ -335,8 +371,15 @@ public class SchoolarServer extends JFrame {
 		}
 	}
 
-	private static void shutdown() {
-
+	private static void shutdownConnections() {
+		for (Client client : clientList) {
+			buffer.addToBuffer("ShutdownClient", "", client.getName());
+		}
+		for (int i = 0; i < infoScrollPanel.getComponentCount(); i++) {
+			infoScrollPanel.remove(i);
+		}
+		infoScrollPanel.repaint();
+		infoScrollPanel.revalidate();
 	}
 
 	private static void sendResponse(boolean newClient) {
