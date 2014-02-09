@@ -3,6 +3,7 @@ package base;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -20,6 +21,7 @@ import javax.swing.JTextField;
 import org.apache.commons.lang3.StringUtils;
 
 import base.plugins.PluginLoader;
+import base.util.SettingsClient;
 
 class SchoolarClient {
 	public static Socket clientSocket;
@@ -28,29 +30,49 @@ class SchoolarClient {
 	static int socket = 25565;
 	static PluginLoader pl;
 	static String ftpServerIP, ftpServerUsername, ftpServerPassword;
-
+	static SettingsClient settings;
+	static Object[] objectSettings;
+	static String path = System.getenv("APPDATA") + "\\.Schoolar\\settingsClient"
+			+ System.getenv("computername") + ".xml";
+	static File settingsFile = new File(path);
 	public static void settings() {
-		JTextField clientIp = new JTextField("" + ip);
-		JTextField clientSocket = new JTextField("" + socket);
-		final JPanel settingsSocketPanel = new JPanel(new GridLayout(0, 1));
-		settingsSocketPanel.add(new JLabel("IP Servera: "));
-		settingsSocketPanel.add(clientIp);
-		settingsSocketPanel.add(new JLabel("Port Servera: "));
-		settingsSocketPanel.add(clientSocket);
-		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
-				"Postavke", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE);
+		if (!settingsFile.exists()) {
+			settings = new SettingsClient();
+			getSettings();
+			JTextField clientIp = new JTextField("" + ip);
+			JTextField clientSocket = new JTextField("" + socket);
+			final JPanel settingsSocketPanel = new JPanel(new GridLayout(0, 1));
+			settingsSocketPanel.add(new JLabel("IP Servera: "));
+			settingsSocketPanel.add(clientIp);
+			settingsSocketPanel.add(new JLabel("Port Servera: "));
+			settingsSocketPanel.add(clientSocket);
+			int input = JOptionPane.showConfirmDialog(null,
+					settingsSocketPanel, "Postavke",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-		if (input == JOptionPane.OK_OPTION) {
-			ip = clientIp.getText();
-			socket = Integer.parseInt(clientSocket.getText());
+			if (input == JOptionPane.OK_OPTION) {
+				ip = clientIp.getText();
+				socket = Integer.parseInt(clientSocket.getText());
 
-		} else {
-			System.out.println("Using default port!");
+			} else {
+				System.out.println("Using default port!");
+			}
+			System.out.println("IP: " + ip);
+			System.out.println("Socket: " + socket);
+			setSettings();
 		}
-		System.out.println("IP: " + ip);
-		System.out.println("Socket: " + socket);
+	}
 
+	public static void getSettings() {
+		objectSettings = settings.getSettings();
+		ip = objectSettings[0].toString();
+		socket = Integer.parseInt(objectSettings[1].toString());
+	}
+
+	public static void setSettings() {
+		objectSettings[0] = ip;
+		objectSettings[0] = socket;
+		settings.setSettings(objectSettings);
 	}
 
 	public static void main(String args[]) throws Exception {
