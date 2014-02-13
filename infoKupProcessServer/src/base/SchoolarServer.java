@@ -1,6 +1,5 @@
 package base;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -39,7 +38,6 @@ public class SchoolarServer extends JFrame {
 	JButton settingsButton;
 	JButton quitButton;
 	JButton closeConButton;
-	JScrollPane infoScrollPane;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
@@ -54,7 +52,8 @@ public class SchoolarServer extends JFrame {
 	public static ArrayList<String> removedClients = new ArrayList<String>();
 	public static Buffer buffer = new Buffer();
 
-	public static JPanel mainPanel, infoScrollPanel;
+	public static JPanel mainPanel;
+	public static JPanel infoScrollPanel;
 	public static int socketTCP = 25565;
 	public static int cond = 0;
 	public static boolean defaultSettings = false, nosplash = false;
@@ -106,21 +105,8 @@ public class SchoolarServer extends JFrame {
 		settings.setSettings(objectSettings);
 	}
 
-	public static void color() {
-		Color color = new Color(40, 40, 43);
-		infoScrollPanel.setBackground(color);
-		mainPanel.setBackground(color);
-		scrollablePCinfo.setBackground(color);
-
-	}
-
 	public void settingsPopup() {
-		/*
-		 * nemoj ovo pobrisat Color colorbg = new Color(40, 40, 43); Color color
-		 * = new Color(104, 33, 122);
-		 */
 		getSettings();
-		// Color colortxt = new Color(211, 255, 236);
 		JTextField width = new JTextField("" + screenWidth);
 		JTextField height = new JTextField("" + screenHeight);
 		final JTextField serverIP = new JTextField("" + ftpServerIP);
@@ -187,7 +173,7 @@ public class SchoolarServer extends JFrame {
 		int input = JOptionPane.showConfirmDialog(null, settingsSocketPanel,
 				"Postavke", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
-		if (input == JOptionPane.CANCEL_OPTION) {
+		if (input == JOptionPane.CANCEL_OPTION && firstTime) {
 			System.exit(0);
 		}
 		if (firstTime) {
@@ -299,7 +285,6 @@ public class SchoolarServer extends JFrame {
 				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		mainPanel.add(scrollablePCinfo);
 		setVisible(false);
-		// color();
 	}
 
 	private static void parseArgs(String args[]) {
