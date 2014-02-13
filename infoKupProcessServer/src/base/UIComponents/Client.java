@@ -66,7 +66,7 @@ public class Client {
 		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
 				+ ftpServerPassword);
 		{
-			initPopups();			
+			initPopups();
 			initProcessList();
 			initButtons();
 			initImage();
@@ -98,30 +98,26 @@ public class Client {
 	private void initProcessList() {
 		processListJList = new JList<String>(processArray);
 		processListJList.setListData(processArray);
-		processListJList
-				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		processListJList
-				.addListSelectionListener(new ListSelectionListener() {
+		processListJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		processListJList.addListSelectionListener(new ListSelectionListener() {
 
-					@Override
-					public void valueChanged(ListSelectionEvent e) {
-						if (processListJList.getSelectedIndex() == -1) {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (processListJList.getSelectedIndex() == -1) {
 
-						} else {
-							if (currentSelectedIndex != processListJList
-									.getSelectedIndex()) {
-								System.out.println(processListJList
-										.getSelectedIndex());
-								System.out.println(processListJList
-										.getSelectedValue());
-								currentSelectedIndex = processListJList
-										.getSelectedIndex();
-								currentSelectedProcess = processListJList
-										.getSelectedValue().toString();
-							}
-						}
+				} else {
+					if (currentSelectedIndex != processListJList
+							.getSelectedIndex()) {
+						System.out.println(processListJList.getSelectedIndex());
+						System.out.println(processListJList.getSelectedValue());
+						currentSelectedIndex = processListJList
+								.getSelectedIndex();
+						currentSelectedProcess = processListJList
+								.getSelectedValue().toString();
 					}
-				});
+				}
+			}
+		});
 		processListJList.addKeyListener(new KeyListener() {
 
 			@Override
@@ -137,8 +133,8 @@ public class Client {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getExtendedKeyCode() == 127)
-					addToBuffer("killproc", processListJList
-							.getSelectedValue().toString());
+					addToBuffer("killproc", processListJList.getSelectedValue()
+							.toString());
 			}
 		});
 		processListJList.addMouseListener(new MouseListener() {
@@ -191,7 +187,7 @@ public class Client {
 
 	@SuppressWarnings("unused")
 	private void initButtons() {
-		
+
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.Y_AXIS));
@@ -199,13 +195,13 @@ public class Client {
 		defaultButtonPanel.setLayout(new BoxLayout(defaultButtonPanel,
 				BoxLayout.X_AXIS));
 
-   
-		TextFieldPopupButton commandButton = new TextFieldPopupButton("Run",
-				"command", clientName, defaultButtonPanel, "Unesi komandu!");
-		TextFieldPopupButton popupButton = new TextFieldPopupButton("Popup",
-				"popup", clientName, defaultButtonPanel,
-				"Unesi tekst za popup!");
-		individual = new JButton("Individual");
+		TextFieldPopupButton commandButton = new TextFieldPopupButton(
+				"Pokreni", "command", clientName, defaultButtonPanel,
+				"Unesi komandu za " + clientName);
+		TextFieldPopupButton popupButton = new TextFieldPopupButton("Poruka",
+				"popup", clientName, defaultButtonPanel, "Unesi poruku za "
+						+ clientName);
+		individual = new JButton("Zasebni");
 		individual.addActionListener(new ActionListener() {
 
 			@Override
@@ -260,7 +256,7 @@ public class Client {
 	}
 
 	private void initProcPanel() {
-		
+
 		processesScrollPane = new JScrollPane(processListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 		procPanel = new ClientPanel();
@@ -275,7 +271,6 @@ public class Client {
 		procPanel.repaint();
 		procPanel.revalidate();
 	}
-	
 
 	public void setData(String[] processArray) {
 		Arrays.sort(processArray);
