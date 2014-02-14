@@ -11,6 +11,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
 
 import javax.swing.BoxLayout;
@@ -47,11 +54,13 @@ public class Client {
 	private String ftpServerUsername;
 	private String ftpServerPassword;
 	private boolean ftpOn;
+	BigInteger modulus,publicExponent;
+	PublicKey publicKey;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
-			String ftpServerPassword, boolean ftpOn) {
+			String ftpServerPassword, boolean ftpOn, BigInteger modulus, BigInteger exponent) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -63,6 +72,8 @@ public class Client {
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
 		this.ftpOn = ftpOn;
+		this.modulus = modulus;
+		this.publicExponent = exponent;
 		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
 				+ ftpServerPassword);
 		{
@@ -76,7 +87,22 @@ public class Client {
 		panelMain.add(procPanel);
 		panelMain.revalidate();
 	}
-
+	
+	public BigInteger getModulus(){
+		return modulus;
+	}
+	public BigInteger getExponent(){
+		return publicExponent;
+	}
+	
+	@SuppressWarnings("unused")
+	private void assemblePublicKey() throws InvalidKeySpecException, NoSuchAlgorithmException{
+		RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus,
+				publicExponent);
+		KeyFactory fact = KeyFactory.getInstance("RSA");
+		publicKey = fact.generatePublic(rsaPublicKeySpec);
+	}
+	
 	private void initPopups() {
 		popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Ugasi proces");
@@ -223,7 +249,7 @@ public class Client {
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
 										ftpServerUsername, ftpServerPassword,
-										ftpOn);
+										ftpOn, modulus, publicExponent);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))

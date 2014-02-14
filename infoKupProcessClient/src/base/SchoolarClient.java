@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import org.apache.commons.lang3.StringUtils;
 
 import base.plugins.PluginLoader;
+import base.sec.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
@@ -32,9 +33,13 @@ class SchoolarClient {
 	static String ftpServerIP, ftpServerUsername, ftpServerPassword;
 	static SettingsClient settings;
 	static Object[] objectSettings;
-	static String path = System.getenv("APPDATA") + "\\.Schoolar\\settingsClient"
-			+ System.getenv("computername") + ".xml";
+	static String path = System.getenv("APPDATA")
+			+ "\\.Schoolar\\settingsClient" + System.getenv("computername")
+			+ ".xml";
 	static File settingsFile = new File(path);
+	static boolean first = false;
+	static RSA encryption;
+
 	public static void settings() {
 		if (!settingsFile.exists()) {
 			settings = new SettingsClient();
@@ -49,7 +54,6 @@ class SchoolarClient {
 			int input = JOptionPane.showConfirmDialog(null,
 					settingsSocketPanel, "Postavke",
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
 			if (input == JOptionPane.OK_OPTION) {
 				ip = clientIp.getText();
 				socket = Integer.parseInt(clientSocket.getText());
@@ -82,6 +86,7 @@ class SchoolarClient {
 				defaultSettings = true;
 			}
 		}
+		encryption = new RSA(System.getenv("username"));
 		pl = new PluginLoader(false);
 		pl.runClient("Test", new String[] { "nis" });
 		Timer timer = new Timer();
@@ -92,7 +97,12 @@ class SchoolarClient {
 		}, 0, 2000);
 	}
 
-	public static void sendMessage(String msg) {
+	public static void sendMessage(String msg) throws IOException {
+		if (!first) {
+			msg = msg + "-:-" + encryption.readModulusAndExponent()[0] + "-:-"
+					+ encryption.readModulusAndExponent()[1];
+			first = true;
+		}
 		String messageRecieve = null;
 		try {
 			if (defaultSettings) {
@@ -115,8 +125,17 @@ class SchoolarClient {
 		}
 	}
 
-	private static void processMessage(String message) {
+	private static void processMessage(String message) throws IOException {
 		debugPrint(message);
+		message = message.replaceFirst(";", "");
+		String[] messageArray = message.split(";");
+		byte[] bytes = new byte[messageArray.length];
+		int pos = 0;
+		for (String s : messageArray) {
+			bytes[pos++] = Byte.parseByte(s);
+		}
+		message = encryption.decryptData(bytes);
+
 		if (message.contains(" killproc ")
 				&& message.contains(System.getenv("computername"))) {
 			message = message.replace(System.getenv("computername")

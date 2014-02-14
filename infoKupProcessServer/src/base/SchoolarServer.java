@@ -9,9 +9,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -27,6 +31,7 @@ import javax.swing.SwingUtilities;
 
 import base.UIComponents.Client;
 import base.plugins.PluginLoader;
+import base.sec.RSA;
 import base.splash.SplashScreen;
 import base.util.Buffer;
 import base.util.Settings;
@@ -47,6 +52,7 @@ public class SchoolarServer extends JFrame {
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
 	private static String[] TCPData = new String[2];
+	private static String[] TCPDataWithKey = new String[2];
 
 	public static ArrayList<String> clients = new ArrayList<String>();
 	public static ArrayList<String> removedClients = new ArrayList<String>();
@@ -66,6 +72,7 @@ public class SchoolarServer extends JFrame {
 	private boolean firstTime = true;
 	static Object[] objectSettings = new Object[8];
 	static Settings settings;
+	static RSA encryption = new RSA();
 
 	public SchoolarServer() {
 		settings = new Settings();
@@ -326,16 +333,22 @@ public class SchoolarServer extends JFrame {
 
 				clientSentence = inFromClient.readLine();
 				if (clientSentence != null) {
-					TCPData = clientSentence.split(";");
 					boolean newClient = false;
 					if (clients.contains(TCPData[0])) {
-
+						TCPData = clientSentence.split(";");
 					} else {
+						TCPDataWithKey = clientSentence.split("-:-");
+						BigInteger modulus = new BigInteger(TCPDataWithKey[1]);
+						BigInteger exponent = new BigInteger(TCPDataWithKey[2]);
+						System.out.println("MODULUS:" + TCPDataWithKey[1]);
+						System.out.println("EXPONENT:" + TCPDataWithKey[2]);
+						TCPData = TCPDataWithKey[0].split(";");
 						System.out.println(TCPData[0]);
 						clientList.add(new Client(0, 0, 250,
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
-								ftpServerUsername, ftpServerPassword, ftpOn));
+								ftpServerUsername, ftpServerPassword, ftpOn,
+								modulus, exponent));
 						System.out.println(ftpServerIP + ":"
 								+ ftpServerUsername + ":" + ftpServerPassword);
 						clients.add(TCPData[0]);
@@ -367,6 +380,17 @@ public class SchoolarServer extends JFrame {
 		infoScrollPanel.revalidate();
 	}
 
+	private static String getEcryptedData(BigInteger modulus,
+			BigInteger exponent, String msg) throws NoSuchAlgorithmException,
+			InvalidKeySpecException, IOException {
+		byte[] encryptedData = encryption.encryptData(msg, modulus, exponent);
+		String bytes = "";
+		for (byte b : encryptedData) {
+			bytes = bytes + ";" + Byte.toString(b);
+		}
+		return bytes;
+	}
+
 	private static void sendResponse(boolean newClient) {
 		try {
 			if (buffer.len() > 0) {
@@ -375,6 +399,13 @@ public class SchoolarServer extends JFrame {
 					String arg1 = buffer.get(i)[1];
 					String clientName = buffer.get(i)[2];
 					if (clientName.equalsIgnoreCase(TCPData[0])) {
+						BigInteger modulus = null, exponent = null;
+						for (Client client : clientList) {
+							if (client.getName().equalsIgnoreCase(TCPData[0])) {
+								modulus = client.getModulus();
+								exponent = client.getExponent();
+							}
+						}
 						System.out
 								.println(arg0 + ":" + arg1 + ":" + clientName);
 						System.out.println("OK");
@@ -382,24 +413,36 @@ public class SchoolarServer extends JFrame {
 								connectionSocket.getOutputStream());
 						String msg;
 						msg = clientName + " " + arg0 + " " + arg1 + "\n";
-						outToClient.writeBytes(msg);
-						System.out.println(msg);
+
+						outToClient.writeBytes(getEcryptedData(modulus,
+								exponent, msg));
 						buffer.remove(i);
 						break;
 					}
 
 				}
 			} else {
+				BigInteger modulus = null, exponent = null;
+				for (Client client : clientList) {
+					if (client.getName().equalsIgnoreCase(TCPData[0])) {
+						modulus = client.getModulus();
+						exponent = client.getExponent();
+					}
+
+				}
 				DataOutputStream outToClient = new DataOutputStream(
 						connectionSocket.getOutputStream());
+				String message;
 				if (newClient && ftpOn) {
-					outToClient.writeBytes("FTP:" + ftpServerIPRemote + ":"
-							+ ftpServerUsername + ":" + ftpServerPassword
-							+ "\n");
+					message = ("FTP:" + ftpServerIPRemote + ":"
+							+ ftpServerUsername + ":" + ftpServerPassword + "\n");
 				} else if (!ftpOn) {
-					outToClient.writeBytes("FTPNOTON\n");
-				} else
-					outToClient.writeBytes("OK" + "\n");
+					message = ("FTPNOTON\n");
+				} else {
+					message = ("OK" + "\n");
+				}
+				outToClient.writeBytes(getEcryptedData(modulus, exponent,
+						message));
 			}
 		} catch (Exception e) {
 		}

@@ -1,4 +1,4 @@
-package base.security;
+package base.sec;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -118,7 +118,6 @@ public class RSA {
 		return encryptedData;
 	}
 
-	@SuppressWarnings("unused")
 	public byte[] encryptData(String data, BigInteger modulus,
 			BigInteger exponent) throws IOException, NoSuchAlgorithmException,
 			InvalidKeySpecException {
@@ -129,9 +128,8 @@ public class RSA {
 		byte[] dataToEncrypt = data.getBytes();
 		byte[] encryptedData = null;
 		try {
-			PublicKey pubKey = readPublicKeyFromFile(PUBLIC_KEY_FILE);
 			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 			encryptedData = cipher.doFinal(dataToEncrypt);
 
 		} catch (Exception e) {
