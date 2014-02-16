@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 
 import base.UIComponents.Client;
 import base.plugins.PluginLoader;
-import base.sec.RSA;
+import base.security.RSA;
 import base.splash.SplashScreen;
 import base.util.Buffer;
 import base.util.Settings;
@@ -340,17 +340,12 @@ public class SchoolarServer extends JFrame {
 						TCPDataWithKey = clientSentence.split("-:-");
 						BigInteger modulus = new BigInteger(TCPDataWithKey[1]);
 						BigInteger exponent = new BigInteger(TCPDataWithKey[2]);
-						System.out.println("MODULUS:" + TCPDataWithKey[1]);
-						System.out.println("EXPONENT:" + TCPDataWithKey[2]);
 						TCPData = TCPDataWithKey[0].split(";");
-						System.out.println(TCPData[0]);
 						clientList.add(new Client(0, 0, 250,
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn,
 								modulus, exponent));
-						System.out.println(ftpServerIP + ":"
-								+ ftpServerUsername + ":" + ftpServerPassword);
 						clients.add(TCPData[0]);
 						newClient = true;
 					}
@@ -408,7 +403,6 @@ public class SchoolarServer extends JFrame {
 						}
 						System.out
 								.println(arg0 + ":" + arg1 + ":" + clientName);
-						System.out.println("OK");
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
 						String msg;

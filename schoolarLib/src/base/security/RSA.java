@@ -27,14 +27,6 @@ public class RSA {
 	private static String PRIVATE_KEY_FILE = null;
 
 	public static void main(String[] args) throws IOException {
-		RSA rsa = new RSA("NICBA1010WDCB");
-		byte[] encryptedData = rsa.encryptData("Banic");
-		for (byte b : encryptedData) {
-			System.out.print(Byte.toString(b));
-		}
-		System.out.println("");
-		String decrypted = rsa.decryptData(encryptedData);
-		System.out.println(decrypted);
 	}
 	public RSA(){
 		
@@ -45,25 +37,17 @@ public class RSA {
 			PRIVATE_KEY_FILE = dataFolder + System.getenv("username")
 					+ "Private.key";
 			try {
-				System.out
-						.println("-------GENERATING PUBLIC and PRIVATE KEY-------------");
 				KeyPairGenerator keyPairGenerator = KeyPairGenerator
 						.getInstance("RSA");
 				keyPairGenerator.initialize(512);
 				KeyPair keyPair = keyPairGenerator.generateKeyPair();
 				PublicKey publicKey = keyPair.getPublic();
 				PrivateKey privateKey = keyPair.getPrivate();
-
-				System.out
-						.println("\n------- PULLING OUT PARAMETERS WHICH MAKES KEYPAIR----------\n");
 				KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 				RSAPublicKeySpec rsaPubKeySpec = keyFactory.getKeySpec(
 						publicKey, RSAPublicKeySpec.class);
 				RSAPrivateKeySpec rsaPrivKeySpec = keyFactory.getKeySpec(
 						privateKey, RSAPrivateKeySpec.class);
-
-				System.out
-						.println("\n--------SAVING PUBLIC KEY AND PRIVATE KEY TO FILES-------\n");
 				this.saveKeys(PUBLIC_KEY_FILE, rsaPubKeySpec.getModulus(),
 						rsaPubKeySpec.getPublicExponent());
 				this.saveKeys(PRIVATE_KEY_FILE, rsaPrivKeySpec.getModulus(),
@@ -82,14 +66,12 @@ public class RSA {
 		ObjectOutputStream oos = null;
 
 		try {
-			System.out.println("Generating " + fileName + "...");
 			fos = new FileOutputStream(fileName);
 			oos = new ObjectOutputStream(new BufferedOutputStream(fos));
 
 			oos.writeObject(mod);
 			oos.writeObject(exp);
 
-			System.out.println(fileName + " generated successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -118,7 +100,6 @@ public class RSA {
 		return encryptedData;
 	}
 
-	@SuppressWarnings("unused")
 	public byte[] encryptData(String data, BigInteger modulus,
 			BigInteger exponent) throws IOException, NoSuchAlgorithmException,
 			InvalidKeySpecException {
@@ -129,9 +110,8 @@ public class RSA {
 		byte[] dataToEncrypt = data.getBytes();
 		byte[] encryptedData = null;
 		try {
-			PublicKey pubKey = readPublicKeyFromFile(PUBLIC_KEY_FILE);
 			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 			encryptedData = cipher.doFinal(dataToEncrypt);
 
 		} catch (Exception e) {
@@ -142,9 +122,6 @@ public class RSA {
 
 	public String decryptData(byte[] data) throws IOException {
 		byte[] decryptedData = null;
-		System.out.println("ENCRYPTED DATA");
-		System.out.println(new String(data));
-		System.out.println("");
 		try {
 			PrivateKey privateKey = readPrivateKeyFromFile(PRIVATE_KEY_FILE);
 			Cipher cipher = Cipher.getInstance("RSA");

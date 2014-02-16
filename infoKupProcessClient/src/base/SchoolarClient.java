@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import org.apache.commons.lang3.StringUtils;
 
 import base.plugins.PluginLoader;
-import base.sec.RSA;
+import base.security.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
@@ -113,7 +113,6 @@ class SchoolarClient {
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
-			System.out.println(msg);
 			BufferedReader inFromServer = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
 			messageRecieve = inFromServer.readLine();
@@ -135,7 +134,6 @@ class SchoolarClient {
 			bytes[pos++] = Byte.parseByte(s);
 		}
 		message = encryption.decryptData(bytes);
-
 		if (message.contains(" killproc ")
 				&& message.contains(System.getenv("computername"))) {
 			message = message.replace(System.getenv("computername")

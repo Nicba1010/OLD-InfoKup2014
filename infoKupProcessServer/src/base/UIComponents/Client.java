@@ -74,8 +74,6 @@ public class Client {
 		this.ftpOn = ftpOn;
 		this.modulus = modulus;
 		this.publicExponent = exponent;
-		System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
-				+ ftpServerPassword);
 		{
 			initPopups();
 			initProcessList();
@@ -134,8 +132,6 @@ public class Client {
 				} else {
 					if (currentSelectedIndex != processListJList
 							.getSelectedIndex()) {
-						System.out.println(processListJList.getSelectedIndex());
-						System.out.println(processListJList.getSelectedValue());
 						currentSelectedIndex = processListJList
 								.getSelectedIndex();
 						currentSelectedProcess = processListJList
@@ -193,7 +189,6 @@ public class Client {
 		processListJList.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
-					System.out.println("Row: " + getRow(e.getPoint()));
 					processListJList.setSelectedIndex(getRow(e.getPoint()));
 					showMenu(e);
 				}
@@ -240,8 +235,6 @@ public class Client {
 							if (client.equalsIgnoreCase(getName())) {
 								Component comp = SchoolarServer.infoScrollPanel
 										.getComponent(i);
-								// BUG
-								System.out.println(i);
 								SchoolarServer.infoScrollPanel.remove(i);
 								SchoolarServer.infoScrollPanel.repaint();
 								SchoolarServer.infoScrollPanel.revalidate();
