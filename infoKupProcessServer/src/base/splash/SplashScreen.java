@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -16,6 +17,14 @@ public class SplashScreen {
 
 	public SplashScreen(final String resource) throws Exception {
 		splashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Image image = null;
+		try {
+			image = ImageIO.read(getClass().getResource("images/icon.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		splashFrame.setIconImage(image);
 		Runnable splash = new Runnable() {
 			public void run() {
 				try {

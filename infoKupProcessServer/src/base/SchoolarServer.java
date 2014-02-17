@@ -3,6 +3,7 @@ package base;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -18,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -316,10 +318,17 @@ public class SchoolarServer extends JFrame {
 			public void run() {
 				SchoolarServer server = new SchoolarServer();
 				server.setVisible(true);
+				Image image = null;
+				try {
+					image = ImageIO.read(getClass().getResource("images/icon.png"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    server.setIconImage(image);
 			}
 		});
 		start();
-
 	}
 
 	public static void start() {
