@@ -2,8 +2,10 @@ package base.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
 public class Settings {
@@ -44,6 +46,19 @@ public class Settings {
 	}
 
 	public Object[] getSettings() {
+		loadSettings = new Properties();
+		try {
+			loadSettings.loadFromXML(new FileInputStream(settingsFile));
+		} catch (InvalidPropertiesFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Object height = Integer.parseInt(loadSettings.getProperty("height"));
 		Object width = Integer.parseInt(loadSettings.getProperty("width"));
 		Object port = Integer.parseInt(loadSettings.getProperty("port"));

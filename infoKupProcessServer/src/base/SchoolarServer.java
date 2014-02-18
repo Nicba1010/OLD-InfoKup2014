@@ -94,6 +94,7 @@ public class SchoolarServer extends JFrame {
 		objectSettings = settings.getSettings();
 		screenWidth = (int) objectSettings[0];
 		screenHeight = (int) objectSettings[1];
+		System.out.println(objectSettings[1].toString());
 		socketTCP = (int) objectSettings[2];
 		ftpOn = (boolean) objectSettings[3];
 		ftpServerIP = (String) objectSettings[4];
@@ -322,7 +323,6 @@ public class SchoolarServer extends JFrame {
 				try {
 					image = ImageIO.read(getClass().getResource("images/icon.png"));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			    server.setIconImage(image);
