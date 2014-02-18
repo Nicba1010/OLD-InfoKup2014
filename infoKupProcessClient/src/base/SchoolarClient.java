@@ -57,9 +57,8 @@ class SchoolarClient {
 			if (input == JOptionPane.OK_OPTION) {
 				ip = clientIp.getText();
 				socket = Integer.parseInt(clientSocket.getText());
-
 			} else {
-				System.out.println("Using default port!");
+				System.exit(0);
 			}
 			System.out.println("IP: " + ip);
 			System.out.println("Socket: " + socket);
@@ -75,7 +74,7 @@ class SchoolarClient {
 
 	public static void setSettings() {
 		objectSettings[0] = ip;
-		objectSettings[0] = socket;
+		objectSettings[1] = socket;
 		settings.setSettings(objectSettings);
 	}
 
