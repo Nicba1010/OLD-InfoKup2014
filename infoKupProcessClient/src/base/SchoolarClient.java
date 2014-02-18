@@ -40,8 +40,8 @@ class SchoolarClient {
 	static boolean first = false;
 	static RSA encryption;
 
-	public static void settings() {
-		if (!settingsFile.exists()) {
+	public static void settings(boolean b) {
+		if (!settingsFile.exists() || b) {
 			settings = new SettingsClient();
 			getSettings();
 			JTextField clientIp = new JTextField("" + ip);
@@ -80,10 +80,10 @@ class SchoolarClient {
 	}
 
 	public static void main(String args[]) throws Exception {
-		settings();
+		settings(false);
 		if (!debug) {
-			if (args.length == 1 && args[0].toString() == "-defaultip") {
-				defaultSettings = true;
+			if (args.length == 1 && args[0].toString().contains("settings")) {
+				settings(true);
 			}
 		}
 		encryption = new RSA(System.getenv("username"));
