@@ -35,8 +35,7 @@ class SchoolarClient {
 	static SettingsClient settings;
 	static Object[] objectSettings;
 	static String path = System.getenv("APPDATA")
-			+ "\\.Schoolar\\settingsClient" + computerName
-			+ ".xml";
+			+ "\\.Schoolar\\settingsClient" + computerName + ".xml";
 	static File settingsFile = new File(path);
 	static boolean first = false;
 	static RSA encryption;
@@ -105,11 +104,7 @@ class SchoolarClient {
 		}
 		String messageRecieve = null;
 		try {
-			if (defaultSettings) {
-				clientSocket = new Socket("127.0.0.1", 25565);
-			} else {
-				clientSocket = new Socket("127.0.0.1", 25566);
-			}
+			clientSocket = new Socket(ip, socket);
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
 			outToServer.writeBytes(msg + '\n');
@@ -134,20 +129,16 @@ class SchoolarClient {
 			bytes[pos++] = Byte.parseByte(s);
 		}
 		message = encryption.decryptData(bytes);
-		if (message.contains(" killproc ")
-				&& message.contains(computerName)) {
-			message = message.replace(computerName
-					+ " killproc ", "");
+		if (message.contains(" killproc ") && message.contains(computerName)) {
+			message = message.replace(computerName + " killproc ", "");
 			killProcess(message);
 		} else if (message.contains(" command ")
 				&& message.contains(computerName)) {
-			message = message.replace(computerName
-					+ " command ", "");
+			message = message.replace(computerName + " command ", "");
 			command(message);
 		} else if (message.contains(" popup ")
 				&& message.contains(computerName)) {
-			message = message.replace(
-					computerName + " popup ", "");
+			message = message.replace(computerName + " popup ", "");
 			textPopup(message);
 		} else if (message.contains("FTP")) {
 			if (!message.contains("FTPNOTON")) {
@@ -223,8 +214,7 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = computerName + "" + ";"
-						+ processes;
+				processes = computerName + "" + ";" + processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
 			sendMessage(processes);

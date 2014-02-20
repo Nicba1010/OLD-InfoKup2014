@@ -349,7 +349,7 @@ public class SchoolarServer extends JFrame {
 	public static void start() {
 		String clientSentence;
 		try {
-			inSocket = new ServerSocket(25566);
+			inSocket = new ServerSocket(socketTCP);
 			while (running) {
 				connectionSocket = inSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
