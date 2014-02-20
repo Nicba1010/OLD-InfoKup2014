@@ -9,13 +9,14 @@ import java.util.Properties;
 public class SettingsClient {
 	Properties loadSettings, saveProps;
 	String path;
-	File settingsFile = new File(path);
+	File settingsFile;
 	boolean existed;
 
 	public SettingsClient(String clientName) {
 		File dataFolder = new File(System.getenv("APPDATA") + "\\.Schoolar");
 		path = System.getenv("APPDATA") + "\\.Schoolar\\settingsClient"
 				+ clientName + ".xml";
+		settingsFile = new File(path);
 		if (!dataFolder.exists()) {
 			System.out.println("creating directory: " + ".Schoolar");
 			boolean result = dataFolder.mkdir();
