@@ -50,15 +50,15 @@ public class SchoolarServer extends JFrame {
 	public static ServerSocket inSocket;
 	private static boolean running = false;
 
-	public static ArrayList<Client> clientList = new ArrayList<Client>();
-
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
 	private static String[] TCPData = new String[2];
 	private static String[] TCPDataWithKey = new String[2];
 
+	public static ArrayList<Client> clientList = new ArrayList<Client>();
 	public static ArrayList<String> clients = new ArrayList<String>();
 	public static ArrayList<String> removedClients = new ArrayList<String>();
+
 	public static Buffer buffer = new Buffer();
 
 	public static JPanel mainPanel;
@@ -217,10 +217,10 @@ public class SchoolarServer extends JFrame {
 		this.setSize(screenWidth, screenHeight);
 		quitButton.setBounds(screenWidth - 100 - 4, screenHeight - 30 * 2 + 4,
 				100, 30);
-		settingsButton.setBounds(screenWidth - 100 - 4,
-				screenHeight - 85, 100, 30);
-		closeConButton.setBounds(screenWidth - 300 - 4, screenHeight - 30*2+4, 200,
+		settingsButton.setBounds(screenWidth - 100 - 4, screenHeight - 85, 100,
 				30);
+		closeConButton.setBounds(screenWidth - 300 - 4,
+				screenHeight - 30 * 2 + 4, 200, 30);
 		sendAllButton.setBounds(screenWidth - 300 - 4, screenHeight - 85, 200,
 				30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
@@ -285,11 +285,12 @@ public class SchoolarServer extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent event1) {
-					sendCommandToAll(JOptionPane.showInputDialog("Unesi komandu:"));
+					sendCommandToAll(JOptionPane
+							.showInputDialog("Unesi komandu:"));
 				}
 			});
 		}
-        mainPanel.add(sendAllButton);
+		mainPanel.add(sendAllButton);
 		mainPanel.add(closeConButton);
 		mainPanel.add(quitButton);
 		mainPanel.add(settingsButton);
@@ -390,6 +391,7 @@ public class SchoolarServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
 	private static void sendCommandToAll(String msg) {
 		for (Client client : clientList) {
 			buffer.addToBuffer("command", msg, client.getName());
@@ -404,16 +406,20 @@ public class SchoolarServer extends JFrame {
 			System.out.println(i);
 			infoScrollPanel.remove(i);
 		}
+		clientList = null;
+		clients = null;
+		removedClients = null;
+		clientList = new ArrayList<Client>();
+		clients = new ArrayList<String>();
+		removedClients = new ArrayList<String>();
 		infoScrollPanel.repaint();
 		infoScrollPanel.revalidate();
 	}
-	
 
 	private static String getEncryptedData(BigInteger modulus,
 			BigInteger exponent, String msg) throws NoSuchAlgorithmException,
 			InvalidKeySpecException, IOException {
-		byte[] encryptedData = encryption.encryptData(msg, modulus, 
-				exponent);
+		byte[] encryptedData = encryption.encryptData(msg, modulus, exponent);
 		String bytes = "";
 		for (byte b : encryptedData) {
 			bytes = bytes + ";" + Byte.toString(b);
