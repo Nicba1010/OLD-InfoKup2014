@@ -43,7 +43,7 @@ class SchoolarClient {
 
 	public static void settings(boolean b) {
 		if (!settingsFile.exists() || b) {
-			settings = new SettingsClient();
+			settings = new SettingsClient(computerName);
 			getSettings();
 			JTextField clientIp = new JTextField("" + ip);
 			JTextField clientSocket = new JTextField("" + socket);
