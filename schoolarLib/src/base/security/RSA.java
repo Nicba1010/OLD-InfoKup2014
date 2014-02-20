@@ -28,14 +28,17 @@ public class RSA {
 
 	public static void main(String[] args) throws IOException {
 	}
-	public RSA(){
-		
+
+	public RSA() {
+
 	}
+
 	public RSA(String clientName) throws IOException {
-			PUBLIC_KEY_FILE = dataFolder + System.getenv("username")
-					+ "Public.key";
-			PRIVATE_KEY_FILE = dataFolder + System.getenv("username")
-					+ "Private.key";
+		PUBLIC_KEY_FILE = dataFolder + System.getenv("username") + "Public.key";
+		PRIVATE_KEY_FILE = dataFolder + System.getenv("username")
+				+ "Private.key";
+		if (!((new File(PUBLIC_KEY_FILE).exists()) && (new File(
+				PRIVATE_KEY_FILE)).exists())) {
 			try {
 				KeyPairGenerator keyPairGenerator = KeyPairGenerator
 						.getInstance("RSA");
@@ -58,6 +61,7 @@ public class RSA {
 			} catch (InvalidKeySpecException e) {
 				e.printStackTrace();
 			}
+		}
 	}
 
 	private void saveKeys(String fileName, BigInteger mod, BigInteger exp)
@@ -160,8 +164,9 @@ public class RSA {
 		}
 		return null;
 	}
+
 	public BigInteger[] readModulusAndExponent() throws IOException {
-		String fileName=PUBLIC_KEY_FILE;
+		String fileName = PUBLIC_KEY_FILE;
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
@@ -170,7 +175,7 @@ public class RSA {
 
 			BigInteger modulus = (BigInteger) ois.readObject();
 			BigInteger exponent = (BigInteger) ois.readObject();
-			BigInteger[] me = new BigInteger[]{modulus,exponent};
+			BigInteger[] me = new BigInteger[] { modulus, exponent };
 			return me;
 
 		} catch (Exception e) {

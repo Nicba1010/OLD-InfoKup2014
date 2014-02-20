@@ -321,11 +321,12 @@ public class SchoolarServer extends JFrame {
 				server.setVisible(true);
 				Image image = null;
 				try {
-					image = ImageIO.read(getClass().getResource("images/icon.png"));
+					image = ImageIO.read(getClass().getResource(
+							"images/icon.png"));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			    server.setIconImage(image);
+				server.setIconImage(image);
 			}
 		});
 		start();
@@ -334,21 +335,25 @@ public class SchoolarServer extends JFrame {
 	public static void start() {
 		String clientSentence;
 		try {
-			inSocket = new ServerSocket(socketTCP);
+			inSocket = new ServerSocket(25566);
 			while (running) {
 				connectionSocket = inSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
-
 				clientSentence = inFromClient.readLine();
 				if (clientSentence != null) {
 					boolean newClient = false;
+					TCPData = clientSentence.split(";");
 					if (clients.contains(TCPData[0])) {
-						TCPData = clientSentence.split(";");
+						System.out.println(TCPData[1]);
 					} else {
 						TCPDataWithKey = clientSentence.split("-:-");
-						BigInteger modulus = new BigInteger(TCPDataWithKey[1]);
-						BigInteger exponent = new BigInteger(TCPDataWithKey[2]);
+						BigInteger modulus = null;
+						BigInteger exponent = null;
+						if (TCPDataWithKey.length == 3) {
+							modulus = new BigInteger(TCPDataWithKey[1]);
+							exponent = new BigInteger(TCPDataWithKey[2]);
+						}
 						TCPData = TCPDataWithKey[0].split(";");
 						clientList.add(new Client(0, 0, 250,
 								screenHeight - 125, infoScrollPanel,
@@ -377,7 +382,8 @@ public class SchoolarServer extends JFrame {
 		for (Client client : clientList) {
 			buffer.addToBuffer("ShutdownClient", "", client.getName());
 		}
-		for (int i = 0; i < infoScrollPanel.getComponentCount(); i++) {
+		for (int i = 0; i <= infoScrollPanel.getComponentCount(); i++) {
+			System.out.println(i);
 			infoScrollPanel.remove(i);
 		}
 		infoScrollPanel.repaint();

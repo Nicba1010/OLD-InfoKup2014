@@ -25,6 +25,7 @@ import base.security.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
+	public static String computerName = System.getenv("computername") + "1";
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip = "127.0.0.1";
@@ -34,7 +35,7 @@ class SchoolarClient {
 	static SettingsClient settings;
 	static Object[] objectSettings;
 	static String path = System.getenv("APPDATA")
-			+ "\\.Schoolar\\settingsClient" + System.getenv("computername")
+			+ "\\.Schoolar\\settingsClient" + computerName
 			+ ".xml";
 	static File settingsFile = new File(path);
 	static boolean first = false;
@@ -85,7 +86,7 @@ class SchoolarClient {
 				settings(true);
 			}
 		}
-		encryption = new RSA(System.getenv("username"));
+		encryption = new RSA(computerName);
 		pl = new PluginLoader(false);
 		pl.runClient("Test", new String[] { "nis" });
 		Timer timer = new Timer();
@@ -107,7 +108,7 @@ class SchoolarClient {
 			if (defaultSettings) {
 				clientSocket = new Socket("127.0.0.1", 25565);
 			} else {
-				clientSocket = new Socket(ip, socket);
+				clientSocket = new Socket("127.0.0.1", 25566);
 			}
 			DataOutputStream outToServer = new DataOutputStream(
 					clientSocket.getOutputStream());
@@ -134,19 +135,19 @@ class SchoolarClient {
 		}
 		message = encryption.decryptData(bytes);
 		if (message.contains(" killproc ")
-				&& message.contains(System.getenv("computername"))) {
-			message = message.replace(System.getenv("computername")
+				&& message.contains(computerName)) {
+			message = message.replace(computerName
 					+ " killproc ", "");
 			killProcess(message);
 		} else if (message.contains(" command ")
-				&& message.contains(System.getenv("computername"))) {
-			message = message.replace(System.getenv("computername")
+				&& message.contains(computerName)) {
+			message = message.replace(computerName
 					+ " command ", "");
 			command(message);
 		} else if (message.contains(" popup ")
-				&& message.contains(System.getenv("computername"))) {
+				&& message.contains(computerName)) {
 			message = message.replace(
-					System.getenv("computername") + " popup ", "");
+					computerName + " popup ", "");
 			textPopup(message);
 		} else if (message.contains("FTP")) {
 			if (!message.contains("FTPNOTON")) {
@@ -222,7 +223,7 @@ class SchoolarClient {
 				processes = Float.toString(new Random().nextFloat()) + ";"
 						+ processes;
 			else
-				processes = System.getenv("computername") + "" + ";"
+				processes = computerName + "" + ";"
 						+ processes;
 			processes = processes.replaceAll(" ", "");
 			input.close();
