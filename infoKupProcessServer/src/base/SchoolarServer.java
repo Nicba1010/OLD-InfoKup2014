@@ -401,17 +401,12 @@ public class SchoolarServer extends JFrame {
 	private static void shutdownConnections() {
 		for (Client client : clientList) {
 			buffer.addToBuffer("ShutdownClient", "", client.getName());
+			client.removeIndividualClient();
 		}
 		for (int i = 0; i <= infoScrollPanel.getComponentCount(); i++) {
 			System.out.println(i);
 			infoScrollPanel.remove(i);
 		}
-		clientList = null;
-		clients = null;
-		removedClients = null;
-		clientList = new ArrayList<Client>();
-		clients = new ArrayList<String>();
-		removedClients = new ArrayList<String>();
 		infoScrollPanel.repaint();
 		infoScrollPanel.revalidate();
 	}
@@ -452,6 +447,15 @@ public class SchoolarServer extends JFrame {
 						outToClient.writeBytes(getEncryptedData(modulus,
 								exponent, msg));
 						buffer.remove(i);
+						if (arg0.contains("ShutdownClient")) {
+							clients.remove(clientName);
+							removedClients.remove(clientName);
+							for (Client c : clientList) {
+								if(c.getName().equalsIgnoreCase(clientName))
+									clientList.remove(c);
+							}
+
+						}
 						break;
 					}
 

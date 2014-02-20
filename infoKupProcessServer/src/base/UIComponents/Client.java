@@ -55,6 +55,7 @@ public class Client {
 	private boolean ftpOn;
 	BigInteger modulus,publicExponent;
 	PublicKey publicKey;
+	IndividualClient individualClient;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
@@ -237,7 +238,7 @@ public class Client {
 								SchoolarServer.infoScrollPanel.remove(i);
 								SchoolarServer.infoScrollPanel.repaint();
 								SchoolarServer.infoScrollPanel.revalidate();
-								IndividualClient individualClient = new IndividualClient(
+								individualClient = new IndividualClient(
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
 										ftpServerUsername, ftpServerPassword,
@@ -343,5 +344,8 @@ public class Client {
 		procPanel.setPreferredSize(d);
 		procPanel.repaint();
 		procPanel.revalidate();
+	}
+	public void removeIndividualClient(){
+		individualClient.die();
 	}
 }
