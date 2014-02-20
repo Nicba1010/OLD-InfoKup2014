@@ -25,7 +25,7 @@ import base.security.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
-	public static String computerName = System.getenv("computername");
+	public static String computerName = System.getenv("computername") + "1";
 	public static Socket clientSocket;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip = "127.0.0.1";

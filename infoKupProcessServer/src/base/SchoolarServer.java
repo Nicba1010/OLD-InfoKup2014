@@ -45,6 +45,7 @@ public class SchoolarServer extends JFrame {
 	JButton settingsButton;
 	JButton quitButton;
 	JButton closeConButton;
+	JButton sendAllButton;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
@@ -216,9 +217,11 @@ public class SchoolarServer extends JFrame {
 		this.setSize(screenWidth, screenHeight);
 		quitButton.setBounds(screenWidth - 100 - 4, screenHeight - 30 * 2 + 4,
 				100, 30);
-		settingsButton.setBounds(screenWidth - 200 - 4,
-				screenHeight - 30 * 2 + 4, 100, 30);
-		closeConButton.setBounds(screenWidth - 200 - 4, screenHeight - 85, 200,
+		settingsButton.setBounds(screenWidth - 100 - 4,
+				screenHeight - 85, 100, 30);
+		closeConButton.setBounds(screenWidth - 300 - 4, screenHeight - 30*2+4, 200,
+				30);
+		sendAllButton.setBounds(screenWidth - 300 - 4, screenHeight - 85, 200,
 				30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
@@ -276,7 +279,17 @@ public class SchoolarServer extends JFrame {
 				}
 			});
 		}
+		{
+			sendAllButton = new JButton("Posalji komandu svima");
+			sendAllButton.addActionListener(new ActionListener() {
 
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+					sendCommandToAll(JOptionPane.showInputDialog("Unesi komandu:"));
+				}
+			});
+		}
+        mainPanel.add(sendAllButton);
 		mainPanel.add(closeConButton);
 		mainPanel.add(quitButton);
 		mainPanel.add(settingsButton);
@@ -377,6 +390,11 @@ public class SchoolarServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	private static void sendCommandToAll(String msg) {
+		for (Client client : clientList) {
+			buffer.addToBuffer("command", msg, client.getName());
+		}
+	}
 
 	private static void shutdownConnections() {
 		for (Client client : clientList) {
@@ -389,11 +407,13 @@ public class SchoolarServer extends JFrame {
 		infoScrollPanel.repaint();
 		infoScrollPanel.revalidate();
 	}
+	
 
-	private static String getEcryptedData(BigInteger modulus,
+	private static String getEncryptedData(BigInteger modulus,
 			BigInteger exponent, String msg) throws NoSuchAlgorithmException,
 			InvalidKeySpecException, IOException {
-		byte[] encryptedData = encryption.encryptData(msg, modulus, exponent);
+		byte[] encryptedData = encryption.encryptData(msg, modulus, 
+				exponent);
 		String bytes = "";
 		for (byte b : encryptedData) {
 			bytes = bytes + ";" + Byte.toString(b);
@@ -423,7 +443,7 @@ public class SchoolarServer extends JFrame {
 						String msg;
 						msg = clientName + " " + arg0 + " " + arg1 + "\n";
 
-						outToClient.writeBytes(getEcryptedData(modulus,
+						outToClient.writeBytes(getEncryptedData(modulus,
 								exponent, msg));
 						buffer.remove(i);
 						break;
@@ -450,7 +470,7 @@ public class SchoolarServer extends JFrame {
 				} else {
 					message = ("OK" + "\n");
 				}
-				outToClient.writeBytes(getEcryptedData(modulus, exponent,
+				outToClient.writeBytes(getEncryptedData(modulus, exponent,
 						message));
 			}
 		} catch (Exception e) {
