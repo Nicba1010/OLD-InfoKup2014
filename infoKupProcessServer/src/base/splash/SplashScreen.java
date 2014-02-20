@@ -94,7 +94,7 @@ public class SplashScreen {
 						.getHeight() / 2 - img.getHeight() / 2),
 				img.getWidth(), img.getHeight());
 		RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, img.getWidth(),
-				img.getHeight(), 25, 25);
+				img.getHeight(), 28, 28);
 		splashFrame.setShape(r);
 		splashFrame.setOpacity(0f);
 		splashFrame.setMinimumSize(splashFrame.getPreferredSize());
