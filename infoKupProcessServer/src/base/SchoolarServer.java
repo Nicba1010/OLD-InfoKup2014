@@ -49,6 +49,7 @@ public class SchoolarServer extends JFrame {
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
+	public static boolean vrtiLoop = true;
 
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
@@ -199,6 +200,8 @@ public class SchoolarServer extends JFrame {
 				ftpServerIPRemote = serverIpRemote.getText();
 				ftpServerUsername = serverUser.getText();
 				ftpServerPassword = serverPass.getText();
+				System.out.println("PRITISNUH OK");
+				vrtiLoop = false;
 
 			} else {
 				System.out.println("Using default port!");
@@ -346,7 +349,10 @@ public class SchoolarServer extends JFrame {
 		start();
 	}
 
-	public static void start() {
+	public static void start() throws InterruptedException {
+		while (vrtiLoop) {
+			Thread.sleep(100);
+		}
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(socketTCP);
@@ -451,7 +457,7 @@ public class SchoolarServer extends JFrame {
 							clients.remove(clientName);
 							removedClients.remove(clientName);
 							for (Client c : clientList) {
-								if(c.getName().equalsIgnoreCase(clientName))
+								if (c.getName().equalsIgnoreCase(clientName))
 									clientList.remove(c);
 							}
 
