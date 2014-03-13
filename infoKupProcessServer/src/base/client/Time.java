@@ -4,12 +4,15 @@ public class Time implements Runnable {
 	private long time = 0;
 	private long lastConnectionTime = 0;
 	private Client client;
-	public Time(Client c){
+	private boolean dead = false;
+
+	public Time(Client c) {
 		this.client = c;
 	}
+
 	@Override
 	public void run() {
-		while (true) {
+		while (!dead) {
 			time += 100;
 			lastConnectionTime += 100;
 			client.updateLastConnectionTime(lastConnectionTime);
@@ -24,12 +27,16 @@ public class Time implements Runnable {
 	public long getTime() {
 		return time;
 	}
-	
+
 	public long getLastConnectionTime() {
 		return lastConnectionTime;
 	}
-	
-	public void resetLastConnectionTime(){
+
+	public void resetLastConnectionTime() {
 		lastConnectionTime = 0;
+	}
+	
+	public void die(){
+		dead = true;
 	}
 }

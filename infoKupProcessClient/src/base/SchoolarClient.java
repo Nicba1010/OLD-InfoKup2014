@@ -120,41 +120,46 @@ class SchoolarClient {
 	}
 
 	private static void processMessage(String message) throws IOException {
-		debugPrint(message);
-		message = message.replaceFirst(";", "");
-		String[] messageArray = message.split(";");
-		byte[] bytes = new byte[messageArray.length];
-		int pos = 0;
-		for (String s : messageArray) {
-			bytes[pos++] = Byte.parseByte(s);
-		}
-		message = encryption.decryptData(bytes);
-		if (message.contains(" killproc ") && message.contains(computerName)) {
-			message = message.replace(computerName + " killproc ", "");
-			killProcess(message);
-		} else if (message.contains(" command ")
-				&& message.contains(computerName)) {
-			message = message.replace(computerName + " command ", "");
-			command(message);
-		} else if (message.contains(" popup ")
-				&& message.contains(computerName)) {
-			message = message.replace(computerName + " popup ", "");
-			textPopup(message);
-		} else if (message.contains("FTP")) {
-			if (!message.contains("FTPNOTON")) {
-				message = message.replaceAll("FTP:", "");
-				String[] ftpInfo = message.split(":");
-				ftpServerIP = ftpInfo[0];
-				ftpServerUsername = ftpInfo[1];
-				ftpServerPassword = ftpInfo[2];
-				System.out.println(ftpServerIP + ":" + ftpServerUsername + ":"
-						+ ftpServerPassword);
-				Image image = new Image();
-				image.runClient(ftpServerIP, ftpServerUsername,
-						ftpServerPassword);
+		System.out.println(message);
+		if (message != null) {
+			debugPrint(message);
+			message = message.replaceFirst(";", "");
+			String[] messageArray = message.split(";");
+			byte[] bytes = new byte[messageArray.length];
+			int pos = 0;
+			for (String s : messageArray) {
+				bytes[pos++] = Byte.parseByte(s);
 			}
-		} else if (message.contains("ShutdownClient")) {
-			System.exit(0);
+			message = encryption.decryptData(bytes);
+			System.out.println(message);
+			if (message.contains(" killproc ")
+					&& message.contains(computerName)) {
+				message = message.replace(computerName + " killproc ", "");
+				killProcess(message);
+			} else if (message.contains(" command ")
+					&& message.contains(computerName)) {
+				message = message.replace(computerName + " command ", "");
+				command(message);
+			} else if (message.contains(" popup ")
+					&& message.contains(computerName)) {
+				message = message.replace(computerName + " popup ", "");
+				textPopup(message);
+			} else if (message.contains("FTP")) {
+				if (!message.contains("FTPNOTON")) {
+					message = message.replaceAll("FTP:", "");
+					String[] ftpInfo = message.split(":");
+					ftpServerIP = ftpInfo[0];
+					ftpServerUsername = ftpInfo[1];
+					ftpServerPassword = ftpInfo[2];
+					System.out.println(ftpServerIP + ":" + ftpServerUsername
+							+ ":" + ftpServerPassword);
+					Image image = new Image();
+					image.runClient(ftpServerIP, ftpServerUsername,
+							ftpServerPassword);
+				}
+			} else if (message.contains("ShutdownClient")) {
+				System.exit(0);
+			}
 		}
 	}
 

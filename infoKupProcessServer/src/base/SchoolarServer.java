@@ -63,7 +63,7 @@ public class SchoolarServer extends JFrame {
 	public static Buffer buffer = new Buffer();
 
 	public static JPanel mainPanel;
-	public static JPanel infoScrollPanel;
+	public static JPanel infoScrollPanel = new JPanel();;
 	public static int socketTCP = 25565;
 	public static int cond = 0;
 	public static boolean defaultSettings = false, nosplash = false;
@@ -241,7 +241,6 @@ public class SchoolarServer extends JFrame {
 		int offsetHeight = -3;
 		setTitle("Schoolar Server");
 		mainPanel = new JPanel();
-		infoScrollPanel = new JPanel();
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(mainPanel);
@@ -350,9 +349,6 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void start() throws InterruptedException {
-		while (vrtiLoop) {
-			Thread.sleep(100);
-		}
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(socketTCP);
@@ -407,15 +403,8 @@ public class SchoolarServer extends JFrame {
 
 	private static void shutdownConnections() {
 		for (Client client : clientList) {
-			buffer.addToBuffer("ShutdownClient", "", client.getName());
-			client.removeIndividualClient();
+			client.removeClient();
 		}
-		for (int i = 0; i <= infoScrollPanel.getComponentCount(); i++) {
-			System.out.println(i);
-			infoScrollPanel.remove(i);
-		}
-		infoScrollPanel.repaint();
-		infoScrollPanel.revalidate();
 	}
 
 	private static String getEncryptedData(BigInteger modulus,
@@ -458,8 +447,13 @@ public class SchoolarServer extends JFrame {
 							clients.remove(clientName);
 							removedClients.remove(clientName);
 							for (Client c : clientList) {
-								if (c.getName().equalsIgnoreCase(clientName))
+								if (c.getName().equalsIgnoreCase(clientName)) {
+									infoScrollPanel.remove(c.getPanel());
+									c.timeRunnable.die();
 									clientList.remove(c);
+									infoScrollPanel.repaint();
+									infoScrollPanel.revalidate();
+								}
 							}
 
 						}
@@ -482,15 +476,18 @@ public class SchoolarServer extends JFrame {
 				if (newClient && ftpOn) {
 					message = ("FTP:" + ftpServerIPRemote + ":"
 							+ ftpServerUsername + ":" + ftpServerPassword + "\n");
-				} else if (!ftpOn) {
+				} else if (!ftpOn && newClient) {
 					message = ("FTPNOTON\n");
 				} else {
 					message = ("OK" + "\n");
 				}
 				outToClient.writeBytes(getEncryptedData(modulus, exponent,
 						message));
+				System.out
+						.println(getEncryptedData(modulus, exponent, message));
 			}
 		} catch (Exception e) {
+
 		}
 	}
 

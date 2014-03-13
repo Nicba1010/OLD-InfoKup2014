@@ -1,6 +1,7 @@
 package base.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -41,12 +42,13 @@ public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-	JButton sendCommandButton, popupButton, individual;
+	JButton sendCommandButton, popupButton, individual, shutdownClient;
 	JLabel name, timeLabel;
 	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
-			defaultButtonPanel, namePanel, timePanel, topPanel;
-	public ClientPanel procPanel;
+			defaultButtonPanel1, defaultButtonPanel2, namePanel, timePanel,
+			topPanel;
+	public ClientPanel clientPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
 	PluginLoader pluginLoader;
@@ -57,8 +59,13 @@ public class Client {
 	BigInteger modulus, publicExponent;
 	PublicKey publicKey;
 	IndividualClient individualClient;
-	private Time timeRunnable;
+	public Time timeRunnable;
 	private Thread time;
+	JPanel panelMain;
+	private boolean scheduledForShutdown = false;
+
+	private Color DARK_GREEN = new Color(34, 139, 34);
+	private Color DARK_ORANGE = new Color(210, 105, 30);
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
@@ -78,6 +85,7 @@ public class Client {
 		this.ftpOn = ftpOn;
 		this.modulus = modulus;
 		this.publicExponent = exponent;
+		this.panelMain = panelMain;
 		{
 			initPopups();
 			initProcessList();
@@ -88,7 +96,7 @@ public class Client {
 		timeRunnable = new Time(getClient());
 		time = new Thread(timeRunnable);
 		time.start();
-		panelMain.add(procPanel);
+		panelMain.add(clientPanel);
 		panelMain.revalidate();
 	}
 
@@ -123,6 +131,7 @@ public class Client {
 		popup.add(menuItem);
 		name = new JLabel(clientName, JLabel.LEFT);
 		timeLabel = new JLabel("0.0", JLabel.RIGHT);
+		timeLabel.setForeground(DARK_GREEN);
 		namePanel = new JPanel();
 		namePanel.setLayout(new BorderLayout());
 		namePanel.add(name);
@@ -228,15 +237,18 @@ public class Client {
 		mainButtonPanel = new JPanel();
 		mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel,
 				BoxLayout.Y_AXIS));
-		defaultButtonPanel = new JPanel();
-		defaultButtonPanel.setLayout(new BoxLayout(defaultButtonPanel,
+		defaultButtonPanel1 = new JPanel();
+		defaultButtonPanel1.setLayout(new BoxLayout(defaultButtonPanel1,
+				BoxLayout.X_AXIS));
+		defaultButtonPanel2 = new JPanel();
+		defaultButtonPanel2.setLayout(new BoxLayout(defaultButtonPanel2,
 				BoxLayout.X_AXIS));
 
 		TextFieldPopupButton commandButton = new TextFieldPopupButton(
-				"Pokreni", "command", clientName, defaultButtonPanel,
+				"Pokreni", "command", clientName, defaultButtonPanel1,
 				"Unesi komandu za " + clientName);
 		TextFieldPopupButton popupButton = new TextFieldPopupButton("Poruka",
-				"popup", clientName, defaultButtonPanel, "Unesi poruku za "
+				"popup", clientName, defaultButtonPanel1, "Unesi poruku za "
 						+ clientName);
 		individual = new JButton("Zasebni");
 		individual.addActionListener(new ActionListener() {
@@ -268,8 +280,23 @@ public class Client {
 				});
 			}
 		});
-		defaultButtonPanel.add(individual);
-		mainButtonPanel.add(defaultButtonPanel);
+		shutdownClient = new JButton("Ugasi");
+		shutdownClient.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						removeClient();
+					}
+				});
+			}
+		});
+		defaultButtonPanel1.add(individual);
+		defaultButtonPanel2.add(shutdownClient);
+		mainButtonPanel.add(defaultButtonPanel1);
+		mainButtonPanel.add(defaultButtonPanel2);
 		if (ftpOn) {
 			Image image = new Image();
 			image.addJComponentsToServer(mainButtonPanel, width, clientName,
@@ -294,24 +321,27 @@ public class Client {
 
 		processesScrollPane = new JScrollPane(processListJList);
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
-		procPanel = new ClientPanel();
-		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
-		procPanel.add(topPanel);
-		procPanel.add(processesScrollPane);
-		procPanel.add(mainButtonPanel);
+		clientPanel = new ClientPanel();
+		clientPanel.setLayout(new BoxLayout(clientPanel, BoxLayout.Y_AXIS));
+		clientPanel.add(topPanel);
+		clientPanel.add(processesScrollPane);
+		clientPanel.add(mainButtonPanel);
 
-		procPanel.setPreferredSize(new Dimension(width, height));
-		procPanel.setMaximumSize(procPanel.getPreferredSize());
-		procPanel.setMinimumSize(procPanel.getPreferredSize());
-		procPanel.repaint();
-		procPanel.revalidate();
+		clientPanel.setPreferredSize(new Dimension(width, height));
+		clientPanel.setMaximumSize(clientPanel.getPreferredSize());
+		clientPanel.setMinimumSize(clientPanel.getPreferredSize());
+		clientPanel.repaint();
+		clientPanel.revalidate();
 	}
 
 	public void setData(String[] processArray) {
-		Arrays.sort(processArray);
-		this.processArray = processArray;
-		processListJList.setListData(processArray);
-		processListJList.setSelectedIndex(currentSelectedIndex);
+		if (!scheduledForShutdown) {
+			processListJList.setForeground(Color.BLACK);
+			Arrays.sort(processArray);
+			this.processArray = processArray;
+			processListJList.setListData(processArray);
+			processListJList.setSelectedIndex(currentSelectedIndex);
+		}
 	}
 
 	public String[] getData() {
@@ -319,11 +349,11 @@ public class Client {
 	}
 
 	public void setLocation(int x, int y) {
-		procPanel.setBounds(x + 2 + SchoolarServer.clients.size() * 150, y + 5,
-				width, height);
-		procPanel.setPreferredSize(new Dimension(width, height));
-		procPanel.setMaximumSize(procPanel.getPreferredSize());
-		procPanel.setMinimumSize(procPanel.getPreferredSize());
+		clientPanel.setBounds(x + 2 + SchoolarServer.clients.size() * 150,
+				y + 5, width, height);
+		clientPanel.setPreferredSize(new Dimension(width, height));
+		clientPanel.setMaximumSize(clientPanel.getPreferredSize());
+		clientPanel.setMinimumSize(clientPanel.getPreferredSize());
 	}
 
 	private int getRow(Point point) {
@@ -339,27 +369,34 @@ public class Client {
 	}
 
 	public void removeButton(int i) {
-		defaultButtonPanel.remove(i);
-		defaultButtonPanel.revalidate();
+		defaultButtonPanel1.remove(i);
+		defaultButtonPanel1.revalidate();
 		mainButtonPanel.revalidate();
 	}
 
 	public void removeComponent(int i) {
-		procPanel.remove(i);
-		procPanel.revalidate();
+		clientPanel.remove(i);
+		clientPanel.revalidate();
+	}
+
+	public void removeClient() {
+		addToBuffer("ShutdownClient", "");
+		processListJList.setForeground(Color.RED);
+		processListJList.setListData(new String[]{"SCHEDULED","FOR","SHUTDOWN"});
+		scheduledForShutdown = true;
 	}
 
 	public void setLocation(int x, int y, int width, int height) {
-		procPanel.setBounds(x, y, width, height);
+		clientPanel.setBounds(x, y, width, height);
 	}
 
 	public void setSize(Dimension d) {
-		procPanel.setSize(d);
-		procPanel.setMaximumSize(d);
-		procPanel.setMinimumSize(d);
-		procPanel.setPreferredSize(d);
-		procPanel.repaint();
-		procPanel.revalidate();
+		clientPanel.setSize(d);
+		clientPanel.setMaximumSize(d);
+		clientPanel.setMinimumSize(d);
+		clientPanel.setPreferredSize(d);
+		clientPanel.repaint();
+		clientPanel.revalidate();
 	}
 
 	public void removeIndividualClient() {
@@ -367,10 +404,23 @@ public class Client {
 	}
 
 	public void updateLastConnectionTime(long time) {
+		float percent = ((float) time / (float) 12000) * (float) 100;
+		if (percent < 50f)
+			timeLabel.setForeground(DARK_GREEN);
+		else if (percent >= 50f && percent < 80f)
+			timeLabel.setForeground(DARK_ORANGE);
+		else if (percent >= 80f && percent < 100f)
+			timeLabel.setForeground(Color.RED);
+		else if (percent >= 100f)
+			removeClient();
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
 	}
 
 	public void resetLastConnectionTime() {
 		timeRunnable.resetLastConnectionTime();
+	}
+
+	public ClientPanel getPanel() {
+		return clientPanel;
 	}
 }
