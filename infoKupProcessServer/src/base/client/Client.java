@@ -63,6 +63,37 @@ public class Client {
 	private Color DARK_GREEN = new Color(34, 139, 34);
 	private Color DARK_ORANGE = new Color(210, 105, 30);
 
+	/**
+	 * The constructor of the Client class
+	 * 
+	 * @param x
+	 *            the x coordinate of the client panel
+	 * @param y
+	 *            the y coordinate of the client panel
+	 * @param width
+	 *            the width of the client panel
+	 * @param height
+	 *            the height of the client panel
+	 * @param panelMain
+	 *            the main program panel
+	 * @param clientName
+	 *            the client name
+	 * @param pluginLoader
+	 *            the plugin loader object
+	 * @param ftpServerIP
+	 *            the image ftp server ip
+	 * @param ftpServerUsername
+	 *            the image ftp server username
+	 * @param ftpServerPassword
+	 *            the image ftp server password
+	 * @param ftpOn
+	 *            the state of image transfer (if it's on true, if it's off
+	 *            false)
+	 * @param modulus
+	 *            the modulus of the public key
+	 * @param exponent
+	 *            the exponent of the public key
+	 */
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
@@ -372,9 +403,9 @@ public class Client {
 	 * Sets the position of the client panel!
 	 * 
 	 * @param x
-	 *            the x position of the client panel
+	 *            the x coordinate of the client panel
 	 * @param y
-	 *            the y position of the client panel
+	 *            the y coordinate of the client panel
 	 */
 	public void setLocation(int x, int y) {
 		clientPanel.setBounds(x + 2 + SchoolarServer.clients.size() * 150,
