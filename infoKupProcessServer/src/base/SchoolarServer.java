@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import base.UIComponents.Client;
+import base.client.Client;
 import base.plugins.PluginLoader;
 import base.security.RSA;
 import base.splash.SplashScreen;
@@ -387,6 +387,7 @@ public class SchoolarServer extends JFrame {
 					for (Client client : clientList) {
 						if (client.getName().equalsIgnoreCase(TCPData[0])) {
 							client.setData(TCPData[1].split(":"));
+							client.resetLastConnectionTime();
 						}
 					}
 					sendResponse(newClient);

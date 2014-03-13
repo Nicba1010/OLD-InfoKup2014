@@ -1,4 +1,4 @@
-package base.UIComponents;
+package base.client;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import base.UIComponents.ImageBig;
 import base.util.ImageUtils;
 
 public class Server implements Runnable {

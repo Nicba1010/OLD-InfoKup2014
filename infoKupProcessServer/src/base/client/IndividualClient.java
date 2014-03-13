@@ -1,4 +1,4 @@
-package base.UIComponents;
+package base.client;
 
 import java.awt.Component;
 import java.awt.Dimension;

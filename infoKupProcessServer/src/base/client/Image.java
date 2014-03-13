@@ -1,4 +1,4 @@
-package base.UIComponents;
+package base.client;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

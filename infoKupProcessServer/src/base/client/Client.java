@@ -1,4 +1,4 @@
-package base.UIComponents;
+package base.client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -33,18 +33,19 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import base.SchoolarServer;
+import base.UIComponents.ClientPanel;
+import base.UIComponents.TextFieldPopupButton;
 import base.plugins.PluginLoader;
 
 public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-
 	JButton sendCommandButton, popupButton, individual;
-	JLabel name;
+	JLabel name, timeLabel;
 	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
-			defaultButtonPanel, namePanel;
+			defaultButtonPanel, namePanel, timePanel, topPanel;
 	public ClientPanel procPanel;
 	JPopupMenu popup;
 	JScrollPane processesScrollPane;
@@ -53,14 +54,17 @@ public class Client {
 	private String ftpServerUsername;
 	private String ftpServerPassword;
 	private boolean ftpOn;
-	BigInteger modulus,publicExponent;
+	BigInteger modulus, publicExponent;
 	PublicKey publicKey;
 	IndividualClient individualClient;
+	private Time timeRunnable;
+	private Thread time;
 
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
-			String ftpServerPassword, boolean ftpOn, BigInteger modulus, BigInteger exponent) {
+			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
+			BigInteger exponent) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -81,26 +85,30 @@ public class Client {
 			initImage();
 			initProcPanel();
 		}
-
+		timeRunnable = new Time(getClient());
+		time = new Thread(timeRunnable);
+		time.start();
 		panelMain.add(procPanel);
 		panelMain.revalidate();
 	}
-	
-	public BigInteger getModulus(){
+
+	public BigInteger getModulus() {
 		return modulus;
 	}
-	public BigInteger getExponent(){
+
+	public BigInteger getExponent() {
 		return publicExponent;
 	}
-	
+
 	@SuppressWarnings("unused")
-	private void assemblePublicKey() throws InvalidKeySpecException, NoSuchAlgorithmException{
+	private void assemblePublicKey() throws InvalidKeySpecException,
+			NoSuchAlgorithmException {
 		RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus,
 				publicExponent);
 		KeyFactory fact = KeyFactory.getInstance("RSA");
 		publicKey = fact.generatePublic(rsaPublicKeySpec);
 	}
-	
+
 	private void initPopups() {
 		popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Ugasi proces");
@@ -113,10 +121,18 @@ public class Client {
 			}
 		});
 		popup.add(menuItem);
-		name = new JLabel(clientName, JLabel.CENTER);
+		name = new JLabel(clientName, JLabel.LEFT);
+		timeLabel = new JLabel("0.0", JLabel.RIGHT);
 		namePanel = new JPanel();
 		namePanel.setLayout(new BorderLayout());
 		namePanel.add(name);
+		timePanel = new JPanel();
+		timePanel.setLayout(new BorderLayout());
+		timePanel.add(timeLabel);
+		topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		topPanel.add(namePanel);
+		topPanel.add(timePanel);
 	}
 
 	private void initProcessList() {
@@ -280,7 +296,7 @@ public class Client {
 		processesScrollPane.setPreferredSize(new Dimension(width, height));
 		procPanel = new ClientPanel();
 		procPanel.setLayout(new BoxLayout(procPanel, BoxLayout.Y_AXIS));
-		procPanel.add(namePanel);
+		procPanel.add(topPanel);
 		procPanel.add(processesScrollPane);
 		procPanel.add(mainButtonPanel);
 
@@ -345,7 +361,16 @@ public class Client {
 		procPanel.repaint();
 		procPanel.revalidate();
 	}
-	public void removeIndividualClient(){
+
+	public void removeIndividualClient() {
 		individualClient.die();
+	}
+
+	public void updateLastConnectionTime(long time) {
+		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
+	}
+
+	public void resetLastConnectionTime() {
+		timeRunnable.resetLastConnectionTime();
 	}
 }
