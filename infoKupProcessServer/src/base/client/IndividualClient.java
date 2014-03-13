@@ -103,7 +103,7 @@ public class IndividualClient extends JFrame {
 				panel, clientName, pluginLoader, ftpServerIP,
 				ftpServerUsername, ftpServerPassword, ftpOn, modulus,
 				publicExponent);
-		indiClient.removeButton(2);
+		indiClient.removeButtonP1(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());
 		setVisible(true);

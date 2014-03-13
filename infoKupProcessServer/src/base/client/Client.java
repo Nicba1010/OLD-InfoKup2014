@@ -13,11 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
 
 import javax.swing.BoxLayout;
@@ -87,10 +83,9 @@ public class Client {
 		this.publicExponent = exponent;
 		this.panelMain = panelMain;
 		{
-			initPopups();
+			initPopupsAndLabels();
 			initProcessList();
 			initButtons();
-			initImage();
 			initProcPanel();
 		}
 		timeRunnable = new Time(getClient());
@@ -100,24 +95,28 @@ public class Client {
 		panelMain.revalidate();
 	}
 
+	/**
+	 * Returns the modulus of the public key!
+	 * 
+	 * @return the modulus of the public key
+	 */
 	public BigInteger getModulus() {
 		return modulus;
 	}
 
+	/**
+	 * Returns the modulus of the public key!
+	 * 
+	 * @return the exponent of the public key
+	 */
 	public BigInteger getExponent() {
 		return publicExponent;
 	}
 
-	@SuppressWarnings("unused")
-	private void assemblePublicKey() throws InvalidKeySpecException,
-			NoSuchAlgorithmException {
-		RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus,
-				publicExponent);
-		KeyFactory fact = KeyFactory.getInstance("RSA");
-		publicKey = fact.generatePublic(rsaPublicKeySpec);
-	}
-
-	private void initPopups() {
+	/**
+	 * Initializes right click popups and labels!
+	 */
+	private void initPopupsAndLabels() {
 		popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Ugasi proces");
 		menuItem.addActionListener(new ActionListener() {
@@ -144,6 +143,9 @@ public class Client {
 		topPanel.add(timePanel);
 	}
 
+	/**
+	 * Initializes the process list!
+	 */
 	private void initProcessList() {
 		processListJList = new JList<String>(processArray);
 		processListJList.setListData(processArray);
@@ -232,6 +234,9 @@ public class Client {
 	}
 
 	@SuppressWarnings("unused")
+	/**
+	 * Initializes the buttons! 
+	 */
 	private void initButtons() {
 
 		mainButtonPanel = new JPanel();
@@ -288,7 +293,7 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						removeClient();
+						scheduleClientForShutdown();
 					}
 				});
 			}
@@ -309,14 +314,18 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Returns the Client object!
+	 * 
+	 * @return the Client object
+	 */
 	private Client getClient() {
 		return this;
 	}
 
-	private void initImage() {
-
-	}
-
+	/**
+	 * Initializes the main client panel!
+	 */
 	private void initProcPanel() {
 
 		processesScrollPane = new JScrollPane(processListJList);
@@ -334,6 +343,12 @@ public class Client {
 		clientPanel.revalidate();
 	}
 
+	/**
+	 * Sets the process list data!
+	 * 
+	 * @param processArray
+	 *            the array of processes from the client PC
+	 */
 	public void setData(String[] processArray) {
 		if (!scheduledForShutdown) {
 			processListJList.setForeground(Color.BLACK);
@@ -344,10 +359,23 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Returns the process list data!
+	 * 
+	 * @return the process list data
+	 */
 	public String[] getData() {
 		return processArray;
 	}
 
+	/**
+	 * Sets the position of the client panel!
+	 * 
+	 * @param x
+	 *            the x position of the client panel
+	 * @param y
+	 *            the y position of the client panel
+	 */
 	public void setLocation(int x, int y) {
 		clientPanel.setBounds(x + 2 + SchoolarServer.clients.size() * 150,
 				y + 5, width, height);
@@ -356,40 +384,94 @@ public class Client {
 		clientPanel.setMinimumSize(clientPanel.getPreferredSize());
 	}
 
+	/**
+	 * Returns the index on which the point points!
+	 * 
+	 * @param point
+	 *            the point on the JList
+	 * @return the index on which the point points
+	 */
 	private int getRow(Point point) {
 		return processListJList.locationToIndex(point);
 	}
 
+	/**
+	 * Adds the command to be sent to the client to the command buffer!
+	 * 
+	 * @param arg0
+	 *            the command
+	 * @param arg1
+	 *            the command arguments
+	 */
 	public void addToBuffer(String arg0, String arg1) {
 		SchoolarServer.buffer.addToBuffer(arg0, arg1, this.clientName);
 	}
 
+	/**
+	 * Returns the client name!
+	 * 
+	 * @return the client name
+	 */
 	public String getName() {
 		return clientName;
 	}
 
-	public void removeButton(int i) {
+	/**
+	 * Removes a button from the defaultButtonPanel1!
+	 * 
+	 * @param i
+	 *            index of the button to be removed
+	 */
+	public void removeButtonP1(int i) {
 		defaultButtonPanel1.remove(i);
 		defaultButtonPanel1.revalidate();
 		mainButtonPanel.revalidate();
 	}
 
+	/**
+	 * Removes a component from the main client panel!
+	 * 
+	 * @param i
+	 *            index of the component to be removed
+	 */
 	public void removeComponent(int i) {
 		clientPanel.remove(i);
 		clientPanel.revalidate();
 	}
 
-	public void removeClient() {
+	/**
+	 * Schedules the client to be shut down!
+	 */
+	public void scheduleClientForShutdown() {
 		addToBuffer("ShutdownClient", "");
 		processListJList.setForeground(Color.RED);
-		processListJList.setListData(new String[]{"SCHEDULED","FOR","SHUTDOWN"});
+		processListJList.setListData(new String[] { "SCHEDULED", "FOR",
+				"SHUTDOWN" });
 		scheduledForShutdown = true;
 	}
 
+	/**
+	 * Sets the location of the client panel!
+	 * 
+	 * @param x
+	 *            the x coordinate of the client panel
+	 * @param y
+	 *            the y coordinate of the client panel
+	 * @param width
+	 *            the width of the client panel
+	 * @param height
+	 *            the height of the client panel
+	 */
 	public void setLocation(int x, int y, int width, int height) {
 		clientPanel.setBounds(x, y, width, height);
 	}
 
+	/**
+	 * Sets the size of the client panel!
+	 * 
+	 * @param d
+	 *            the dimensions of the client panel
+	 */
 	public void setSize(Dimension d) {
 		clientPanel.setSize(d);
 		clientPanel.setMaximumSize(d);
@@ -399,10 +481,19 @@ public class Client {
 		clientPanel.revalidate();
 	}
 
+	/**
+	 * Removes the individual client window!
+	 */
 	public void removeIndividualClient() {
 		individualClient.die();
 	}
 
+	/**
+	 * Updates the last connection time!
+	 * 
+	 * @param time
+	 *            the last connection time
+	 */
 	public void updateLastConnectionTime(long time) {
 		float percent = ((float) time / (float) 12000) * (float) 100;
 		if (percent < 50f)
@@ -412,14 +503,22 @@ public class Client {
 		else if (percent >= 80f && percent < 100f)
 			timeLabel.setForeground(Color.RED);
 		else if (percent >= 100f)
-			removeClient();
+			scheduleClientForShutdown();
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
 	}
 
+	/**
+	 * Resets the last connection time!
+	 */
 	public void resetLastConnectionTime() {
 		timeRunnable.resetLastConnectionTime();
 	}
 
+	/**
+	 * Returns the client panel!
+	 * 
+	 * @return the client panel
+	 */
 	public ClientPanel getPanel() {
 		return clientPanel;
 	}

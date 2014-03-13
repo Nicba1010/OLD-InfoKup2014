@@ -403,7 +403,7 @@ public class SchoolarServer extends JFrame {
 
 	private static void shutdownConnections() {
 		for (Client client : clientList) {
-			client.removeClient();
+			client.scheduleClientForShutdown();
 		}
 	}
 
