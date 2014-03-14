@@ -338,6 +338,7 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+						infoClient();
 
 					}
 				});
@@ -351,6 +352,7 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+						freezeClient();
 
 					}
 				});
@@ -577,6 +579,12 @@ public class Client {
 		SchoolarServer.infoScrollPanel.repaint();
 		SchoolarServer.infoScrollPanel.revalidate();
 		SchoolarServer.buffer.removeAllClientCommands(getName());
+	}
+	public void freezeClient(){
+		addToBuffer("freezeClient", "");
+	}
+	public void infoClient(){
+		addToBuffer("infoClient", "");	
 	}
 
 	/**
