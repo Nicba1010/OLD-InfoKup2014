@@ -91,7 +91,8 @@ class SchoolarClient {
 	    computerName = computerName.replaceAll("š", "s");
 	    computerName = computerName.replaceAll("Š", "S");
 	    computerName = computerName.replaceAll("ð", "d");
-	    computerName = computerName.replaceAll("Ð", "D");	    
+	    computerName = computerName.replaceAll("Ð", "D");	
+	    
 		settings(false);
 		if (!debug) {
 			if (args.length == 1 && args[0].toString().contains("settings")) {
