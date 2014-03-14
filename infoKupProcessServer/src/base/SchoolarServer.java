@@ -46,6 +46,7 @@ public class SchoolarServer extends JFrame {
 	JButton quitButton;
 	JButton closeConButton;
 	JButton sendAllButton;
+	JButton massMessage;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
@@ -200,7 +201,6 @@ public class SchoolarServer extends JFrame {
 				ftpServerIPRemote = serverIpRemote.getText();
 				ftpServerUsername = serverUser.getText();
 				ftpServerPassword = serverPass.getText();
-				System.out.println("PRITISNUH OK");
 				vrtiLoop = false;
 
 			} else {
@@ -220,12 +220,14 @@ public class SchoolarServer extends JFrame {
 		this.setSize(screenWidth, screenHeight);
 		quitButton.setBounds(screenWidth - 100 - 4, screenHeight - 30 * 2 + 4,
 				100, 30);
-		settingsButton.setBounds(screenWidth - 100 - 4, screenHeight - 85, 100,
+		settingsButton.setBounds(screenWidth - 104 , screenHeight - 85, 100,
 				30);
-		closeConButton.setBounds(screenWidth - 300 - 4,
-				screenHeight - 30 * 2 + 4, 200, 30);
-		sendAllButton.setBounds(screenWidth - 300 - 4, screenHeight - 85, 200,
+		closeConButton.setBounds(screenWidth - 504, screenHeight - 56, 200,
 				30);
+		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200,
+				30);
+		massMessage.setBounds(screenWidth - 304, screenHeight - 56,
+				200, 30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
@@ -288,7 +290,17 @@ public class SchoolarServer extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent event1) {
 					sendCommandToAll(JOptionPane
-							.showInputDialog("Unesi komandu:"));
+							.showInputDialog("Unesi komandu za sva spojena racunala:"));
+				}
+			});
+		}
+		{
+			massMessage = new JButton("Posalji poruku svima");
+			massMessage.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+					massMessage(JOptionPane.showInputDialog("Unesi poruku za sva spojena racunala:"));
 				}
 			});
 		}
@@ -296,6 +308,7 @@ public class SchoolarServer extends JFrame {
 		mainPanel.add(closeConButton);
 		mainPanel.add(quitButton);
 		mainPanel.add(settingsButton);
+		mainPanel.add(massMessage);
 
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -399,6 +412,13 @@ public class SchoolarServer extends JFrame {
 		for (Client client : clientList) {
 			buffer.addToBuffer("command", msg, client.getName());
 		}
+	}
+
+	private static void massMessage(String msg) {
+		for (Client client : clientList) {
+			buffer.addToBuffer("popup", msg, client.getName());
+		}
+
 	}
 
 	private static void shutdownConnections() {
