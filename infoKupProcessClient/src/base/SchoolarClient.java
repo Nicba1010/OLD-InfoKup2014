@@ -80,8 +80,18 @@ class SchoolarClient {
 	}
 
 	public static void main(String args[]) throws Exception {
-		computerName = System.getenv("computername") + "-"
+	    computerName = System.getenv("computername") + "-"
 				+ Inet4Address.getLocalHost().getHostAddress();
+	    computerName = computerName.replaceAll("è", "c");
+	    computerName = computerName.replaceAll("æ", "c");
+	    computerName = computerName.replaceAll("Æ", "C");
+	    computerName = computerName.replaceAll("È", "C");
+	    computerName = computerName.replaceAll("ž", "z");
+	    computerName = computerName.replaceAll("Ž", "z");
+	    computerName = computerName.replaceAll("š", "s");
+	    computerName = computerName.replaceAll("Š", "S");
+	    computerName = computerName.replaceAll("ð", "d");
+	    computerName = computerName.replaceAll("Ð", "D");	    
 		settings(false);
 		if (!debug) {
 			if (args.length == 1 && args[0].toString().contains("settings")) {
