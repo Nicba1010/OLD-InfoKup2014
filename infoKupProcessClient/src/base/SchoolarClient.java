@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
@@ -25,8 +26,8 @@ import base.security.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
-	public static String computerName = System.getenv("computername");
 	public static Socket clientSocket;
+	static String computerName;
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip = "127.0.0.1";
 	static int socket = 25565;
@@ -79,6 +80,8 @@ class SchoolarClient {
 	}
 
 	public static void main(String args[]) throws Exception {
+		computerName = System.getenv("computername") + "-"
+				+ Inet4Address.getLocalHost().getHostAddress();
 		settings(false);
 		if (!debug) {
 			if (args.length == 1 && args[0].toString().contains("settings")) {
@@ -159,6 +162,13 @@ class SchoolarClient {
 				}
 			} else if (message.contains("ShutdownClient")) {
 				System.exit(0);
+			}
+			else if (message.contains("freezeClient")){			
+
+				System.out.println("Freeze test");
+			}
+			else if (message.contains("infoClient")){
+				System.out.println("Info test");
 			}
 		}
 	}

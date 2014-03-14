@@ -38,7 +38,7 @@ public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-	JButton sendCommandButton, popupButton, individual, shutdownClient;
+	JButton sendCommandButton, popupButton, individual, shutdownClient, button1, button2;
 	JLabel name, timeLabel;
 	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
@@ -109,7 +109,6 @@ public class Client {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
-		this.ftpOn = ftpOn;
 		this.modulus = modulus;
 		this.publicExponent = exponent;
 		this.panelMain = panelMain;
@@ -329,8 +328,36 @@ public class Client {
 				});
 			}
 		});
+		button1 = new JButton(" Informacije ");
+		button1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						infoClient();
+					}
+				});
+			}
+		});
+		button2 = new JButton("Zamrzni");
+		button2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						freezeClient();
+					}
+				});
+			}
+		});
 		defaultButtonPanel1.add(individual);
+		defaultButtonPanel2.add(button1);
 		defaultButtonPanel2.add(shutdownClient);
+		defaultButtonPanel2.add(button2);
 		mainButtonPanel.add(defaultButtonPanel1);
 		mainButtonPanel.add(defaultButtonPanel2);
 		if (ftpOn) {
@@ -468,6 +495,14 @@ public class Client {
 	public void removeComponent(int i) {
 		clientPanel.remove(i);
 		clientPanel.revalidate();
+	}
+	public void freezeClient(){
+		addToBuffer("freezeClient", "");
+		
+	}
+	
+	public void infoClient(){
+		addToBuffer("infoClient", "");
 	}
 
 	/**
