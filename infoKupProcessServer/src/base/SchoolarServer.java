@@ -453,6 +453,7 @@ public class SchoolarServer extends JFrame {
 									clientList.remove(c);
 									infoScrollPanel.repaint();
 									infoScrollPanel.revalidate();
+									buffer.removeAllClientCommands(c.getName());
 								}
 							}
 

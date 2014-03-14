@@ -38,7 +38,8 @@ public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-	JButton sendCommandButton, popupButton, individual, shutdownClient, infoClient, freezeClient;
+	JButton sendCommandButton, popupButton, individual, shutdownClient, info,
+			disable;
 	JLabel name, timeLabel;
 	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
@@ -109,8 +110,8 @@ public class Client {
 		this.ftpServerIP = ftpServerIP;
 		this.ftpServerUsername = ftpServerUsername;
 		this.ftpServerPassword = ftpServerPassword;
-		this.modulus = modulus;
 		this.ftpOn = ftpOn;
+		this.modulus = modulus;
 		this.publicExponent = exponent;
 		this.panelMain = panelMain;
 		{
@@ -316,7 +317,7 @@ public class Client {
 				});
 			}
 		});
-		shutdownClient = new JButton("Ugasi");
+		shutdownClient = new JButton(" Ugasi ");
 		shutdownClient.addActionListener(new ActionListener() {
 
 			@Override
@@ -329,36 +330,36 @@ public class Client {
 				});
 			}
 		});
-		infoClient = new JButton(" Informacije ");
-		infoClient.addActionListener(new ActionListener() {
+		info = new JButton("Informacije");
+		info.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						infoClient();
+
 					}
 				});
 			}
 		});
-		freezeClient = new JButton("Zamrzni");
-		freezeClient.addActionListener(new ActionListener() {
+		disable = new JButton("Zamrzni");
+		disable.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						freezeClient();
+
 					}
 				});
 			}
 		});
 		defaultButtonPanel1.add(individual);
-		defaultButtonPanel2.add(infoClient);
+		defaultButtonPanel2.add(info);
 		defaultButtonPanel2.add(shutdownClient);
-		defaultButtonPanel2.add(freezeClient);
+		defaultButtonPanel2.add(disable);
 		mainButtonPanel.add(defaultButtonPanel1);
 		mainButtonPanel.add(defaultButtonPanel2);
 		if (ftpOn) {
@@ -497,14 +498,6 @@ public class Client {
 		clientPanel.remove(i);
 		clientPanel.revalidate();
 	}
-	public void freezeClient(){
-		addToBuffer("freezeClient", "");
-		
-	}
-	
-	public void infoClient(){
-		addToBuffer("infoClient", "");
-	}
 
 	/**
 	 * Schedules the client to be shut down!
@@ -570,8 +563,20 @@ public class Client {
 		else if (percent >= 80f && percent < 100f)
 			timeLabel.setForeground(Color.RED);
 		else if (percent >= 100f)
-			scheduleClientForShutdown();
+			forceRemoveClient();
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
+	}
+
+	/**
+	 * Forcefully removes the client
+	 */
+	public void forceRemoveClient() {
+		SchoolarServer.infoScrollPanel.remove(getPanel());
+		timeRunnable.die();
+		SchoolarServer.clientList.remove(getClient());
+		SchoolarServer.infoScrollPanel.repaint();
+		SchoolarServer.infoScrollPanel.revalidate();
+		SchoolarServer.buffer.removeAllClientCommands(getName());
 	}
 
 	/**
