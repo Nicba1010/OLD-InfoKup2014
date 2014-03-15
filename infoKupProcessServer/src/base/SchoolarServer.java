@@ -394,7 +394,8 @@ public class SchoolarServer extends JFrame {
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn,
-								modulus, exponent, info,connectionSocket.getInetAddress()));
+								modulus, exponent, info, connectionSocket
+										.getInetAddress()));
 						clients.add(TCPData[0]);
 						newClient = true;
 					}
@@ -421,8 +422,11 @@ public class SchoolarServer extends JFrame {
 	}
 
 	private static void massMessage(String msg) {
-		for (Client client : clientList) {
-			buffer.addToBuffer("popup", msg, client.getName());
+		if (msg != null) {
+
+			for (Client client : clientList) {
+				buffer.addToBuffer("popup", msg, client.getName());
+			}
 		}
 
 	}
