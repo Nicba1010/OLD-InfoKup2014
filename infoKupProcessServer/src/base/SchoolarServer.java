@@ -50,7 +50,7 @@ public class SchoolarServer extends JFrame {
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
-	public static boolean vrtiLoop = true;
+	public static boolean loop = true;
 
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
@@ -201,7 +201,7 @@ public class SchoolarServer extends JFrame {
 				ftpServerIPRemote = serverIpRemote.getText();
 				ftpServerUsername = serverUser.getText();
 				ftpServerPassword = serverPass.getText();
-				vrtiLoop = false;
+				loop = false;
 
 			} else {
 				System.out.println("Using default port!");
@@ -218,16 +218,11 @@ public class SchoolarServer extends JFrame {
 
 	public void updateBounds() {
 		this.setSize(screenWidth, screenHeight);
-		quitButton.setBounds(screenWidth - 100 - 4, screenHeight - 30 * 2 + 4,
-				100, 30);
-		settingsButton.setBounds(screenWidth - 104 , screenHeight - 85, 100,
-				30);
-		closeConButton.setBounds(screenWidth - 504, screenHeight - 56, 200,
-				30);
-		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200,
-				30);
-		massMessage.setBounds(screenWidth - 304, screenHeight - 56,
-				200, 30);
+		quitButton.setBounds(screenWidth - 104, screenHeight - 56, 100, 30);
+		settingsButton.setBounds(screenWidth - 104, screenHeight - 85, 100, 30);
+		closeConButton.setBounds(screenWidth - 504, screenHeight - 56, 200, 30);
+		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200, 30);
+		massMessage.setBounds(screenWidth - 304, screenHeight - 56, 200, 30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
@@ -300,7 +295,8 @@ public class SchoolarServer extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent event1) {
-					massMessage(JOptionPane.showInputDialog("Unesi poruku za sva spojena racunala:"));
+					massMessage(JOptionPane
+							.showInputDialog("Unesi poruku za sva spojena racunala:"));
 				}
 			});
 		}
@@ -362,6 +358,10 @@ public class SchoolarServer extends JFrame {
 	}
 
 	public static void start() throws InterruptedException {
+		while (loop) {
+			Thread.sleep(100);
+
+		}
 		String clientSentence;
 		try {
 			inSocket = new ServerSocket(socketTCP);
@@ -408,9 +408,9 @@ public class SchoolarServer extends JFrame {
 		}
 	}
 
-	private static void sendCommandToAll(String msg) {
+	private static void sendCommandToAll(String command) {
 		for (Client client : clientList) {
-			buffer.addToBuffer("command", msg, client.getName());
+			buffer.addToBuffer("command", command, client.getName());
 		}
 	}
 

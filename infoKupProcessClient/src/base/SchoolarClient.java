@@ -37,8 +37,8 @@ class SchoolarClient {
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	static double width = screenSize.getWidth();
 	static double height = screenSize.getHeight();
-	static int x = (int)Math.round(width);
-	static int y = (int)Math.round(height);
+	static int x = (int) Math.round(width);
+	static int y = (int) Math.round(height);
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip = "127.0.0.1";
 	static int socket = 25565;
@@ -51,6 +51,9 @@ class SchoolarClient {
 	static File settingsFile = new File(path);
 	static boolean first = false;
 	static RSA encryption;
+	private static boolean connected = false;
+	static Socket availbilityCheckSocket;
+	static boolean availbilityCheckLoop = true;
 
 	public static void settings(boolean b) {
 		if (!settingsFile.exists() || b) {
@@ -108,6 +111,8 @@ class SchoolarClient {
 		computerName = computerName.replaceAll("Š", "S");
 		computerName = computerName.replaceAll("ð", "d");
 		computerName = computerName.replaceAll("Ð", "D");
+		Timer timer1 = new Timer();
+		timer1.schedule(task, 01, 5001);
 
 		settings(false);
 		if (!debug) {
@@ -126,7 +131,33 @@ class SchoolarClient {
 		}, 0, 2000);
 	}
 
+	static TimerTask task = new TimerTask() {
+
+		@Override
+		public void run() {
+			if (connected == false) {
+			}
+		}
+	};
+
+	public static boolean hostAvailabilityCheck() {
+		try (Socket s = new Socket(ip, socket)) {
+			return true;
+		} catch (IOException ex) {
+		}
+		return false;
+	}
+
 	public static void sendMessage(String msg) throws IOException {
+		while (availbilityCheckLoop) {
+			if (hostAvailabilityCheck()) {
+				System.out.println("Server Online");
+				availbilityCheckLoop = false;
+			} else if (!hostAvailabilityCheck()) {
+				System.out.println("Server Offline");
+				availbilityCheckLoop = true;
+			}
+		}
 		if (!first) {
 			msg = msg + "-:-" + encryption.readModulusAndExponent()[0] + "-:-"
 					+ encryption.readModulusAndExponent()[1];
@@ -143,9 +174,9 @@ class SchoolarClient {
 			messageRecieve = inFromServer.readLine();
 			processMessage(messageRecieve);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
