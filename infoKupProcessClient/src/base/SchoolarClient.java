@@ -168,6 +168,7 @@ class SchoolarClient {
 					+ encryption.readModulusAndExponent()[1] + "-:-" + osInfo
 					+ "-:-" + javaInfo + "-:-" + javaPath + "-:-" + homeDir
 					+ "-:-" + extIp;
+			System.out.println(msg);
 			first = true;
 		}
 		String messageRecieve = null;

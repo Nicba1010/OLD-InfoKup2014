@@ -380,7 +380,7 @@ public class SchoolarServer extends JFrame {
 						BigInteger modulus = null;
 						BigInteger exponent = null;
 						String[] info = new String[5];
-						if (TCPDataWithKey.length == 3) {
+						if (TCPDataWithKey.length == 8) {
 							modulus = new BigInteger(TCPDataWithKey[1]);
 							exponent = new BigInteger(TCPDataWithKey[2]);
 							info[0] = TCPDataWithKey[3];
