@@ -368,7 +368,7 @@ public class Client {
 						String text = "OS: " + osInfo + "\n" + "Java: "
 								+ javaInfo + "\n" + "JavaPath: " + javaPath
 								+ "\n" + "User folder: " + homeDir + "\n"
-								+ "IP: " + extIp + "\n" + "Local Ip: " + locIp;
+								+ "IP: " + extIp + "\n " + "Local Ip: " + locIp;
 						JOptionPane pane = new JOptionPane(text,
 								JOptionPane.PLAIN_MESSAGE);
 
