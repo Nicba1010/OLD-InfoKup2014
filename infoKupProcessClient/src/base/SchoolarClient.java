@@ -29,6 +29,8 @@ import base.security.RSA;
 import base.util.SettingsClient;
 
 class SchoolarClient {
+	public static Freeze freeze;
+	static Thread freezeThread;
 	public static Socket clientSocket;
 	static String computerName;
 	static String osInfo = System.getProperty("os.name") + " "
@@ -118,7 +120,9 @@ class SchoolarClient {
 		computerName = computerName.replaceAll("Ð", "D");
 		Timer timer1 = new Timer();
 		timer1.schedule(task, 01, 5001);
-
+		freeze = new Freeze();
+		freezeThread = new Thread(freeze);
+		freezeThread.start();
 		settings(false);
 		if (!debug) {
 			if (args.length == 1 && args[0].toString().contains("settings")) {
@@ -228,7 +232,7 @@ class SchoolarClient {
 			} else if (message.contains("ShutdownClient")) {
 				System.exit(0);
 			} else if (message.contains("freezeClient")) {
-
+				freeze.toggle();
 				System.out.println("Freeze test");
 			}
 		}
@@ -273,13 +277,30 @@ class SchoolarClient {
 					proc.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				line = StringUtils.substring(line, 0, 30);
-				if (!(line.contains("=======") || line.contains("Image Name")
-						|| line.contains("System") || line.contains("csrss")
-						|| line.contains("dwm") || line.contains("winlogon")
-						|| line.contains("svc") || line.contains("taskhost")
-						|| line.contains("CCC") || line.contains("nvtray")
-						|| line.contains("nvvsvc") || line.contains("nvxdsync"))
-						&& !processes.contains(line)) {
+				if (!(line.contains("=======") || line.contains("Image")
+						|| line.contains("javaw") || line.contains("LMl")
+						|| line.contains("Rtl") || line.contains("arm")
+						|| line.contains("audio") || line.contains("jusched")
+						|| line.contains("svchost") || line.contains("dwm")
+						|| line.contains("java") || line.contains("CCC")
+						|| line.contains("spoolsv") || line.contains("Fuel")
+						|| line.contains("service") || line.contains("MOM")
+						|| line.contains("csrss") || line.contains("winlogon")
+						|| line.contains("System") || line.contains("svs")
+						|| line.contains("taskhost") || line.contains("nvtray")
+						|| line.contains("nvvsvc") || line.contains("nvxdsync")
+						|| line.contains("wininit")
+						|| line.contains("atiesrxx")
+						|| line.contains("conhost") || line.contains("lsm")
+						|| line.contains("taskeng")
+						|| line.contains("TrustedInstaller")
+						|| line.contains("WUDFHost") || line.contains("RtWLan")
+						|| line.contains("ati") || line.contains("amd")
+						|| line.contains("nv") || line.contains("sqlwriter")
+						|| line.contains("RAV") || line.contains("lsass")
+						|| line.contains("Search") || line.contains("mDNS")
+						|| line.contains("wmp") || line.contains("smss") || line
+							.contains("tasklist")) && !processes.contains(line)) {
 					if (!processes.equalsIgnoreCase(""))
 						processes = processes + ":" + line;
 					else

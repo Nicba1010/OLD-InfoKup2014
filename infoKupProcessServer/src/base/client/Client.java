@@ -38,6 +38,7 @@ import base.UIComponents.TextFieldPopupButton;
 import base.plugins.PluginLoader;
 
 public class Client {
+	boolean freezed=false;
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
@@ -387,7 +388,12 @@ public class Client {
 					@Override
 					public void run() {
 						freezeClient();
-
+						freezed = !freezed;
+						if(freezed){
+							disable.setText("Odmrzni");
+						}else{
+							disable.setText("Zamrzni");
+						}
 					}
 				});
 			}
