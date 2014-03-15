@@ -18,9 +18,11 @@ import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -355,6 +357,12 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+						String text = "OS: " +osInfo + "\n" + "Java: " +javaInfo + "\n" + "JavaPath: "+ javaPath + "\n" + "User folder"+ homeDir + "\n" + "IP: " + extIp;
+						JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
+
+						JDialog popupInfo = pane.createDialog("Info");
+						popupInfo.setAlwaysOnTop(true);
+						popupInfo.setVisible(true);
 					}
 				});
 			}
