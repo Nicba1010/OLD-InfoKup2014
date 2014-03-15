@@ -63,6 +63,11 @@ public class Client {
 
 	private Color DARK_GREEN = new Color(34, 139, 34);
 	private Color DARK_ORANGE = new Color(210, 105, 30);
+	private String osInfo;
+	private String javaInfo;
+	private String javaPath;
+	private String homeDir;
+	private String extIp;
 
 	/**
 	 * The constructor of the Client class
@@ -94,12 +99,14 @@ public class Client {
 	 *            the modulus of the public key
 	 * @param exponent
 	 *            the exponent of the public key
+	 * @param info
+	 *            the client info
 	 */
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
-			BigInteger exponent) {
+			BigInteger exponent, String[] info) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -114,6 +121,11 @@ public class Client {
 		this.modulus = modulus;
 		this.publicExponent = exponent;
 		this.panelMain = panelMain;
+		this.osInfo = info[0];
+		this.javaInfo = info[1];
+		this.javaPath = info[2];
+		this.homeDir = info[3];
+		this.extIp = info[4];
 		{
 			initPopupsAndLabels();
 			initProcessList();
@@ -338,8 +350,6 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						infoClient();
-
 					}
 				});
 			}
@@ -580,11 +590,9 @@ public class Client {
 		SchoolarServer.infoScrollPanel.revalidate();
 		SchoolarServer.buffer.removeAllClientCommands(getName());
 	}
-	public void freezeClient(){
+
+	public void freezeClient() {
 		addToBuffer("freezeClient", "");
-	}
-	public void infoClient(){
-		addToBuffer("infoClient", "");	
 	}
 
 	/**

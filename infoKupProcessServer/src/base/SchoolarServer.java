@@ -55,7 +55,7 @@ public class SchoolarServer extends JFrame {
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
 	private static String[] TCPData = new String[2];
-	private static String[] TCPDataWithKey = new String[2];
+	private static String[] TCPDataWithKey = new String[7];
 
 	public static ArrayList<Client> clientList = new ArrayList<Client>();
 	public static ArrayList<String> clients = new ArrayList<String>();
@@ -379,16 +379,22 @@ public class SchoolarServer extends JFrame {
 						TCPDataWithKey = clientSentence.split("-:-");
 						BigInteger modulus = null;
 						BigInteger exponent = null;
+						String[] info = new String[5];
 						if (TCPDataWithKey.length == 3) {
 							modulus = new BigInteger(TCPDataWithKey[1]);
 							exponent = new BigInteger(TCPDataWithKey[2]);
+							info[0] = TCPDataWithKey[3];
+							info[1] = TCPDataWithKey[4];
+							info[2] = TCPDataWithKey[5];
+							info[3] = TCPDataWithKey[6];
+							info[4] = TCPDataWithKey[7];
 						}
 						TCPData = TCPDataWithKey[0].split(";");
 						clientList.add(new Client(0, 0, 250,
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn,
-								modulus, exponent));
+								modulus, exponent, info));
 						clients.add(TCPData[0]);
 						newClient = true;
 					}

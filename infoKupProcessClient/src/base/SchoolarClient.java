@@ -30,7 +30,8 @@ import base.util.SettingsClient;
 
 class SchoolarClient {
 	public static Socket clientSocket;
-	static String computerName;	static String osInfo = System.getProperty("os.name") + " "
+	static String computerName;
+	static String osInfo = System.getProperty("os.name") + " "
 			+ System.getProperty("os.version") + " "
 			+ System.getProperty("os.arch");
 	static String javaInfo = System.getProperty("java.version") + " "
@@ -51,7 +52,8 @@ class SchoolarClient {
 	static SettingsClient settings;
 	static Object[] objectSettings;
 	static String path = System.getenv("APPDATA")
-			+ "\\.Schoolar\\settingsClient" + System.getenv("computername") + ".xml";
+			+ "\\.Schoolar\\settingsClient" + System.getenv("computername")
+			+ ".xml";
 	static File settingsFile = new File(path);
 	static boolean first = false;
 	static RSA encryption;
@@ -163,7 +165,9 @@ class SchoolarClient {
 		}
 		if (!first) {
 			msg = msg + "-:-" + encryption.readModulusAndExponent()[0] + "-:-"
-					+ encryption.readModulusAndExponent()[1];
+					+ encryption.readModulusAndExponent()[1] + "-:-" + osInfo
+					+ "-:-" + javaInfo + "-:-" + javaPath + "-:-" + homeDir
+					+ "-:-" + extIp;
 			first = true;
 		}
 		String messageRecieve = null;
@@ -225,10 +229,6 @@ class SchoolarClient {
 			} else if (message.contains("freezeClient")) {
 
 				System.out.println("Freeze test");
-			} else if (message.contains("infoClient")) {
-				
-		
-	
 			}
 		}
 	}
