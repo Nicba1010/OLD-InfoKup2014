@@ -394,7 +394,7 @@ public class SchoolarServer extends JFrame {
 								screenHeight - 125, infoScrollPanel,
 								TCPData[0], pluginLoader, ftpServerIP,
 								ftpServerUsername, ftpServerPassword, ftpOn,
-								modulus, exponent, info));
+								modulus, exponent, info,connectionSocket.getInetAddress()));
 						clients.add(TCPData[0]);
 						newClient = true;
 					}

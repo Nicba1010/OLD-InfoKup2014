@@ -7,6 +7,7 @@ import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,13 +39,14 @@ public class IndividualClient extends JFrame {
 	private String homeDir;
 	private String extIp;
 	private String[] info;
+	private InetAddress inetAddress;
 	
 
 	public IndividualClient(final String clientName, final Client client,
 			Component comp, final int id, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
-			BigInteger exponent, String[] info) throws HeadlessException {
+			BigInteger exponent, String[] info, InetAddress inetAddress) throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
@@ -63,6 +65,7 @@ public class IndividualClient extends JFrame {
 		this.javaPath = info[2];
 		this.homeDir = info[3];
 		this.extIp = info[4];
+		this.inetAddress = inetAddress;
 		for (int i = 0; i < info.length; i++) {
 			System.out.println(info[i]);
 		}
@@ -118,7 +121,7 @@ public class IndividualClient extends JFrame {
 		indiClient = new Client(0, 0, screenWidth - 15, screenHeight - 44,
 				panel, clientName, pluginLoader, ftpServerIP,
 				ftpServerUsername, ftpServerPassword, ftpOn, modulus,
-				publicExponent, info);
+				publicExponent, info, inetAddress);
 		indiClient.removeButtonP1(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());

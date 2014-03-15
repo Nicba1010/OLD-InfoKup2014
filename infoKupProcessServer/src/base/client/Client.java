@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.security.PublicKey;
 import java.util.Arrays;
 
@@ -40,8 +41,8 @@ public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-	JButton sendCommandButton, popupButton, individual, shutdownClient, infoButton,
-			disable;
+	JButton sendCommandButton, popupButton, individual, shutdownClient,
+			infoButton, disable;
 	JLabel name, timeLabel;
 	JList<String> processListJList;
 	JPanel panel, cmdButtonPanel, popupButtonPanel, mainButtonPanel,
@@ -71,6 +72,7 @@ public class Client {
 	private String homeDir;
 	private String extIp;
 	private String[] info;
+	private InetAddress inetAddress;
 
 	/**
 	 * The constructor of the Client class
@@ -104,12 +106,13 @@ public class Client {
 	 *            the exponent of the public key
 	 * @param info
 	 *            the client info
+	 * @param inetAddress
 	 */
 	public Client(int x, int y, int width, int height, JPanel panelMain,
 			final String clientName, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
-			BigInteger exponent, String[] info) {
+			BigInteger exponent, String[] info, InetAddress inetAddress) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -130,6 +133,7 @@ public class Client {
 		this.javaPath = info[2];
 		this.homeDir = info[3];
 		this.extIp = info[4];
+		this.inetAddress = inetAddress;
 		for (int i = 0; i < info.length; i++) {
 			System.out.println(info[i]);
 		}
@@ -326,7 +330,7 @@ public class Client {
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
 										ftpServerUsername, ftpServerPassword,
-										ftpOn, modulus, publicExponent,info);
+										ftpOn, modulus, publicExponent, info, inetAddress);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -357,8 +361,12 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						String text = "OS: " +osInfo + "\n" + "Java: " +javaInfo + "\n" + "JavaPath: "+ javaPath + "\n" + "User folder"+ homeDir + "\n" + "IP: " + extIp;
-						JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
+						String text = "OS: " + osInfo + "\n" + "Java: "
+								+ javaInfo + "\n" + "JavaPath: " + javaPath
+								+ "\n" + "User folder" + homeDir + "\n"
+								+ "IP: " + extIp;
+						JOptionPane pane = new JOptionPane(text,
+								JOptionPane.PLAIN_MESSAGE);
 
 						JDialog popupInfo = pane.createDialog("Info");
 						popupInfo.setAlwaysOnTop(true);
