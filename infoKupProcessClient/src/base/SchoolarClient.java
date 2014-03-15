@@ -181,7 +181,6 @@ class SchoolarClient {
 	}
 
 	private static void processMessage(String message) throws IOException {
-		System.out.println(message);
 		if (message != null) {
 			debugPrint(message);
 			message = message.replaceFirst(";", "");

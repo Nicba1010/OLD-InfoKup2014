@@ -504,8 +504,6 @@ public class SchoolarServer extends JFrame {
 				}
 				outToClient.writeBytes(getEncryptedData(modulus, exponent,
 						message));
-				System.out
-						.println(getEncryptedData(modulus, exponent, message));
 			}
 		} catch (Exception e) {
 
