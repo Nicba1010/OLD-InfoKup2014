@@ -39,7 +39,7 @@ public class IndividualClient extends JFrame {
 	private String homeDir;
 	private String extIp;
 	private String[] info;
-	private InetAddress inetAddress;
+	private InetAddress inetAddress; 
 
 	public IndividualClient(final String clientName, final Client client,
 			Component comp, final int id, PluginLoader pluginLoader,

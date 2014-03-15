@@ -353,7 +353,7 @@ public class Client {
 					}
 				});
 			}
-		});
+		}); 
 		infoButton = new JButton("Informacije");
 		infoButton.addActionListener(new ActionListener() {
 
