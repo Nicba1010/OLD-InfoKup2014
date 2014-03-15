@@ -30,8 +30,13 @@ import base.util.SettingsClient;
 
 class SchoolarClient {
 	public static Socket clientSocket;
-	static String computerName;
-	static String osInfo = System.getProperty("os.name");
+	static String computerName;	static String osInfo = System.getProperty("os.name") + " "
+			+ System.getProperty("os.version") + " "
+			+ System.getProperty("os.arch");
+	static String javaInfo = System.getProperty("java.version") + " "
+			+ System.getProperty("java.vendor");
+	static String javaPath = System.getProperty("java.home");
+	static String homeDir = System.getProperty("user.home");
 	static String extIp = null;
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	static double width = screenSize.getWidth();
@@ -221,11 +226,9 @@ class SchoolarClient {
 
 				System.out.println("Freeze test");
 			} else if (message.contains("infoClient")) {
-				System.out.println("-----------------------------------------");
-				System.out.println("Širina :" + x + "\nVisina:" + y);
-				System.out.println(extIp);
-				System.out.println(osInfo);
-				System.out.println("-----------------------------------------");
+				
+		
+	
 			}
 		}
 	}
