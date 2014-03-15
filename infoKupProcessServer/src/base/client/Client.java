@@ -38,7 +38,7 @@ public class Client {
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
-	JButton sendCommandButton, popupButton, individual, shutdownClient, info,
+	JButton sendCommandButton, popupButton, individual, shutdownClient, infoButton,
 			disable;
 	JLabel name, timeLabel;
 	JList<String> processListJList;
@@ -68,6 +68,7 @@ public class Client {
 	private String javaPath;
 	private String homeDir;
 	private String extIp;
+	private String[] info;
 
 	/**
 	 * The constructor of the Client class
@@ -121,11 +122,15 @@ public class Client {
 		this.modulus = modulus;
 		this.publicExponent = exponent;
 		this.panelMain = panelMain;
+		this.info = info;
 		this.osInfo = info[0];
 		this.javaInfo = info[1];
 		this.javaPath = info[2];
 		this.homeDir = info[3];
 		this.extIp = info[4];
+		for (int i = 0; i < info.length; i++) {
+			System.out.println(info[i]);
+		}
 		{
 			initPopupsAndLabels();
 			initProcessList();
@@ -319,7 +324,7 @@ public class Client {
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
 										ftpServerUsername, ftpServerPassword,
-										ftpOn, modulus, publicExponent);
+										ftpOn, modulus, publicExponent,info);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -342,8 +347,8 @@ public class Client {
 				});
 			}
 		});
-		info = new JButton("Informacije");
-		info.addActionListener(new ActionListener() {
+		infoButton = new JButton("Informacije");
+		infoButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -369,7 +374,7 @@ public class Client {
 			}
 		});
 		defaultButtonPanel1.add(individual);
-		defaultButtonPanel2.add(info);
+		defaultButtonPanel2.add(infoButton);
 		defaultButtonPanel2.add(shutdownClient);
 		defaultButtonPanel2.add(disable);
 		mainButtonPanel.add(defaultButtonPanel1);

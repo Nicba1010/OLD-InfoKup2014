@@ -32,12 +32,19 @@ public class IndividualClient extends JFrame {
 	private String ftpServerPassword;
 	private boolean ftpOn;
 	BigInteger modulus, publicExponent;
+	private String osInfo;
+	private String javaInfo;
+	private String javaPath;
+	private String homeDir;
+	private String extIp;
+	private String[] info;
+	
 
 	public IndividualClient(final String clientName, final Client client,
 			Component comp, final int id, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
-			BigInteger exponent) throws HeadlessException {
+			BigInteger exponent, String[] info) throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
@@ -50,6 +57,15 @@ public class IndividualClient extends JFrame {
 		this.ftpOn = ftpOn;
 		this.modulus = modulus;
 		this.publicExponent = exponent;
+		this.info = info;
+		this.osInfo = info[0];
+		this.javaInfo = info[1];
+		this.javaPath = info[2];
+		this.homeDir = info[3];
+		this.extIp = info[4];
+		for (int i = 0; i < info.length; i++) {
+			System.out.println(info[i]);
+		}
 		SchoolarServer.removedClients.add(clientName);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		initGUI();
@@ -102,7 +118,7 @@ public class IndividualClient extends JFrame {
 		indiClient = new Client(0, 0, screenWidth - 15, screenHeight - 44,
 				panel, clientName, pluginLoader, ftpServerIP,
 				ftpServerUsername, ftpServerPassword, ftpOn, modulus,
-				publicExponent);
+				publicExponent, info);
 		indiClient.removeButtonP1(2);
 		indiClient.removeComponent(0);
 		indiClient.setData(client.getData());
