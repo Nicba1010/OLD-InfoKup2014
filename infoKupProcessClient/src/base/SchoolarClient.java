@@ -1,6 +1,8 @@
 package base;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -8,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.Timer;
@@ -28,6 +32,13 @@ import base.util.SettingsClient;
 class SchoolarClient {
 	public static Socket clientSocket;
 	static String computerName;
+	static String osInfo = System.getProperty("os.name");
+	static String extIp = null;
+	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	static double width = screenSize.getWidth();
+	static double height = screenSize.getHeight();
+	static int x = (int)Math.round(width);
+	static int y = (int)Math.round(height);
 	public static boolean debug = false, defaultSettings = false, rand = false;
 	static String ip = "127.0.0.1";
 	static int socket = 25565;
@@ -80,19 +91,24 @@ class SchoolarClient {
 	}
 
 	public static void main(String args[]) throws Exception {
-	    computerName = System.getenv("computername") + "-"
+		URL connection = new URL("http://checkip.amazonaws.com/");
+		URLConnection con = connection.openConnection();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				con.getInputStream()));
+		extIp = reader.readLine();
+		computerName = System.getenv("computername") + "-"
 				+ Inet4Address.getLocalHost().getHostAddress();
-	    computerName = computerName.replaceAll("è", "c");
-	    computerName = computerName.replaceAll("æ", "c");
-	    computerName = computerName.replaceAll("Æ", "C");
-	    computerName = computerName.replaceAll("È", "C");
-	    computerName = computerName.replaceAll("ž", "z");
-	    computerName = computerName.replaceAll("Ž", "z");
-	    computerName = computerName.replaceAll("š", "s");
-	    computerName = computerName.replaceAll("Š", "S");
-	    computerName = computerName.replaceAll("ð", "d");
-	    computerName = computerName.replaceAll("Ð", "D");	
-	    
+		computerName = computerName.replaceAll("è", "c");
+		computerName = computerName.replaceAll("æ", "c");
+		computerName = computerName.replaceAll("Æ", "C");
+		computerName = computerName.replaceAll("È", "C");
+		computerName = computerName.replaceAll("ž", "z");
+		computerName = computerName.replaceAll("Ž", "z");
+		computerName = computerName.replaceAll("š", "s");
+		computerName = computerName.replaceAll("Š", "S");
+		computerName = computerName.replaceAll("ð", "d");
+		computerName = computerName.replaceAll("Ð", "D");
+
 		settings(false);
 		if (!debug) {
 			if (args.length == 1 && args[0].toString().contains("settings")) {
@@ -173,13 +189,15 @@ class SchoolarClient {
 				}
 			} else if (message.contains("ShutdownClient")) {
 				System.exit(0);
-			}
-			else if (message.contains("freezeClient")){			
+			} else if (message.contains("freezeClient")) {
 
 				System.out.println("Freeze test");
-			}
-			else if (message.contains("infoClient")){
-				System.out.println("Info test");
+			} else if (message.contains("infoClient")) {
+				System.out.println("-----------------------------------------");
+				System.out.println("Širina :" + x + "\nVisina:" + y);
+				System.out.println(extIp);
+				System.out.println(osInfo);
+				System.out.println("-----------------------------------------");
 			}
 		}
 	}
