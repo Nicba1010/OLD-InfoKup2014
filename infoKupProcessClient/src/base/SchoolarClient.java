@@ -47,7 +47,7 @@ class SchoolarClient {
 	static SettingsClient settings;
 	static Object[] objectSettings;
 	static String path = System.getenv("APPDATA")
-			+ "\\.Schoolar\\settingsClient" + computerName + ".xml";
+			+ "\\.Schoolar\\settingsClient" + System.getenv("computername") + ".xml";
 	static File settingsFile = new File(path);
 	static boolean first = false;
 	static RSA encryption;
@@ -99,8 +99,7 @@ class SchoolarClient {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				con.getInputStream()));
 		extIp = reader.readLine();
-		computerName = System.getenv("computername") + "-"
-				+ Inet4Address.getLocalHost().getHostAddress();
+		computerName = System.getenv("computername");
 		computerName = computerName.replaceAll("è", "c");
 		computerName = computerName.replaceAll("æ", "c");
 		computerName = computerName.replaceAll("Æ", "C");
