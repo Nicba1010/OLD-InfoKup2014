@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import base.SchoolarServer;
 import base.plugins.PluginLoader;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 public class IndividualClient extends JFrame {
 	JPanel panel;
 	int screenWidth = 265, screenHeight = 644;
@@ -40,13 +40,13 @@ public class IndividualClient extends JFrame {
 	private String extIp;
 	private String[] info;
 	private InetAddress inetAddress;
-	
 
 	public IndividualClient(final String clientName, final Client client,
 			Component comp, final int id, PluginLoader pluginLoader,
 			String ftpServerIP, String ftpServerUsername,
 			String ftpServerPassword, boolean ftpOn, BigInteger modulus,
-			BigInteger exponent, String[] info, InetAddress inetAddress) throws HeadlessException {
+			BigInteger exponent, String[] info, InetAddress inetAddress)
+			throws HeadlessException {
 		super(clientName);
 		this.clientName = clientName;
 		this.client = client;
@@ -131,6 +131,6 @@ public class IndividualClient extends JFrame {
 
 	public void die() {
 		dispose();
-		
+
 	}
 }

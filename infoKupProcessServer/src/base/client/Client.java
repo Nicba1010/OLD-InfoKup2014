@@ -330,7 +330,8 @@ public class Client {
 										clientName, getClient(), comp, i,
 										pluginLoader, ftpServerIP,
 										ftpServerUsername, ftpServerPassword,
-										ftpOn, modulus, publicExponent, info, inetAddress);
+										ftpOn, modulus, publicExponent, info,
+										inetAddress);
 								individualClient.setVisible(true);
 							}
 							if (!SchoolarServer.removedClients.contains(client))
@@ -361,10 +362,12 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+						String locIp = inetAddress.toString();
+						locIp = locIp.replace("/", "");
 						String text = "OS: " + osInfo + "\n" + "Java: "
 								+ javaInfo + "\n" + "JavaPath: " + javaPath
-								+ "\n" + "User folder" + homeDir + "\n"
-								+ "IP: " + extIp;
+								+ "\n" + "User folder: " + homeDir + "\n"
+								+ "IP: " + extIp + "\n" + "Local Ip: " + locIp;
 						JOptionPane pane = new JOptionPane(text,
 								JOptionPane.PLAIN_MESSAGE);
 
