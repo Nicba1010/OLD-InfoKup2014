@@ -38,7 +38,7 @@ import base.UIComponents.TextFieldPopupButton;
 import base.plugins.PluginLoader;
 
 public class Client {
-	boolean freezed=false;
+	boolean freezed = false;
 	int x, y, width, height, currentSelectedIndex = -1;
 	String currentSelectedProcess, clientName;
 	String[] processArray = new String[] { "not connected" };
@@ -354,7 +354,7 @@ public class Client {
 					}
 				});
 			}
-		}); 
+		});
 		infoButton = new JButton("Informacije");
 		infoButton.addActionListener(new ActionListener() {
 
@@ -389,9 +389,9 @@ public class Client {
 					public void run() {
 						freezeClient();
 						freezed = !freezed;
-						if(freezed){
+						if (freezed) {
 							disable.setText("Odmrzni");
-						}else{
+						} else {
 							disable.setText("Zamrzni");
 						}
 					}
@@ -630,6 +630,12 @@ public class Client {
 	 */
 	public void resetLastConnectionTime() {
 		timeRunnable.resetLastConnectionTime();
+	}
+
+	public void removeClientNameLabel() {
+		topPanel.remove(0);
+		topPanel.revalidate();
+		topPanel.repaint();
 	}
 
 	/**

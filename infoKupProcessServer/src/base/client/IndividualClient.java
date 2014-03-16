@@ -39,7 +39,7 @@ public class IndividualClient extends JFrame {
 	private String homeDir;
 	private String extIp;
 	private String[] info;
-	private InetAddress inetAddress; 
+	private InetAddress inetAddress;
 
 	public IndividualClient(final String clientName, final Client client,
 			Component comp, final int id, PluginLoader pluginLoader,
@@ -123,7 +123,7 @@ public class IndividualClient extends JFrame {
 				ftpServerUsername, ftpServerPassword, ftpOn, modulus,
 				publicExponent, info, inetAddress);
 		indiClient.removeButtonP1(2);
-		indiClient.removeComponent(0);
+		indiClient.removeClientNameLabel();
 		indiClient.setData(client.getData());
 		setVisible(true);
 
@@ -131,6 +131,5 @@ public class IndividualClient extends JFrame {
 
 	public void die() {
 		dispose();
-
 	}
 }
