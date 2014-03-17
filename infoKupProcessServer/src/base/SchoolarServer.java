@@ -389,60 +389,81 @@ public class SchoolarServer extends JFrame {
 						new InputStreamReader(connectionSocket.getInputStream()));
 				clientSentence = inFromClient.readLine();
 				System.out.println(clientSentence);
-				if (clientSentence.contains("androidMobileDevice")
-						&& mobileControl) {
-					DataOutputStream outToClient = new DataOutputStream(
-							connectionSocket.getOutputStream());
-					String msg;
-					msg = "PERNIS\n";
-
-					outToClient.writeBytes(msg);
-
-				} else if (clientSentence.contains("androidMobileDevice")
-						&& !mobileControl) {
-					DataOutputStream outToClient = new DataOutputStream(
-							connectionSocket.getOutputStream());
-					String msg = "MOBILE CONTROL NOT ENABELED\n";
-					outToClient.writeBytes(msg);
-				} else {
-					if (clientSentence != null) {
-						boolean newClient = false;
-						TCPData = clientSentence.split(";");
-
-						if (clients.contains(TCPData[0])) {
-							System.out.println(TCPData[1]);
-						} else {
-							TCPDataWithKey = clientSentence.split("-:-");
-							BigInteger modulus = null;
-							BigInteger exponent = null;
-							String[] info = new String[5];
-							if (TCPDataWithKey.length == 8) {
-								modulus = new BigInteger(TCPDataWithKey[1]);
-								exponent = new BigInteger(TCPDataWithKey[2]);
-								info[0] = TCPDataWithKey[3];
-								info[1] = TCPDataWithKey[4];
-								info[2] = TCPDataWithKey[5];
-								info[3] = TCPDataWithKey[6];
-								info[4] = TCPDataWithKey[7];
-							}
-							TCPData = TCPDataWithKey[0].split(";");
-							clientList.add(new Client(0, 0, 250,
-									screenHeight - 125, infoScrollPanel,
-									TCPData[0], pluginLoader, ftpServerIP,
-									ftpServerUsername, ftpServerPassword,
-									ftpOn, modulus, exponent, info,
-									connectionSocket.getInetAddress()));
-							clients.add(TCPData[0]);
-							newClient = true;
-						}
-
+				if (clientSentence != null) {
+					if (clientSentence.contains("androidMobileDevice")
+							&& mobileControl) {
+						String toMobileControl = "";
 						for (Client client : clientList) {
-							if (client.getName().equalsIgnoreCase(TCPData[0])) {
-								client.setData(TCPData[1].split(":"));
-								client.resetLastConnectionTime();
+							toMobileControl += client.getName() + ";";
+							String temp = null;
+
+							for (String str : client.getData()) {
+								toMobileControl += str + ":";
+								temp = str;
+
 							}
+							toMobileControl.replace(temp + ":", temp);
+							toMobileControl += "-$-";
+
 						}
-						sendResponse(newClient);
+
+
+						DataOutputStream outToClient = new DataOutputStream(
+								connectionSocket.getOutputStream());
+						String msg;
+						msg = "PERNIS\n";
+						if (clients.size() > 0)
+							outToClient.writeBytes(toMobileControl);
+						else
+							outToClient.writeBytes(msg);
+
+					} else if (clientSentence.contains("androidMobileDevice")
+							&& !mobileControl) {
+						DataOutputStream outToClient = new DataOutputStream(
+								connectionSocket.getOutputStream());
+						String msg = "MOBILE CONTROL NOT ENEBELED\n";
+						outToClient.writeBytes(msg);
+					} else {
+						if (clientSentence != null) {
+							boolean newClient = false;
+							TCPData = clientSentence.split(";");
+
+							if (clients.contains(TCPData[0])) {
+								System.out.println(TCPData[1]);
+							} else {
+								TCPDataWithKey = clientSentence.split("-:-");
+								BigInteger modulus = null;
+								BigInteger exponent = null;
+								String[] info = new String[5];
+								if (TCPDataWithKey.length == 8) {
+									modulus = new BigInteger(TCPDataWithKey[1]);
+									exponent = new BigInteger(TCPDataWithKey[2]);
+									info[0] = TCPDataWithKey[3];
+									info[1] = TCPDataWithKey[4];
+									info[2] = TCPDataWithKey[5];
+									info[3] = TCPDataWithKey[6];
+									info[4] = TCPDataWithKey[7];
+								}
+								TCPData = TCPDataWithKey[0].split(";");
+								clientList.add(new Client(0, 0, 250,
+										screenHeight - 125, infoScrollPanel,
+										TCPData[0], pluginLoader, ftpServerIP,
+										ftpServerUsername, ftpServerPassword,
+										ftpOn, modulus, exponent, info,
+										connectionSocket.getInetAddress()));
+								clients.add(TCPData[0]);
+								newClient = true;
+							}
+
+							for (Client client : clientList) {
+								if (client.getName().equalsIgnoreCase(
+										TCPData[0])) {
+									client.setData(TCPData[1].split(":"));
+									client.resetLastConnectionTime();
+								}
+							}
+							sendResponse(newClient);
+						}
 					}
 					connectionSocket.close();
 				}

@@ -31,6 +31,7 @@ import base.util.SettingsClient;
 class SchoolarClient {
 	public static Freeze freeze;
 	static Thread freezeThread;
+	static Thread popupThread;
 	public static Socket clientSocket;
 	static String computerName;
 	static String osInfo = System.getProperty("os.name") + " "
@@ -115,7 +116,7 @@ class SchoolarClient {
 			extIp = "Nema pristup WAN-u";
 			e.printStackTrace();
 		}
-		computerName = System.getenv("computername");
+		computerName = System.getenv("computerName");
 		computerName = computerName.replaceAll("è", "c");
 		computerName = computerName.replaceAll("æ", "c");
 		computerName = computerName.replaceAll("Æ", "C");
@@ -271,13 +272,19 @@ class SchoolarClient {
 		}
 	}
 
-	private static void textPopup(String text) {
+	private static void textPopup(final String text) {
+		
+		Thread popupThread = new Thread(new Runnable() {
+		     public void run()
+		     {
+		    		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
 
-		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
+		    		JDialog dialog = pane.createDialog("Poruka");
+		    		dialog.setAlwaysOnTop(true);
+		    		dialog.setVisible(true);
+		          
+		     }});  popupThread.start();
 
-		JDialog dialog = pane.createDialog("Poruka");
-		dialog.setAlwaysOnTop(true);
-		dialog.setVisible(true);
 	}
 
 	public static void sendProcesses() {
