@@ -605,8 +605,11 @@ public class Client {
 			timeLabel.setForeground(DARK_ORANGE);
 		else if (percent >= 80f && percent < 100f)
 			timeLabel.setForeground(Color.RED);
-		else if (percent >= 100f)
+		else if (percent >= 100f){
 			forceRemoveClient();
+		if(individualClient != null)
+			individualClient.dispose();
+		}
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
 		if (individualClient != null)
 			individualClient.updateLastConnectionTime(time);

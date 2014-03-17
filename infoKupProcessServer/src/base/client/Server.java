@@ -133,7 +133,6 @@ public class Server implements Runnable {
 			panel.repaint();
 			panel.revalidate();
 		} else {
-			System.err.println("FUCKIN SHIET");
 		}
 	}
 

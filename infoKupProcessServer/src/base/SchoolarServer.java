@@ -203,7 +203,6 @@ public class SchoolarServer extends JFrame {
 				ftpServerUsername = serverUser.getText();
 				ftpServerPassword = serverPass.getText();
 				loop = false;
-
 			} else {
 				System.out.println("Using default port!");
 			}
@@ -411,7 +410,7 @@ public class SchoolarServer extends JFrame {
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
 						String msg;
-						msg = "PERNIS\n";
+						msg = "NOCAPS\n";
 						if (clients.size() > 0)
 							outToClient.writeBytes(toMobileControl);
 						else
@@ -534,9 +533,7 @@ public class SchoolarServer extends JFrame {
 							clients.remove(clientName);
 							removedClients.remove(clientName);
 							for (Client c : clientList) {
-								System.out.println("DIE");
 								if (c.getName().equalsIgnoreCase(clientName)) {
-									System.out.println("DIE1");
 									infoScrollPanel.remove(c.getPanel());
 									infoScrollPanel.repaint();
 									infoScrollPanel.revalidate();
