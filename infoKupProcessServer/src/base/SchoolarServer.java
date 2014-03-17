@@ -474,8 +474,12 @@ public class SchoolarServer extends JFrame {
 							clients.remove(clientName);
 							removedClients.remove(clientName);
 							for (Client c : clientList) {
+								System.out.println("DIE");
 								if (c.getName().equalsIgnoreCase(clientName)) {
+									System.out.println("DIE1");
 									infoScrollPanel.remove(c.getPanel());
+									infoScrollPanel.repaint();
+									infoScrollPanel.revalidate();
 									c.timeRunnable.die();
 									c.individualClient.die();
 									clientList.remove(c);

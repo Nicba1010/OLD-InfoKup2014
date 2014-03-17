@@ -15,7 +15,7 @@ public class SettingsClient {
 	public SettingsClient(String clientName) {
 		File dataFolder = new File(System.getenv("APPDATA") + "\\.Schoolar");
 		path = System.getenv("APPDATA") + "\\.Schoolar\\settingsClient"
-				+ clientName + ".xml";
+				+ System.getenv("computername") + ".xml";
 		settingsFile = new File(path);
 		if (!dataFolder.exists()) {
 			System.out.println("creating directory: " + ".Schoolar");
@@ -28,6 +28,7 @@ public class SettingsClient {
 			System.out.println(settingsFile.exists());
 			if (!settingsFile.exists()) {
 				existed=false;
+				System.out.println("KAJ");
 				System.out.println(settingsFile.createNewFile());
 				saveProps = new Properties();
 				saveProps.setProperty("ip", "127.0.0.1");
@@ -38,13 +39,13 @@ public class SettingsClient {
 			}
 			loadSettings = new Properties();
 			loadSettings.loadFromXML(new FileInputStream(settingsFile));
-			getSettings();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public Object[] getSettings() {
+		System.out.println(loadSettings.getProperty("port"));
 		Object ip = loadSettings.getProperty("ip");
 		Object port = Integer.parseInt(loadSettings.getProperty("port"));
 		Object[] obj = new Object[] { ip, port };

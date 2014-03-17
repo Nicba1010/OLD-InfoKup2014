@@ -35,8 +35,8 @@ public class Time implements Runnable {
 	public void resetLastConnectionTime() {
 		lastConnectionTime = 0;
 	}
-	
-	public void die(){
+
+	public void die() {
 		dead = true;
 	}
 }

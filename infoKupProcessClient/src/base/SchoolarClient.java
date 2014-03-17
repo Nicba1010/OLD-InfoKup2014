@@ -65,7 +65,6 @@ class SchoolarClient {
 
 	public static void settings(boolean b) {
 		if (!settingsFile.exists() || b) {
-			settings = new SettingsClient(computerName);
 			getSettings();
 			JTextField clientIp = new JTextField("" + ip);
 			JTextField clientSocket = new JTextField("" + socket);
@@ -86,6 +85,8 @@ class SchoolarClient {
 			System.out.println("IP: " + ip);
 			System.out.println("Socket: " + socket);
 			setSettings();
+		}else{
+			getSettings();
 		}
 	}
 
@@ -93,6 +94,7 @@ class SchoolarClient {
 		objectSettings = settings.getSettings();
 		ip = objectSettings[0].toString();
 		socket = Integer.parseInt(objectSettings[1].toString());
+		System.out.println(ip + ":" + socket);
 	}
 
 	public static void setSettings() {
@@ -101,14 +103,15 @@ class SchoolarClient {
 		settings.setSettings(objectSettings);
 	}
 
-	public static void main(String args[])  {
-		try{
-		URL connection = new URL("http://checkip.amazonaws.com/");
-		URLConnection con = connection.openConnection();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				con.getInputStream()));
-		extIp = reader.readLine();
-		}catch(Exception e){
+	public static void main(String args[]) {
+		settings = new SettingsClient(computerName);
+		try {
+			URL connection = new URL("http://checkip.amazonaws.com/");
+			URLConnection con = connection.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			extIp = reader.readLine();
+		} catch (Exception e) {
 			extIp = "Nema pristup WAN-u";
 			e.printStackTrace();
 		}
@@ -134,10 +137,10 @@ class SchoolarClient {
 				settings(true);
 			}
 		}
-		try{
-		encryption = new RSA(computerName);
-		pl = new PluginLoader(false);
-		}catch(Exception e){
+		try {
+			encryption = new RSA(computerName);
+			pl = new PluginLoader(false);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		pl.runClient("Test", new String[] { "nis" });
