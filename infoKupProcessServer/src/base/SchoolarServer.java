@@ -307,12 +307,13 @@ public class SchoolarServer extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent event1) {
-
 					mobileControl = !mobileControl;
 					if (mobileControl) {
 						mobileClientOn.setText("Onemoguci mobilnu kontrolu");
+						setTitle("Schoolar Server - Mobilna kontrola");
 					} else {
 						mobileClientOn.setText("Omoguci mobilnu kontrolu");
+						setTitle("Schoolar Server");
 					}
 
 				}

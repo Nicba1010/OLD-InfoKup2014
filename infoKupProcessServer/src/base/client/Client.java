@@ -619,6 +619,7 @@ public class Client {
 	 * Forcefully removes the client
 	 */
 	public void forceRemoveClient() {
+		
 		SchoolarServer.infoScrollPanel.remove(getPanel());
 		timeRunnable.die();
 		SchoolarServer.clientList.remove(getClient());
