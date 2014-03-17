@@ -330,7 +330,6 @@ public class SchoolarServer extends JFrame {
 			for (int i = 0; i < args.length; i++) {
 				System.out.println(i + ":" + args[i]);
 			}
-
 		}
 	}
 
@@ -360,7 +359,6 @@ public class SchoolarServer extends JFrame {
 	public static void start() throws InterruptedException {
 		while (loop) {
 			Thread.sleep(100);
-
 		}
 		String clientSentence;
 		try {
@@ -423,7 +421,6 @@ public class SchoolarServer extends JFrame {
 
 	private static void massMessage(String msg) {
 		if (msg != null) {
-
 			for (Client client : clientList) {
 				buffer.addToBuffer("popup", msg, client.getName());
 			}
