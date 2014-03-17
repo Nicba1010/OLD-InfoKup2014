@@ -101,12 +101,17 @@ class SchoolarClient {
 		settings.setSettings(objectSettings);
 	}
 
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[])  {
+		try{
 		URL connection = new URL("http://checkip.amazonaws.com/");
 		URLConnection con = connection.openConnection();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				con.getInputStream()));
 		extIp = reader.readLine();
+		}catch(Exception e){
+			extIp = "Nema pristup WAN-u";
+			e.printStackTrace();
+		}
 		computerName = System.getenv("computername");
 		computerName = computerName.replaceAll("è", "c");
 		computerName = computerName.replaceAll("æ", "c");
@@ -129,8 +134,12 @@ class SchoolarClient {
 				settings(true);
 			}
 		}
+		try{
 		encryption = new RSA(computerName);
 		pl = new PluginLoader(false);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		pl.runClient("Test", new String[] { "nis" });
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {

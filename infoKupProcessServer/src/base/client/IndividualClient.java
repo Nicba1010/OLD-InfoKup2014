@@ -1,5 +1,6 @@
 package base.client;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -126,10 +127,16 @@ public class IndividualClient extends JFrame {
 		indiClient.removeClientNameLabel();
 		indiClient.setData(client.getData());
 		setVisible(true);
-
 	}
 
 	public void die() {
 		dispose();
+	}
+	
+	public void resetLastConnectionTime(){
+		indiClient.resetLastConnectionTime();
+	}
+	public void updateLastConnectionTime(long time) {
+		indiClient.updateLastConnectionTime(time);
 	}
 }

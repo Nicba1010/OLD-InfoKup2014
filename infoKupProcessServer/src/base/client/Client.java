@@ -59,7 +59,7 @@ public class Client {
 	private boolean ftpOn;
 	BigInteger modulus, publicExponent;
 	PublicKey publicKey;
-	IndividualClient individualClient;
+	public IndividualClient individualClient = null;
 	public Time timeRunnable;
 	private Thread time;
 	JPanel panelMain;
@@ -588,6 +588,7 @@ public class Client {
 	 */
 	public void removeIndividualClient() {
 		individualClient.die();
+		individualClient = null;
 	}
 
 	/**
@@ -607,6 +608,8 @@ public class Client {
 		else if (percent >= 100f)
 			forceRemoveClient();
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
+		if (individualClient != null)
+			individualClient.updateLastConnectionTime(time);
 	}
 
 	/**
@@ -630,6 +633,8 @@ public class Client {
 	 */
 	public void resetLastConnectionTime() {
 		timeRunnable.resetLastConnectionTime();
+		if (individualClient != null)
+			individualClient.resetLastConnectionTime();
 	}
 
 	public void removeClientNameLabel() {

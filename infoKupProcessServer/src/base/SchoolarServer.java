@@ -480,6 +480,7 @@ public class SchoolarServer extends JFrame {
 								if (c.getName().equalsIgnoreCase(clientName)) {
 									infoScrollPanel.remove(c.getPanel());
 									c.timeRunnable.die();
+									c.individualClient.die();
 									clientList.remove(c);
 									infoScrollPanel.repaint();
 									infoScrollPanel.revalidate();
