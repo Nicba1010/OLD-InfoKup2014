@@ -47,11 +47,12 @@ public class SchoolarServer extends JFrame {
 	JButton closeConButton;
 	JButton sendAllButton;
 	JButton massMessage;
+	JButton mobileClientOn;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
 	public static boolean loop = true;
-
+	public static boolean mobileControl;
 	public JFrame mainFrame = this;
 	public static Socket connectionSocket;
 	private static String[] TCPData = new String[2];
@@ -223,6 +224,7 @@ public class SchoolarServer extends JFrame {
 		closeConButton.setBounds(screenWidth - 504, screenHeight - 56, 200, 30);
 		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200, 30);
 		massMessage.setBounds(screenWidth - 304, screenHeight - 56, 200, 30);
+		mobileClientOn.setBounds(screenWidth - 504, screenHeight - 85, 200, 30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
@@ -269,7 +271,7 @@ public class SchoolarServer extends JFrame {
 			});
 		}
 		{
-			closeConButton = new JButton("Ugasi sve konekcije");
+			closeConButton = new JButton("Ugasi sve klijente");
 			closeConButton.addActionListener(new ActionListener() {
 
 				@Override
@@ -300,11 +302,29 @@ public class SchoolarServer extends JFrame {
 				}
 			});
 		}
+		{
+			mobileClientOn = new JButton("Omoguci mobilnu kontrolu");
+			mobileClientOn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+
+					mobileControl = !mobileControl;
+					if (mobileControl) {
+						mobileClientOn.setText("Onemoguci mobilnu kontrolu");
+					} else {
+						mobileClientOn.setText("Omoguci mobilnu kontrolu");
+					}
+
+				}
+			});
+		}
 		mainPanel.add(sendAllButton);
 		mainPanel.add(closeConButton);
 		mainPanel.add(quitButton);
 		mainPanel.add(settingsButton);
 		mainPanel.add(massMessage);
+		mainPanel.add(mobileClientOn);
 
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -368,43 +388,62 @@ public class SchoolarServer extends JFrame {
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 				clientSentence = inFromClient.readLine();
-				if (clientSentence != null) {
-					boolean newClient = false;
-					TCPData = clientSentence.split(";");
-					if (clients.contains(TCPData[0])) {
-						System.out.println(TCPData[1]);
-					} else {
-						TCPDataWithKey = clientSentence.split("-:-");
-						BigInteger modulus = null;
-						BigInteger exponent = null;
-						String[] info = new String[5];
-						if (TCPDataWithKey.length == 8) {
-							modulus = new BigInteger(TCPDataWithKey[1]);
-							exponent = new BigInteger(TCPDataWithKey[2]);
-							info[0] = TCPDataWithKey[3];
-							info[1] = TCPDataWithKey[4];
-							info[2] = TCPDataWithKey[5];
-							info[3] = TCPDataWithKey[6];
-							info[4] = TCPDataWithKey[7];
-						}
-						TCPData = TCPDataWithKey[0].split(";");
-						clientList.add(new Client(0, 0, 250,
-								screenHeight - 125, infoScrollPanel,
-								TCPData[0], pluginLoader, ftpServerIP,
-								ftpServerUsername, ftpServerPassword, ftpOn,
-								modulus, exponent, info, connectionSocket
-										.getInetAddress()));
-						clients.add(TCPData[0]);
-						newClient = true;
-					}
+				System.out.println(clientSentence);
+				if (clientSentence.contains("androidMobileDevice")
+						&& mobileControl) {
+					DataOutputStream outToClient = new DataOutputStream(
+							connectionSocket.getOutputStream());
+					String msg;
+					msg = "PERNIS\n";
 
-					for (Client client : clientList) {
-						if (client.getName().equalsIgnoreCase(TCPData[0])) {
-							client.setData(TCPData[1].split(":"));
-							client.resetLastConnectionTime();
+					outToClient.writeBytes(msg);
+
+				} else if (clientSentence.contains("androidMobileDevice")
+						&& !mobileControl) {
+					DataOutputStream outToClient = new DataOutputStream(
+							connectionSocket.getOutputStream());
+					String msg = "MOBILE CONTROL NOT ENABELED\n";
+					outToClient.writeBytes(msg);
+				} else {
+					if (clientSentence != null) {
+						boolean newClient = false;
+						TCPData = clientSentence.split(";");
+
+						if (clients.contains(TCPData[0])) {
+							System.out.println(TCPData[1]);
+						} else {
+							TCPDataWithKey = clientSentence.split("-:-");
+							BigInteger modulus = null;
+							BigInteger exponent = null;
+							String[] info = new String[5];
+							if (TCPDataWithKey.length == 8) {
+								modulus = new BigInteger(TCPDataWithKey[1]);
+								exponent = new BigInteger(TCPDataWithKey[2]);
+								info[0] = TCPDataWithKey[3];
+								info[1] = TCPDataWithKey[4];
+								info[2] = TCPDataWithKey[5];
+								info[3] = TCPDataWithKey[6];
+								info[4] = TCPDataWithKey[7];
+							}
+							TCPData = TCPDataWithKey[0].split(";");
+							clientList.add(new Client(0, 0, 250,
+									screenHeight - 125, infoScrollPanel,
+									TCPData[0], pluginLoader, ftpServerIP,
+									ftpServerUsername, ftpServerPassword,
+									ftpOn, modulus, exponent, info,
+									connectionSocket.getInetAddress()));
+							clients.add(TCPData[0]);
+							newClient = true;
 						}
+
+						for (Client client : clientList) {
+							if (client.getName().equalsIgnoreCase(TCPData[0])) {
+								client.setData(TCPData[1].split(":"));
+								client.resetLastConnectionTime();
+							}
+						}
+						sendResponse(newClient);
 					}
-					sendResponse(newClient);
 					connectionSocket.close();
 				}
 			}

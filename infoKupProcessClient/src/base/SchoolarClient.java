@@ -85,7 +85,7 @@ class SchoolarClient {
 			System.out.println("IP: " + ip);
 			System.out.println("Socket: " + socket);
 			setSettings();
-		}else{
+		} else {
 			getSettings();
 		}
 	}
@@ -311,8 +311,21 @@ class SchoolarClient {
 						|| line.contains("nv") || line.contains("sqlwriter")
 						|| line.contains("RAV") || line.contains("lsass")
 						|| line.contains("Search") || line.contains("mDNS")
-						|| line.contains("wmp") || line.contains("smss") || line
-							.contains("tasklist")) && !processes.contains(line)) {
+						|| line.contains("wmp") || line.contains("smss")
+						|| line.contains("tasklist")
+						|| line.contains("AdminService")
+						|| line.contains("AssistantServices")
+						|| line.contains("Ath") || line.contains("BtvStack")
+						|| line.contains("CDA")
+						|| line.contains("CancelAutoPlay")
+						|| line.contains("EsaySpeedUp") || line.contains("IA")
+						|| line.contains("Intel") || line.contains("LM")
+						|| line.contains("MovieColorEnhancer")
+						|| line.contains("NASvc") || line.contains("SWM")
+						|| line.contains("SamoyedAgent")
+						|| line.contains("SmartSetting")
+						|| line.contains("Syn") || line.contains("igf"))
+						&& !processes.contains(line)) {
 					if (!processes.equalsIgnoreCase(""))
 						processes = processes + ":" + line;
 					else
