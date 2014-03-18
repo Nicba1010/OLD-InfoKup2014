@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,6 +49,7 @@ public class SchoolarServer extends JFrame {
 	JButton sendAllButton;
 	JButton massMessage;
 	JButton mobileClientOn;
+	JButton about;
 	JPanel defaultButtonPanel;
 	public static ServerSocket inSocket;
 	private static boolean running = false;
@@ -224,6 +226,7 @@ public class SchoolarServer extends JFrame {
 		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200, 30);
 		massMessage.setBounds(screenWidth - 304, screenHeight - 56, 200, 30);
 		mobileClientOn.setBounds(screenWidth - 504, screenHeight - 85, 200, 30);
+		about.setBounds(screenWidth - 800, screenHeight - 56, 169, 30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
@@ -319,12 +322,31 @@ public class SchoolarServer extends JFrame {
 				}
 			});
 		}
+		{
+			about = new JButton("O programu");
+			about.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event1) {
+					String text = "Schoolar - InfoKup 2014\n-----------------------------------\nProgram razvili:\n-Roberto Anic Banic\n-Nikola Krsic TSRB\n";
+
+					JOptionPane pane = new JOptionPane(text,
+							JOptionPane.PLAIN_MESSAGE);
+
+					JDialog popupInfo = pane.createDialog("O programu");
+					popupInfo.setAlwaysOnTop(true);
+					popupInfo.setVisible(true);
+
+				}
+			});
+		}
 		mainPanel.add(sendAllButton);
 		mainPanel.add(closeConButton);
 		mainPanel.add(quitButton);
 		mainPanel.add(settingsButton);
 		mainPanel.add(massMessage);
 		mainPanel.add(mobileClientOn);
+		mainPanel.add(about);
 
 		this.addWindowStateListener(new WindowStateListener() {
 
@@ -388,7 +410,7 @@ public class SchoolarServer extends JFrame {
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 				clientSentence = inFromClient.readLine();
-				System.out.println(clientSentence);
+
 				if (clientSentence != null) {
 					if (clientSentence.contains("androidMobileDevice")
 							&& mobileControl) {
@@ -403,15 +425,14 @@ public class SchoolarServer extends JFrame {
 
 							}
 							toMobileControl.replace(temp + ":", temp);
-							toMobileControl += "-$-";
+							toMobileControl += "__";
 
 						}
-
 
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
 						String msg;
-						msg = "NOCAPS\n";
+						msg = "NOCLIENTS\n";
 						if (clients.size() > 0)
 							outToClient.writeBytes(toMobileControl);
 						else
@@ -421,15 +442,28 @@ public class SchoolarServer extends JFrame {
 							&& !mobileControl) {
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
-						String msg = "MOBILE CONTROL NOT ENEBELED\n";
+						final String msg = "MOBILE CONTROL NOT ENABLED\n";
 						outToClient.writeBytes(msg);
+
+						Thread popupThread = new Thread(new Runnable() {
+							public void run() {
+								JOptionPane pane = new JOptionPane(msg,
+										JOptionPane.PLAIN_MESSAGE);
+
+								JDialog dialog = pane.createDialog("Poruka");
+								dialog.setAlwaysOnTop(true);
+								dialog.setVisible(true);
+
+							}
+						});
+						popupThread.start();
+
 					} else {
 						if (clientSentence != null) {
 							boolean newClient = false;
 							TCPData = clientSentence.split(";");
 
 							if (clients.contains(TCPData[0])) {
-								System.out.println(TCPData[1]);
 							} else {
 								TCPDataWithKey = clientSentence.split("-:-");
 								BigInteger modulus = null;
@@ -520,8 +554,6 @@ public class SchoolarServer extends JFrame {
 								exponent = client.getExponent();
 							}
 						}
-						System.out
-								.println(arg0 + ":" + arg1 + ":" + clientName);
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
 						String msg;

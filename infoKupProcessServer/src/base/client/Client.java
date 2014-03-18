@@ -363,12 +363,14 @@ public class Client {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+
 						String locIp = inetAddress.toString();
 						locIp = locIp.replace("/", "");
 						String text = "OS: " + osInfo + "\n" + "Java: "
 								+ javaInfo + "\n" + "JavaPath: " + javaPath
 								+ "\n" + "User folder: " + homeDir + "\n"
 								+ "IP: " + extIp + "\n" + "Local Ip: " + locIp;
+
 						JOptionPane pane = new JOptionPane(text,
 								JOptionPane.PLAIN_MESSAGE);
 
@@ -605,10 +607,10 @@ public class Client {
 			timeLabel.setForeground(DARK_ORANGE);
 		else if (percent >= 80f && percent < 100f)
 			timeLabel.setForeground(Color.RED);
-		else if (percent >= 100f){
+		else if (percent >= 100f) {
 			forceRemoveClient();
-		if(individualClient != null)
-			individualClient.dispose();
+			if (individualClient != null)
+				individualClient.dispose();
 		}
 		timeLabel.setText(Float.toString(((float) time) / (float) 1000));
 		if (individualClient != null)
@@ -619,7 +621,7 @@ public class Client {
 	 * Forcefully removes the client
 	 */
 	public void forceRemoveClient() {
-		
+
 		SchoolarServer.infoScrollPanel.remove(getPanel());
 		timeRunnable.die();
 		SchoolarServer.clientList.remove(getClient());

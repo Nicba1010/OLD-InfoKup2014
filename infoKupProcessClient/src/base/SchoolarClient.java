@@ -54,15 +54,12 @@ class SchoolarClient {
 	static String ftpServerIP, ftpServerUsername, ftpServerPassword;
 	static SettingsClient settings;
 	static Object[] objectSettings;
-	static String path = System.getenv("APPDATA")
-			+ "\\.Schoolar\\settingsClient" + System.getenv("computername")
-			+ ".xml";
-	static File settingsFile = new File(path);
 	static boolean first = false;
 	static RSA encryption;
 	private static boolean connected = false;
 	static Socket availbilityCheckSocket;
 	static boolean availbilityCheckLoop = true;
+	static File settingsFile;
 
 	public static void settings(boolean b) {
 		if (!settingsFile.exists() || b) {
@@ -105,7 +102,6 @@ class SchoolarClient {
 	}
 
 	public static void main(String args[]) {
-		settings = new SettingsClient(computerName);
 		try {
 			URL connection = new URL("http://checkip.amazonaws.com/");
 			URLConnection con = connection.openConnection();
@@ -127,6 +123,10 @@ class SchoolarClient {
 		computerName = computerName.replaceAll("Š", "S");
 		computerName = computerName.replaceAll("ð", "d");
 		computerName = computerName.replaceAll("Ð", "D");
+		String path = System.getenv("APPDATA") + "\\.Schoolar\\settingsClient"
+				+ computerName + ".xml";
+		settings = new SettingsClient(computerName);
+		settingsFile = new File(path);
 		Timer timer1 = new Timer();
 		timer1.schedule(task, 01, 5001);
 		freeze = new Freeze();
@@ -273,17 +273,19 @@ class SchoolarClient {
 	}
 
 	private static void textPopup(final String text) {
-		
-		Thread popupThread = new Thread(new Runnable() {
-		     public void run()
-		     {
-		    		JOptionPane pane = new JOptionPane(text, JOptionPane.PLAIN_MESSAGE);
 
-		    		JDialog dialog = pane.createDialog("Poruka");
-		    		dialog.setAlwaysOnTop(true);
-		    		dialog.setVisible(true);
-		          
-		     }});  popupThread.start();
+		Thread popupThread = new Thread(new Runnable() {
+			public void run() {
+				JOptionPane pane = new JOptionPane(text,
+						JOptionPane.PLAIN_MESSAGE);
+
+				JDialog dialog = pane.createDialog("Poruka");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+
+			}
+		});
+		popupThread.start();
 
 	}
 

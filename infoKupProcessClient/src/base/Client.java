@@ -64,7 +64,7 @@ public class Client implements Runnable {
 		String user = this.user;
 		String pass = this.pass;
 		String filePath = dataFolder + "\\screenshot.png";
-		String uploadPath = "/" + System.getenv("computername") + ".png";
+		String uploadPath = "/" + SchoolarClient.computerName + ".png";
 
 		ftpUrl = String.format(ftpUrl, user, pass, host, uploadPath);
 		System.out.println("Upload URL: " + ftpUrl);

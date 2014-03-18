@@ -127,6 +127,7 @@ public class IndividualClient extends JFrame {
 		indiClient.removeClientNameLabel();
 		indiClient.setData(client.getData());
 		setVisible(true);
+		setResizable(false);
 	}
 
 	public void die() {
