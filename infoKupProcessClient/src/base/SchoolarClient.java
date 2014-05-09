@@ -112,7 +112,7 @@ class SchoolarClient {
 			extIp = "Nema pristup WAN-u";
 			e.printStackTrace();
 		}
-		computerName = System.getenv("computerName");
+		computerName = System.getenv("computerName") + Integer.toString(2);
 		computerName = computerName.replaceAll("è", "c");
 		computerName = computerName.replaceAll("æ", "c");
 		computerName = computerName.replaceAll("Æ", "C");
@@ -163,6 +163,7 @@ class SchoolarClient {
 	};
 
 	public static boolean hostAvailabilityCheck() {
+		System.out.println(ip);
 		try (Socket s = new Socket(ip, socket)) {
 			return true;
 		} catch (IOException ex) {

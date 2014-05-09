@@ -412,52 +412,56 @@ public class SchoolarServer extends JFrame {
 				clientSentence = inFromClient.readLine();
 
 				if (clientSentence != null) {
-					if (clientSentence.contains("androidMobileDevice")
-							&& mobileControl) {
-						String toMobileControl = "";
-						for (Client client : clientList) {
-							toMobileControl += client.getName() + ";";
-							String temp = null;
-
-							for (String str : client.getData()) {
-								toMobileControl += str + ":";
-								temp = str;
-
+					System.out.println(clientSentence);
+					if (clientSentence.contains("androidMobileDevice")) {
+						System.out.println(clientSentence.split(";")[0]
+								.split("-:-")[1]);
+						clientSentence = clientSentence.split(";")[1];
+						if (mobileControl) {
+							String toMobileControl = "";
+							if (clientSentence.equals("getClients()")) {
+								if (clientList.size() > 0) {
+									for (Client client : clientList) {
+										toMobileControl += client.getName()
+												+ ";";
+									}
+									toMobileControl = toMobileControl
+											.substring(
+													0,
+													toMobileControl.length() - 1);
+								} else {
+									toMobileControl = "NOCLIENTS";
+								}
 							}
-							toMobileControl.replace(temp + ":", temp);
-							toMobileControl += "__";
 
-						}
-
-						DataOutputStream outToClient = new DataOutputStream(
-								connectionSocket.getOutputStream());
-						String msg;
-						msg = "NOCLIENTS\n";
-						if (clients.size() > 0)
-							outToClient.writeBytes(toMobileControl);
-						else
+							DataOutputStream outToClient = new DataOutputStream(
+									connectionSocket.getOutputStream());
+							String msg;
+							msg = "NOCLIENTS\n";
+							if (clients.size() > 0)
+								outToClient.writeBytes(toMobileControl);
+							else
+								outToClient.writeBytes(msg);
+						} else {
+							DataOutputStream outToClient = new DataOutputStream(
+									connectionSocket.getOutputStream());
+							final String msg = "MOBILE CONTROL NOT ENABLED\n";
 							outToClient.writeBytes(msg);
 
-					} else if (clientSentence.contains("androidMobileDevice")
-							&& !mobileControl) {
-						DataOutputStream outToClient = new DataOutputStream(
-								connectionSocket.getOutputStream());
-						final String msg = "MOBILE CONTROL NOT ENABLED\n";
-						outToClient.writeBytes(msg);
+							Thread popupThread = new Thread(new Runnable() {
+								public void run() {
+									JOptionPane pane = new JOptionPane(msg,
+											JOptionPane.PLAIN_MESSAGE);
 
-						Thread popupThread = new Thread(new Runnable() {
-							public void run() {
-								JOptionPane pane = new JOptionPane(msg,
-										JOptionPane.PLAIN_MESSAGE);
+									JDialog dialog = pane
+											.createDialog("Poruka");
+									dialog.setAlwaysOnTop(true);
+									dialog.setVisible(true);
 
-								JDialog dialog = pane.createDialog("Poruka");
-								dialog.setAlwaysOnTop(true);
-								dialog.setVisible(true);
-
-							}
-						});
-						popupThread.start();
-
+								}
+							});
+							popupThread.start();
+						}
 					} else {
 						if (clientSentence != null) {
 							boolean newClient = false;
