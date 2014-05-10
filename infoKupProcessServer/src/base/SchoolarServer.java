@@ -463,16 +463,15 @@ public class SchoolarServer extends JFrame {
 									connectionSocket.getOutputStream());
 							final String msg = "MOBILE CONTROL NOT ENABLED\n";
 							outToClient.writeBytes(msg);
-
 							Thread popupThread = new Thread(new Runnable() {
 								public void run() {
-									JOptionPane pane = new JOptionPane(msg,
-											JOptionPane.PLAIN_MESSAGE);
+					//				JOptionPane pane = new JOptionPane(msg,
+					//						JOptionPane.PLAIN_MESSAGE);
 
-									JDialog dialog = pane
-											.createDialog("Poruka");
-									dialog.setAlwaysOnTop(true);
-									dialog.setVisible(true);
+					//				JDialog dialog = pane
+					//						.createDialog("Poruka");
+					//				dialog.setAlwaysOnTop(true);
+					//				dialog.setVisible(true);
 
 								}
 							});

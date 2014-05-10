@@ -334,7 +334,7 @@ class SchoolarClient {
 						|| line.contains("Ath") || line.contains("BtvStack")
 						|| line.contains("CDA")
 						|| line.contains("CancelAutoPlay")
-						|| line.contains("EsaySpeedUp") || line.contains("IA")
+						|| line.contains("EasySpeedUp") || line.contains("IA")
 						|| line.contains("Intel") || line.contains("LM")
 						|| line.contains("MovieColorEnhancer")
 						|| line.contains("NASvc") || line.contains("SWM")
