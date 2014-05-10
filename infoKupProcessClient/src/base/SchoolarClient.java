@@ -317,6 +317,7 @@ class SchoolarClient {
 						|| line.contains("taskhost") || line.contains("nvtray")
 						|| line.contains("nvvsvc") || line.contains("nvxdsync")
 						|| line.contains("wininit")
+						|| line.contains("explorer")
 						|| line.contains("atiesrxx")
 						|| line.contains("conhost") || line.contains("lsm")
 						|| line.contains("taskeng")
