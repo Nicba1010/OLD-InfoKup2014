@@ -112,7 +112,7 @@ class SchoolarClient {
 			extIp = "Nema pristup WAN-u";
 			e.printStackTrace();
 		}
-		computerName = System.getenv("computerName") + Integer.toString(2);
+		computerName = System.getenv("computerName");
 		computerName = computerName.replaceAll("è", "c");
 		computerName = computerName.replaceAll("æ", "c");
 		computerName = computerName.replaceAll("Æ", "C");
@@ -208,16 +208,21 @@ class SchoolarClient {
 
 	private static void processMessage(String message) throws IOException {
 		if (message != null) {
-			debugPrint(message);
-			message = message.replaceFirst(";", "");
-			String[] messageArray = message.split(";");
-			byte[] bytes = new byte[messageArray.length];
-			int pos = 0;
-			for (String s : messageArray) {
-				bytes[pos++] = Byte.parseByte(s);
-			}
-			message = encryption.decryptData(bytes);
 			System.out.println(message);
+			if (!message.contains("-:NOTENCRYPTED:-")) {
+				message = message.replaceFirst(";", "");
+				String[] messageArray = message.split(";");
+				byte[] bytes = new byte[messageArray.length];
+				int pos = 0;
+				for (String s : messageArray) {
+					bytes[pos++] = Byte.parseByte(s);
+				}
+				message = encryption.decryptData(bytes);
+				message = message.replaceAll("-:NOTENCRYPTED:-", "");
+				System.out.println(message);
+			} else {
+				message = message.replace("-:NOTENCRYPTED:-", "");
+			}
 			if (message.contains(" killproc ")
 					&& message.contains(computerName)) {
 				message = message.replace(computerName + " killproc ", "");

@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -81,6 +82,7 @@ public class SchoolarServer extends JFrame {
 	static Object[] objectSettings = new Object[8];
 	static Settings settings;
 	static RSA encryption = new RSA();
+	static boolean encrypt = true;
 
 	public SchoolarServer() {
 		settings = new Settings();
@@ -410,38 +412,53 @@ public class SchoolarServer extends JFrame {
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 				clientSentence = inFromClient.readLine();
-
 				if (clientSentence != null) {
-					System.out.println(clientSentence);
 					if (clientSentence.contains("androidMobileDevice")) {
-						System.out.println(clientSentence.split(";")[0]
-								.split("-:-")[1]);
-						clientSentence = clientSentence.split(";")[1];
+						String[] arr = clientSentence.split(";");
+						clientSentence = arr[1];
 						if (mobileControl) {
 							String toMobileControl = "";
 							if (clientSentence.equals("getClients()")) {
 								if (clientList.size() > 0) {
+									boolean atLeastOneAliveClient = false;
 									for (Client client : clientList) {
-										toMobileControl += client.getName()
-												+ ";";
+										if (!client.dead) {
+											atLeastOneAliveClient = true;
+											toMobileControl += client.getName()
+													+ ";";
+										}
 									}
-									toMobileControl = toMobileControl
-											.substring(
-													0,
-													toMobileControl.length() - 1);
+									if (atLeastOneAliveClient)
+										toMobileControl = toMobileControl
+												.substring(0, toMobileControl
+														.length() - 1);
+									else
+										toMobileControl = "NOCLIENTS";
 								} else {
 									toMobileControl = "NOCLIENTS";
 								}
+								if (arr.length > 2)
+									processMobileCommand(arr[2]);
+							} else {
+								for (Client client : clientList) {
+									if (client.getName().equals(clientSentence)
+											&& !client.dead) {
+										for (String string1 : client.getData()) {
+											toMobileControl += string1 + ";";
+										}
+										toMobileControl = toMobileControl
+												.substring(0, toMobileControl
+														.length() - 1);
+										if (arr.length > 2)
+											processMobileCommand(arr[2]);
+									}
+								}
 							}
+							toMobileControl += "\n";
 
 							DataOutputStream outToClient = new DataOutputStream(
 									connectionSocket.getOutputStream());
-							String msg;
-							msg = "NOCLIENTS\n";
-							if (clients.size() > 0)
-								outToClient.writeBytes(toMobileControl);
-							else
-								outToClient.writeBytes(msg);
+							outToClient.writeBytes(toMobileControl);
 						} else {
 							DataOutputStream outToClient = new DataOutputStream(
 									connectionSocket.getOutputStream());
@@ -511,6 +528,15 @@ public class SchoolarServer extends JFrame {
 		}
 	}
 
+	private static void processMobileCommand(String arr) {
+		String[] array = arr.split(":?:");
+		System.out.println(arr);
+		for (Client c : clientList) {
+			if (c.getName().equals(array[0]))
+				c.addToBuffer(array[4], array[2]);
+		}
+	}
+
 	private static void sendCommandToAll(String command) {
 		for (Client client : clientList) {
 			buffer.addToBuffer("command", command, client.getName());
@@ -561,16 +587,21 @@ public class SchoolarServer extends JFrame {
 						DataOutputStream outToClient = new DataOutputStream(
 								connectionSocket.getOutputStream());
 						String msg;
-						msg = clientName + " " + arg0 + " " + arg1 + "\n";
-
-						outToClient.writeBytes(getEncryptedData(modulus,
-								exponent, msg));
+						msg = clientName + " " + arg0 + " " + arg1
+								+ "-:NOTENCRYPTED:-" + "\n";
+						if (encrypt)
+							outToClient.writeBytes(getEncryptedData(modulus,
+									exponent, msg));
+						else
+							outToClient.writeBytes(msg);
 						buffer.remove(i);
 						if (arg0.contains("ShutdownClient")) {
 							clients.remove(clientName);
 							removedClients.remove(clientName);
 							for (Client c : clientList) {
 								if (c.getName().equalsIgnoreCase(clientName)) {
+									System.out.println("LALALAL");
+									c.dead = true;
 									infoScrollPanel.remove(c.getPanel());
 									infoScrollPanel.repaint();
 									infoScrollPanel.revalidate();
@@ -602,14 +633,18 @@ public class SchoolarServer extends JFrame {
 				String message;
 				if (newClient && ftpOn) {
 					message = ("FTP:" + ftpServerIPRemote + ":"
-							+ ftpServerUsername + ":" + ftpServerPassword + "\n");
+							+ ftpServerUsername + ":" + ftpServerPassword
+							+ "-:NOTENCRYPTED:-" + "\n");
 				} else if (!ftpOn && newClient) {
-					message = ("FTPNOTON\n");
+					message = ("FTPNOTON" + "-:NOTENCRYPTED:-" + "\n");
 				} else {
-					message = ("OK" + "\n");
+					message = ("OK" + "-:NOTENCRYPTED:-" + "\n");
 				}
-				outToClient.writeBytes(getEncryptedData(modulus, exponent,
-						message));
+				if (encrypt)
+					outToClient.writeBytes(getEncryptedData(modulus, exponent,
+							message));
+				else
+					outToClient.writeBytes(message);
 			}
 		} catch (Exception e) {
 

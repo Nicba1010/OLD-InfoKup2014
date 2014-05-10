@@ -74,6 +74,7 @@ public class Client {
 	private String extIp;
 	private String[] info;
 	private InetAddress inetAddress;
+	public boolean dead = false;
 
 	/**
 	 * The constructor of the Client class
@@ -508,6 +509,8 @@ public class Client {
 	 *            the command arguments
 	 */
 	public void addToBuffer(String arg0, String arg1) {
+		System.out.println("SchoolarServer.buffer.addToBuffer(" + arg0 + ", "
+				+ arg1 + ", " + this.clientName + ");");
 		SchoolarServer.buffer.addToBuffer(arg0, arg1, this.clientName);
 	}
 
@@ -600,7 +603,7 @@ public class Client {
 	 *            the last connection time
 	 */
 	public void updateLastConnectionTime(long time) {
-		float percent = ((float) time / (float) 12000) * (float) 100;
+		float percent = ((float) time / (float) 30000) * (float) 100;
 		if (percent < 50f)
 			timeLabel.setForeground(DARK_GREEN);
 		else if (percent >= 50f && percent < 80f)
@@ -656,5 +659,9 @@ public class Client {
 	 */
 	public ClientPanel getPanel() {
 		return clientPanel;
+	}
+
+	public void setDead() {
+		dead = true;
 	}
 }
