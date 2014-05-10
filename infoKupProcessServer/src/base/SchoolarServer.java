@@ -18,7 +18,6 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -228,7 +227,7 @@ public class SchoolarServer extends JFrame {
 		sendAllButton.setBounds(screenWidth - 304, screenHeight - 85, 200, 30);
 		massMessage.setBounds(screenWidth - 304, screenHeight - 56, 200, 30);
 		mobileClientOn.setBounds(screenWidth - 504, screenHeight - 85, 200, 30);
-		about.setBounds(screenWidth - 800, screenHeight - 56, 169, 30);
+		about.setBounds(screenWidth - 654, screenHeight - 56, 150, 30);
 		scrollablePCinfo.setBounds(0, 0, screenWidth - 3, screenHeight - 100);
 		for (Client client : clientList) {
 			client.setSize(new Dimension(250, screenHeight - 125));
